@@ -7,3 +7,4 @@ services:
       - 'POSTGRES_USER=myuser'
     ports:
       - '5432'
+
