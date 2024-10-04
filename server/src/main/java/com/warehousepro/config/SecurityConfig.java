@@ -9,7 +9,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @EnableMethodSecurity
 @EnableWebSecurity
 @Configuration
-public class securityConfig {
+public class SecurityConfig {
 
 
 
