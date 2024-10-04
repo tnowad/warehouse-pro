@@ -1,0 +1,373 @@
+modules:
+  AuthenticationModule:
+    components:
+      controllers:
+        AuthController:
+          endpoints:
+            - /login
+            - /logout
+            - /refreshToken
+          methods:
+            - POST
+      services:
+        AuthService:
+          functions:
+            - login(credentials)
+            - logout(token)
+            - refreshToken(oldToken)
+            - hashPassword(password)
+            - validatePassword(inputPassword, storedHash)
+            - generateJwt(user)
+      repositories:
+        UserRepository:
+          functions:
+            - findByEmail(email)
+            - findById(userId)
+            - saveUser(user)
+            - updateUserToken(userId, token)
+
+  UserModule:
+    components:
+      controllers:
+        UserController:
+          endpoints:
+            - /users
+            - /users/{id}
+            - /users/{id}/roles
+          methods:
+            - GET
+            - POST
+            - PUT
+            - DELETE
+      services:
+        UserService:
+          functions:
+            - createUser(userDetails)
+            - getUserById(id)
+            - getAllUsers()
+            - updateUser(userDetails)
+            - deleteUser(id)
+            - assignRole(userId, role)
+            - linkUserToWarehouse(userId, warehouseId)
+      repositories:
+        UserRepository:
+          functions:
+            - findAll()
+            - findById(userId)
+            - save(user)
+            - deleteById(userId)
+            - updateUser(user)
+
+  WarehouseModule:
+    components:
+      controllers:
+        WarehouseController:
+          endpoints:
+            - /warehouses
+            - /warehouses/{id}
+          methods:
+            - GET
+            - POST
+            - PUT
+            - DELETE
+      services:
+        WarehouseService:
+          functions:
+            - createWarehouse(warehouseDetails)
+            - updateWarehouse(id, warehouseDetails)
+            - getWarehouseById(id)
+            - getAllWarehouses()
+            - deleteWarehouse(id)
+            - trackCapacity(warehouseId)
+            - activateWarehouse(id)
+            - deactivateWarehouse(id)
+      repositories:
+        WarehouseRepository:
+          functions:
+            - findAll()
+            - findById(id)
+            - save(warehouse)
+            - deleteById(id)
+            - updateWarehouse(warehouse)
+
+  InventoryModule:
+    components:
+      controllers:
+        InventoryController:
+          endpoints:
+            - /warehouses/{id}/inventory
+            - /inventory/transfers
+          methods:
+            - GET
+            - POST
+            - PUT
+      services:
+        InventoryService:
+          functions:
+            - addProductToWarehouse(warehouseId, productDetails)
+            - updateProductStock(warehouseId, productId, newQuantity)
+            - deleteProductFromWarehouse(warehouseId, productId)
+            - transferProductBetweenWarehouses(sourceWarehouseId, targetWarehouseId, productId, quantity)
+            - checkLowStock(warehouseId, productId)
+            - triggerLowStockAlert(productId, warehouseId)
+      repositories:
+        InventoryRepository:
+          functions:
+            - findInventoryByWarehouse(warehouseId)
+            - findProductByWarehouse(warehouseId, productId)
+            - updateStock(warehouseId, productId, newQuantity)
+            - deleteProduct(warehouseId, productId)
+            - saveProduct(warehouseId, product)
+
+  OrderModule:
+    components:
+      controllers:
+        OrderController:
+          endpoints:
+            - /orders
+            - /orders/{id}
+            - /orders/{id}/status
+          methods:
+            - GET
+            - POST
+            - PUT
+      services:
+        OrderService:
+          functions:
+            - createOrder(orderDetails)
+            - getOrderById(id)
+            - getAllOrders()
+            - updateOrderStatus(id, newStatus)
+            - allocateWarehouse(orderId, warehouseId)
+            - fulfillOrder(orderId)
+      repositories:
+        OrderRepository:
+          functions:
+            - findAll()
+            - findById(id)
+            - save(order)
+            - updateOrder(order)
+
+  ReceivingModule:
+    components:
+      controllers:
+        ReceivingController:
+          endpoints:
+            - /receiving
+            - /receiving/{id}
+          methods:
+            - GET
+            - POST
+            - PUT
+      services:
+        ReceivingService:
+          functions:
+            - createReceiving(warehouseId, receivingDetails)
+            - getReceivingById(id)
+            - getAllReceivings()
+            - updateReceivingStatus(id, newStatus)
+            - updateInventoryOnReceive(receivingId, productId, quantity)
+      repositories:
+        ReceivingRepository:
+          functions:
+            - findAll()
+            - findById(id)
+            - save(receiving)
+            - updateReceiving(receiving)
+
+  ShippingModule:
+    components:
+      controllers:
+        ShippingController:
+          endpoints:
+            - /shipping
+            - /shipping/{id}
+            - /shipping/track
+          methods:
+            - GET
+            - POST
+            - PUT
+      services:
+        ShippingService:
+          functions:
+            - createShipment(orderId, warehouseId, carrierDetails)
+            - generateShippingLabel(shipmentId, carrierDetails)
+            - trackShipment(trackingNumber)
+            - updateShipmentStatus(id, newStatus)
+      repositories:
+        ShippingRepository:
+          functions:
+            - findAll()
+            - findById(id)
+            - save(shipment)
+            - updateShipment(shipment)
+
+  CustomerModule:
+    components:
+      controllers:
+        CustomerController:
+          endpoints:
+            - /customers
+            - /customers/{id}
+            - /customers/{id}/orders
+          methods:
+            - GET
+            - POST
+            - PUT
+            - DELETE
+      services:
+        CustomerService:
+          functions:
+            - createCustomer(customerDetails)
+            - getCustomerById(id)
+            - getAllCustomers()
+            - updateCustomer(customerDetails)
+            - deleteCustomer(id)
+            - linkCustomerToOrder(customerId, orderId)
+      repositories:
+        CustomerRepository:
+          functions:
+            - findAll()
+            - findById(id)
+            - save(customer)
+            - updateCustomer(customer)
+
+  AuditModule:
+    components:
+      controllers:
+        AuditController:
+          endpoints:
+            - /audit/logs
+          methods:
+            - GET
+      services:
+        AuditService:
+          functions:
+            - logAction(userId, action, details)
+            - getLogsByUserId(userId)
+            - getAllLogs()
+      repositories:
+        AuditRepository:
+          functions:
+            - saveLog(logDetails)
+            - findLogsByUser(userId)
+            - findAllLogs()
+
+  NotificationModule:
+    components:
+      controllers:
+        NotificationController:
+          endpoints:
+            - /notifications
+          methods:
+            - POST
+      services:
+        NotificationService:
+          functions:
+            - sendEmailNotification(recipient, message)
+            - sendSmsNotification(recipient, message)
+            - sendInAppNotification(userId, message)
+            - triggerLowStockAlert(productId, warehouseId)
+      repositories:
+        NotificationRepository:
+          functions:
+            - saveNotification(notification)
+            - findNotificationsByUser(userId)
+
+  ReportingModule:
+    components:
+      controllers:
+        ReportingController:
+          endpoints:
+            - /reports
+          methods:
+            - GET
+      services:
+        ReportingService:
+          functions:
+            - generateInventoryReport(warehouseId)
+            - generateOrderReport(startDate, endDate)
+            - generateWarehousePerformanceReport(warehouseId)
+      repositories:
+        ReportingRepository:
+          functions:
+            - findInventoryData(warehouseId)
+            - findOrderData(startDate, endDate)
+            - findWarehousePerformanceData(warehouseId)
+
+permissions:
+  AuthenticationModule:
+    AuthController:
+      - auth.login
+      - auth.logout
+      - auth.refreshToken
+
+  UserModule:
+    UserController:
+      - user.create
+      - user.read
+      - user.update
+      - user.delete
+      - user.assignRole
+      - user.linkToWarehouse
+
+  WarehouseModule:
+    WarehouseController:
+      - warehouse.create
+      - warehouse.read
+      - warehouse.update
+      - warehouse.delete
+      - warehouse.trackCapacity
+      - warehouse.activate
+      - warehouse.deactivate
+
+  InventoryModule:
+    InventoryController:
+      - inventory.addProduct
+      - inventory.updateStock
+      - inventory.deleteProduct
+      - inventory.transferProduct
+      - inventory.checkLowStock
+      - inventory.triggerLowStockAlert
+
+  OrderModule:
+    OrderController:
+      - order.create
+      - order.read
+      - order.updateStatus
+      - order.allocateWarehouse
+      - order.fulfill
+
+  ReceivingModule:
+    ReceivingController:
+      - receiving.create
+      - receiving.read
+      - receiving.updateStatus
+      - receiving.updateInventory
+
+  ShippingModule:
+    ShippingController:
+      - shipping.create
+      - shipping.read
+      - shipping.track
+      - shipping.updateStatus
+
+  CustomerModule:
+    CustomerController:
+      - customer.create
+      - customer.read
+      - customer.update
+      - customer.delete
+      - customer.linkToOrder
+
+  AuditModule:
+    AuditController:
+      - audit.read
+
+  NotificationModule:
+    NotificationController:
+      - notification.send
+
+  ReportingModule:
+    ReportingController:
+      - report.generate
