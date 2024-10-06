@@ -3,6 +3,7 @@ package com.warehousepro.controller;
 import com.warehousepro.dto.request.LoginRequest;
 import com.warehousepro.dto.response.ApiResponse;
 import com.warehousepro.dto.response.LoginResponse;
+import com.warehousepro.mapstruct.UserMapper;
 import com.warehousepro.service.AuthenticationService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -19,13 +20,14 @@ import org.springframework.web.bind.annotation.RestController;
 public class AuthenticationController {
 
     AuthenticationService authenticationService;
-
+    UserMapper userMapper;
 
     @PostMapping("/login")
-    public ApiResponse<LoginResponse> authenticate(@RequestBody LoginRequest request){
+    public LoginResponse authenticate(@RequestBody LoginRequest request){
         var user = authenticationService.authenticate(request);
-        return ApiResponse.<LoginResponse>builder()
-                .result(user)
+        return LoginResponse.builder()
+                .token("jwt")
+                .user(userMapper.toUserResponse(user))
                 .build();
     }
 
