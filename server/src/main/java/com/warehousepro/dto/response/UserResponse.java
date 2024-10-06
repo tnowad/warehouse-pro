@@ -12,11 +12,10 @@ import java.util.Set;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Builder
 public class UserResponse {
-
     String id;
     String username;
     String email;
-    LocalDate creareAt;
+    LocalDate createAt;
     LocalDate updateAt;
     Set<RoleResponse> roles;
 }
