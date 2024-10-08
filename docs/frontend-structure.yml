@@ -1,0 +1,308 @@
+pages:
+  Dashboard:
+    path: /dashboard
+    sections:
+      - name: WarehouseOverview
+        components:
+          - type: Card
+            name: WarehouseStatusCard
+            data:
+              - warehouseName
+              - currentStock
+              - activeOrders
+          - type: Card
+            name: InventorySummaryCard
+            data:
+              - totalStock
+              - lowStockAlerts
+          - type: Card
+            name: OrderStatusCard
+            data:
+              - pendingOrders
+              - shippedOrders
+      - name: GlobalInventorySummary
+        components:
+          - type: List
+            name: TotalStock
+            data:
+              - itemName
+              - quantity
+              - warehouseLocation
+          - type: Alert
+            name: LowStockAlerts
+            data:
+              - itemName
+              - threshold
+              - currentStock
+      - name: RecentActivity
+        components:
+          - type: Table
+            name: RecentShipments
+            columns:
+              - shipmentID
+              - warehouse
+              - date
+              - status
+          - type: Table
+            name: RecentReceivings
+            columns:
+              - receivingID
+              - warehouse
+              - date
+              - status
+      - name: WarehouseSwitcher
+        components:
+          - type: Dropdown
+            name: WarehouseDropdown
+            data:
+              - warehouseList
+
+  Warehouses:
+    path: /warehouses
+    sections:
+      - name: WarehouseList
+        components:
+          - type: Table
+            name: WarehouseTable
+            columns:
+              - warehouseID
+              - warehouseName
+              - location
+              - status
+            actions:
+              - edit
+              - delete
+          - type: Button
+            name: AddWarehouseButton
+            label: "Add Warehouse"
+
+  InventoryManagement:
+    paths:
+      - /inventory
+      - /warehouses/:id/inventory
+    sections:
+      - name: InventoryTable
+        components:
+          - type: Table
+            name: ProductTable
+            columns:
+              - productID
+              - productName
+              - SKU
+              - quantity
+              - warehouse
+          - type: Search
+            name: SearchBar
+            placeholder: "Search Products"
+          - type: Dropdown
+            name: FilterDropdown
+            data:
+              - warehouseFilter
+              - categoryFilter
+      - name: InventoryActions
+        components:
+          - type: Button
+            name: AddProductButton
+            label: "Add Product"
+          - type: Button
+            name: EditProductButton
+            label: "Edit Product"
+          - type: Button
+            name: DeleteProductButton
+            label: "Delete Product"
+      - name: InventoryTransfer
+        components:
+          - type: Form
+            name: TransferForm
+            fields:
+              - fromWarehouse
+              - toWarehouse
+              - product
+              - quantity
+          - type: Table
+            name: TransferHistory
+            columns:
+              - transferID
+              - product
+              - fromWarehouse
+              - toWarehouse
+              - date
+      - name: BatchLotManagement
+        components:
+          - type: Table
+            name: BatchTable
+            columns:
+              - batchID
+              - product
+              - quantity
+              - expirationDate
+          - type: Table
+            name: LotTable
+            columns:
+              - lotID
+              - product
+              - quantity
+              - receivedDate
+
+  Receiving:
+    paths:
+      - /receiving
+      - /warehouses/:id/receiving
+    sections:
+      - name: PendingInboundShipments
+        components:
+          - type: Table
+            name: ShipmentTable
+            columns:
+              - shipmentID
+              - supplier
+              - expectedDate
+              - status
+          - type: Filter
+            name: FilterBar
+            fields:
+              - statusFilter
+              - dateFilter
+      - name: ReceivingForm
+        components:
+          - type: List
+            name: ProductList
+            fields:
+              - productName
+              - SKU
+              - expectedQuantity
+              - receivedQuantity
+          - type: Input
+            name: QuantityInput
+            label: "Received Quantity"
+          - type: Button
+            name: ConfirmButton
+            label: "Confirm Receiving"
+      - name: ReceivedProducts
+        components:
+          - type: Table
+            name: ReceivedProductTable
+            columns:
+              - product
+              - receivedQuantity
+              - receivedDate
+              - condition
+          - type: Input
+            name: ConditionInput
+            label: "Product Condition"
+
+  Shipping:
+    paths:
+      - /shipping
+      - /warehouses/:id/shipping
+    sections:
+      - name: PendingShipments
+        components:
+          - type: Table
+            name: OrderTable
+            columns:
+              - orderID
+              - customer
+              - shippingAddress
+              - status
+          - type: Filter
+            name: FilterByStatus
+            fields:
+              - pending
+              - shipped
+              - delivered
+      - name: PackAndShip
+        components:
+          - type: Details
+            name: PackageDetails
+            fields:
+              - orderID
+              - customer
+              - products
+          - type: Dropdown
+            name: CarrierDropdown
+            data:
+              - carriers
+          - type: Button
+            name: ShippingLabelButton
+            label: "Generate Shipping Label"
+      - name: TrackingInfo
+        components:
+          - type: Text
+            name: TrackingNumber
+            data:
+              - trackingNumber
+          - type: Link
+            name: TrackingLink
+            url: "carrierTrackingURL"
+
+  Orders:
+    paths:
+      - /orders
+      - /orders/:order_id
+    sections:
+      - name: OrderList
+        components:
+          - type: Table
+            name: OrderTable
+            columns:
+              - orderID
+              - customer
+              - date
+              - status
+          - type: Search
+            name: SearchBar
+            placeholder: "Search Orders"
+          - type: Filter
+            name: FilterByStatus
+            fields:
+              - pending
+              - shipped
+              - delivered
+      - name: OrderDetails
+        components:
+          - type: List
+            name: ProductList
+            fields:
+              - productName
+              - quantity
+              - price
+          - type: Text
+            name: CustomerInfo
+            fields:
+              - name
+              - email
+              - phone
+              - shippingAddress
+          - type: Textarea
+            name: OrderNotes
+            label: "Order Notes"
+      - name: AllocateOrder
+        components:
+          - type: Dropdown
+            name: WarehouseDropdown
+            data:
+              - availableWarehouses
+          - type: Button
+            name: AllocateButton
+            label: "Allocate"
+      - name: PickAndPack
+        components:
+          - type: Button
+            name: PickButton
+            label: "Pick Order"
+          - type: Button
+            name: PackButton
+            label: "Pack Order"
+      - name: OrderFulfillmentStatus
+        components:
+          - type: ProgressBar
+            name: ProgressBar
+            data:
+              - progress
+          - type: Details
+            name: ShipmentDetails
+            fields:
+              - trackingNumber
+              - carrier
+              - status
