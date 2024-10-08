@@ -10,7 +10,7 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Builder
-public class WareHouseResponse {
+public class WareHouseResponseDto {
     int warehouse_id;
     String warehouse_name;
     String location;

@@ -1,7 +1,7 @@
 package com.warehousepro.controller;
 
-import com.warehousepro.dto.request.WareHouseRequest;
-import com.warehousepro.dto.response.WareHouseResponse;
+import com.warehousepro.dto.request.WareHouseRequestDto;
+import com.warehousepro.dto.response.WareHouseResponseDto;
 import com.warehousepro.mapstruct.WareHouseMapper;
 import com.warehousepro.service.WareHouseService;
 import lombok.RequiredArgsConstructor;
@@ -17,17 +17,17 @@ public class WareHouseController {
     private WareHouseMapper warehouseMapper;
 
     @GetMapping("/{id}")
-    public WareHouseResponse getWarehouse(@PathVariable int id, @RequestBody WareHouseRequest warehouseRequest) {
+    public WareHouseResponseDto getWarehouse(@PathVariable int id, @RequestBody WareHouseRequestDto warehouseRequest) {
         return warehouseMapper.toWareHouseResponse(warehouseService.getWareHouse(id, warehouseRequest));
     }
 
     @PostMapping
-    public WareHouseResponse createWarehouse(@RequestBody WareHouseRequest warehouseRequest) {
+    public WareHouseResponseDto createWarehouse(@RequestBody WareHouseRequestDto warehouseRequest) {
         return warehouseMapper.toWareHouseResponse(warehouseService.createWareHouse(warehouseRequest));
     }
 
     @PutMapping("/{id}")
-    public WareHouseResponse updateWarehouse(@PathVariable int id, @RequestBody WareHouseRequest warehouseRequest) {
+    public WareHouseResponseDto updateWarehouse(@PathVariable int id, @RequestBody WareHouseRequestDto warehouseRequest) {
         return warehouseMapper.toWareHouseResponse(warehouseService.updateWareHouse(id, warehouseRequest));
     }
 

@@ -1,6 +1,6 @@
 package com.warehousepro.service;
 
-import com.warehousepro.dto.request.WareHouseRequest;
+import com.warehousepro.dto.request.WareHouseRequestDto;
 import com.warehousepro.entity.Warehouse;
 import com.warehousepro.mapstruct.WareHouseMapper;
 import com.warehousepro.repository.WareHouseRepository;
@@ -20,17 +20,17 @@ public class WareHouseService {
 
     WareHouseMapper warehouseMapper;
 
-    public Warehouse getWareHouse(int warehouse_id, WareHouseRequest warehouseRequest) {
+    public Warehouse getWareHouse(int warehouse_id, WareHouseRequestDto warehouseRequest) {
         return warehouseRepository.findByWarehouseId(warehouse_id).orElseThrow(); //not supported Exception
     }
 
-    public Warehouse createWareHouse(WareHouseRequest warehouseRequest) {
+    public Warehouse createWareHouse(WareHouseRequestDto warehouseRequest) {
         if(warehouseRepository.existsById(warehouseRequest.getWarehouse_id()))
             throw new RuntimeException("Warehouse_id was existed"); //not supported Exception
         return warehouseRepository.save(warehouseMapper.toWareHouse(warehouseRequest));
     }
 
-    public Warehouse updateWareHouse(int warehouse_id, WareHouseRequest warehouseRequest) {
+    public Warehouse updateWareHouse(int warehouse_id, WareHouseRequestDto warehouseRequest) {
         var existingWarehouse = warehouseRepository.findByWarehouseId(warehouse_id)
                 .orElseThrow(RuntimeException::new); //not supported Exception
 

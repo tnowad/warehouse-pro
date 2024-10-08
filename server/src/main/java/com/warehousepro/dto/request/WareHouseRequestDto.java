@@ -11,7 +11,7 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class WareHouseRequest {
+public class WareHouseRequestDto {
     int warehouse_id;
     String warehouse_name;
     String location;
