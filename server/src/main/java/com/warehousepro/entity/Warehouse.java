@@ -22,6 +22,19 @@ public class Warehouse {
     String location;
     int capacity;
     int managerId;
+    @Column(name = "createdAt", nullable = false, updatable = false)
     LocalDate createdAt;
+    @Column(name = "updatedAt", nullable = false)
     LocalDate updatedAt;
+
+    @PrePersist
+    protected void onCreate() {
+        createdAt = LocalDate.now();
+        updatedAt = LocalDate.now();
+    }
+
+    @PreUpdate
+    protected void onUpdate() {
+        updatedAt = LocalDate.now();
+    }
 }

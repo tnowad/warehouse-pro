@@ -15,8 +15,6 @@ import java.util.Map;
 @Builder
 public class Metadata {
     Pagination pagination;
-    Map<Integer, String> etags;
-    List<String> sortedBy;
-    List<String> warnings;
-    Map<String, Object> custom;
+    SortedBy sortedBy;
+    Map<String, String> filterBy;
 }

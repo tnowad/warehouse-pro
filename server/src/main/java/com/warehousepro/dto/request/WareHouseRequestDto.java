@@ -17,6 +17,4 @@ public class WareHouseRequestDto {
     String location;
     int capacity;
     int managerId;
-    LocalDate createdAt;
-    LocalDate updatedAt;
 }
