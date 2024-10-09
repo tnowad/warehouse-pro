@@ -1,5 +1,6 @@
 package com.warehousepro.controller;
 
+import com.nimbusds.jose.JOSEException;
 import com.warehousepro.dto.request.LoginRequest;
 import com.warehousepro.dto.response.ApiResponse;
 import com.warehousepro.dto.response.LoginResponse;
@@ -20,11 +21,11 @@ public class AuthenticationController {
     UserMapper userMapper;
 
     @PostMapping("/login")
-    public LoginResponse authenticate(@RequestBody LoginRequest request){
-        var user = authenticationService.authenticate(request);
+    public LoginResponse authenticate(@RequestBody LoginRequest request) throws JOSEException {
+        var result = authenticationService.authenticate(request);
         return LoginResponse.builder()
-                .token("jwt")
-                .user(userMapper.toUserResponse(user))
+                .token(result.getToken())
+                .user(result.getUser())
                 .build();
     }
 
