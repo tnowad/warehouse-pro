@@ -1,126 +1,70 @@
-"use client";
+import { Badge } from "@/components/ui/badge";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { cn } from "@/lib/utils";
 import { useQuery } from "react-query";
-import { ColumnDef } from "@tanstack/react-table";
-import { DataTable } from "@/components/ui/data-table";
-import { Button } from "@/components/ui/button";
-import { Eye } from "lucide-react";
-import {
-  getWarehouseStatus,
-  getWarehouseStatusCount,
-} from "@/server/actions/warehouse";
-import { useRouter } from "next/navigation";
-import { Cell, Pie, PieChart } from "recharts";
 
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import {
-  ChartConfig,
-  ChartContainer,
-  ChartTooltip,
-  ChartTooltipContent,
-} from "@/components/ui/chart";
+type WarehouseStatusCardProps = {
+  warehouseId: string | null;
+};
 
-const chartConfig = {
-  count: {
-    label: "Count",
-  },
-  active: {
-    label: "Active",
-    color: "hsl(var(--chart-1))",
-  },
-  inactive: {
-    label: "Inactive",
-    color: "hsl(var(--chart-2))",
-  },
-} satisfies ChartConfig;
+export function WarehouseStatusCard({ warehouseId }: WarehouseStatusCardProps) {
+  const getWarehouseStatusQuery = useQuery(
+    ["warehouses", warehouseId],
+    async () => {
+      await new Promise((resolve) => setTimeout(resolve, 1000));
 
-export function WarehouseStatusChart() {
-  const getWarehouseStatusCountQuery = useQuery(["warehouses-count"], () => {
-    return getWarehouseStatusCount();
-  });
+      return {
+        id: warehouseId,
+        name: "Warehouse 1",
+        status: "Active",
+        location: "New York, USA",
+        lastUpdated: "2024-10-10 12:34 PM",
+      };
+    },
+    {
+      enabled: !!warehouseId,
+    },
+  );
 
   return (
-    <Card className="flex flex-col mb-2">
-      <CardHeader className="items-center pb-0">
-        <CardTitle>Warehouse Status Pie Chart</CardTitle>
-        <CardDescription>Current Status Overview</CardDescription>
+    <Card>
+      <CardHeader>
+        <CardTitle>Warehouse Status</CardTitle>
       </CardHeader>
-      <CardContent className="flex-1 pb-0">
-        <ChartContainer
-          config={chartConfig}
-          className="mx-auto aspect-square max-h-[250px]"
-        >
-          <PieChart>
-            <ChartTooltip
-              cursor={false}
-              content={<ChartTooltipContent hideLabel />}
-            />
-            <Pie
-              data={getWarehouseStatusCountQuery.data ?? []}
-              dataKey="count"
-              nameKey="status"
-              innerRadius={60}
+      <CardContent>
+        {getWarehouseStatusQuery.isIdle ? (
+          "Not loaded"
+        ) : getWarehouseStatusQuery.isLoading ? (
+          "Loading..."
+        ) : getWarehouseStatusQuery.isError ? (
+          "Error"
+        ) : (
+          <div>
+            <p>
+              <strong>ID:</strong> {getWarehouseStatusQuery.data.id}
+            </p>
+            <p>
+              <strong>Name:</strong> {getWarehouseStatusQuery.data.name}
+            </p>
+            <p>
+              <strong>Location:</strong> {getWarehouseStatusQuery.data.location}
+            </p>
+            <p>
+              <strong>Last Updated:</strong>{" "}
+              {getWarehouseStatusQuery.data.lastUpdated}
+            </p>
+            <Badge
+              variant={
+                getWarehouseStatusQuery.data.status === "Active"
+                  ? "default"
+                  : "destructive"
+              }
             >
-              <Cell fill={chartConfig.active.color} key="active" />
-              <Cell fill={chartConfig.inactive.color} key="inactive" />
-            </Pie>
-          </PieChart>
-        </ChartContainer>
+              Status: {getWarehouseStatusQuery.data.status}
+            </Badge>
+          </div>
+        )}
       </CardContent>
     </Card>
-  );
-}
-
-export function WarehouseStatusCard() {
-  const getWarehouseStatusQuery = useQuery(["warehouses"], () => {
-    return getWarehouseStatus();
-  });
-  const router = useRouter();
-
-  const columns: ColumnDef<{ id: number; name: string; status: string }>[] = [
-    {
-      accessorKey: "id",
-      header: "ID",
-    },
-    {
-      accessorKey: "name",
-      header: "Name",
-    },
-    {
-      accessorKey: "status",
-      header: "Status",
-    },
-    {
-      accessorKey: "actions",
-      header: "Actions",
-      cell(props) {
-        return (
-          <Button
-            variant={"outline"}
-            size={"icon"}
-            onClick={() => {
-              router.push(`/warehouses/${props.row.original.id}`);
-            }}
-          >
-            <Eye />
-          </Button>
-        );
-      },
-    },
-  ];
-
-  return (
-    <div>
-      <WarehouseStatusChart />
-      <DataTable
-        columns={columns}
-        data={getWarehouseStatusQuery.data?.items ?? []}
-      />
-    </div>
   );
 }
