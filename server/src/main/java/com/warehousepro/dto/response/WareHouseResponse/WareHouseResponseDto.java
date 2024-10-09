@@ -1,4 +1,4 @@
-package com.warehousepro.dto.response;
+package com.warehousepro.dto.response.WareHouseResponse;
 
 import lombok.*;
 import lombok.experimental.FieldDefaults;

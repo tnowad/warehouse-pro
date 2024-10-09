@@ -2,12 +2,16 @@ package com.warehousepro.controller;
 
 import com.warehousepro.dto.request.WareHouseRequestDto;
 import com.warehousepro.dto.request.WareHouseUpdateRequestDto;
-import com.warehousepro.dto.response.WareHouseResponseDto;
+import com.warehousepro.dto.response.WareHouseResponse.Metadata;
+import com.warehousepro.dto.response.WareHouseResponse.Pagination;
+import com.warehousepro.dto.response.WareHouseResponse.WareHousePaginationResponseDto;
+import com.warehousepro.dto.response.WareHouseResponse.WareHouseResponseDto;
 import com.warehousepro.mapstruct.WareHouseMapper;
 import com.warehousepro.service.WareHouseService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -24,8 +28,16 @@ public class WareHouseController {
     WareHouseMapper warehouseMapper;
 
     @GetMapping
-    public List<WareHouseResponseDto> getAllWarehouse() {
-        return warehouseService.getAllWareHouse().stream().map(warehouseMapper::toWareHouseResponse).collect(Collectors.toList());
+    public WareHousePaginationResponseDto<WareHouseResponseDto> getAllWarehouse(
+            @RequestParam(defaultValue = "10") int limit,
+            @RequestParam(defaultValue = "0") int offset){
+        List<WareHouseResponseDto> items = warehouseService.getAllWareHouse(limit, offset).stream().map(warehouseMapper::toWareHouseResponse).toList();
+        int totalCount = warehouseService.countAllWarehouses();
+        int totalPageCount = (int) Math.ceil((double) totalCount / limit);
+        Pagination pagination = new Pagination(offset, limit, Math.max(offset - limit, 0), Math.min(offset + limit, totalCount), offset / limit + 1, totalPageCount, totalCount);
+        Metadata metadata = Metadata.builder().pagination(pagination).build();
+
+        return new WareHousePaginationResponseDto<>(items, metadata);
     }
 
     @GetMapping("/{id}")
@@ -44,9 +56,9 @@ public class WareHouseController {
     }
 
     @DeleteMapping("/{id}")
-    public String deleteWarehouse(@PathVariable("id") int id) {
+    public ResponseEntity<Void> deleteWarehouse(@PathVariable("id") int id) {
         warehouseService.deleteWareHouse(id);
-        return "Delete success";
+        return ResponseEntity.noContent().build();
     }
 }
 

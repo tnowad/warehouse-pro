@@ -2,7 +2,6 @@ package com.warehousepro.service;
 
 import com.warehousepro.dto.request.WareHouseRequestDto;
 import com.warehousepro.dto.request.WareHouseUpdateRequestDto;
-import com.warehousepro.dto.response.WareHouseResponseDto;
 import com.warehousepro.entity.Warehouse;
 import com.warehousepro.mapstruct.WareHouseMapper;
 import com.warehousepro.repository.WareHouseRepository;
@@ -10,6 +9,8 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -24,30 +25,35 @@ public class WareHouseService {
 
     WareHouseMapper warehouseMapper;
 
-    public List<Warehouse> getAllWareHouse() {
-        return warehouseRepository.findAll(); //not supported Exception
+    public List<Warehouse> getAllWareHouse(int limit, int offset) {
+        Pageable pageable = PageRequest.of(offset / limit, limit);
+        return warehouseRepository.findAll(pageable).getContent(); //not supported Exception
     }
 
-    public Warehouse getWareHouse(int warehouse_id) {
-        return warehouseRepository.findByWarehouseId(warehouse_id).orElseThrow(); //not supported Exception
+    public int countAllWarehouses() {
+        return (int)warehouseRepository.count();
+    }
+
+    public Warehouse getWareHouse(int warehouseId) {
+        return warehouseRepository.findByWarehouseId(warehouseId).orElseThrow(); //not supported Exception
     }
 
     public Warehouse createWareHouse(WareHouseRequestDto warehouseRequest) {
         if(warehouseRepository.existsById(warehouseRequest.getWarehouseId()))
-            throw new RuntimeException("Warehouse_id was existed"); //not supported Exception
+            throw new RuntimeException("WarehouseId was existed"); //not supported Exception
         return warehouseRepository.save(warehouseMapper.toWareHouse(warehouseRequest));
     }
 
-    public Warehouse updateWareHouse(int warehouse_id, WareHouseUpdateRequestDto wareHouseUpdateRequestDto) {
-        Warehouse wareHouse = getWareHouse(warehouse_id);
+    public Warehouse updateWareHouse(int warehouseId, WareHouseUpdateRequestDto wareHouseUpdateRequestDto) {
+        Warehouse wareHouse = getWareHouse(warehouseId);
 
         warehouseMapper.updateWarehouse(wareHouse, wareHouseUpdateRequestDto);
 
         return warehouseRepository.save(wareHouse);
     }
 
-    public void deleteWareHouse(int warehouse_id) {
-        warehouseRepository.deleteById(warehouse_id);
+    public void deleteWareHouse(int warehouseId) {
+        warehouseRepository.deleteById(warehouseId);
     }
 }
 
