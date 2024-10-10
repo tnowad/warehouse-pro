@@ -3,13 +3,15 @@ package com.warehousepro.service;
 import com.nimbusds.jose.*;
 import com.nimbusds.jose.crypto.MACSigner;
 import com.nimbusds.jwt.JWTClaimsSet;
+import com.warehousepro.dto.request.IntrospectRequest;
 import com.warehousepro.dto.request.LoginRequest;
 
+import com.warehousepro.dto.response.IntrospectResponse;
 import com.warehousepro.dto.response.LoginResponse;
 import com.warehousepro.entity.User;
 import com.warehousepro.mapstruct.UserMapper;
 import com.warehousepro.repository.UserRepository;
-import jakarta.validation.constraints.NotNull;
+import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -38,6 +40,13 @@ public class AuthenticationService {
     @Value("${jwt.signerKey}")
     protected String SIGNER_KEY;
 
+//    public IntrospectResponse introspect(IntrospectRequest request){
+//
+//    }
+
+
+
+
     public LoginResponse authenticate(LoginRequest loginRequest) throws JOSEException {
 
         var user = userRepository.findByUsername(loginRequest.getUsername()).orElseThrow(
@@ -59,10 +68,9 @@ public class AuthenticationService {
 
         JWTClaimsSet jwtClaimsSet = new JWTClaimsSet.Builder()
                 .subject(user.getUsername())
-                .issuer("vinh.com")
                 .issueTime(new Date())
                 .expirationTime(new Date(
-                        Instant.now().plus(3000, ChronoUnit.SECONDS).toEpochMilli()))
+                        Instant.now().plus(3600, ChronoUnit.SECONDS).toEpochMilli()))
                 .build();
 
         Payload payload = new Payload(jwtClaimsSet.toJSONObject());

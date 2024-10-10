@@ -6,6 +6,7 @@ import com.warehousepro.dto.response.ApiResponse;
 import com.warehousepro.dto.response.LoginResponse;
 import com.warehousepro.mapstruct.UserMapper;
 import com.warehousepro.service.AuthenticationService;
+import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -21,7 +22,7 @@ public class AuthenticationController {
     UserMapper userMapper;
 
     @PostMapping("/login")
-    public LoginResponse authenticate(@RequestBody LoginRequest request) throws JOSEException {
+    public LoginResponse authenticate(@RequestBody @Valid LoginRequest request) throws JOSEException {
         var result = authenticationService.authenticate(request);
         return LoginResponse.builder()
                 .token(result.getToken())

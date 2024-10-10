@@ -5,4 +5,4 @@ spring:
     show-sql: true
 
 jwt:
-  signerKey: "dzHLIcCikdrF5qIn3uBIKiZ6ZSMmjB0b89cvR1+cIBynshiluVVrWpFr5v3he9C4"
+  signerKey: ${signer_key}
