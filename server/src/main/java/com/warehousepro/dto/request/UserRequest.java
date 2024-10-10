@@ -14,17 +14,15 @@ import java.util.Set;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class UserRequest {
 
-    String id;
-
     String username;
 
     String password;
 
     String email;
 
-    LocalDate createAt;
+    LocalDate createdAt;
 
-    LocalDate updateAt;
+    LocalDate updatedAt;
 
-    Set<String> roles;
+//    Set<String> roles;
 }

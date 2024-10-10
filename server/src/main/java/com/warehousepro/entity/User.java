@@ -26,9 +26,9 @@ public class User {
 
     String email;
 
-    LocalDate createAt;
+    LocalDate createdAt;
 
-    LocalDate updateAt;
+    LocalDate updatedAt;
 
     @ManyToMany
     Set<Role> roles;
