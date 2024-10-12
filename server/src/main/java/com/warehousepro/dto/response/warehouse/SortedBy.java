@@ -1,4 +1,4 @@
-package com.warehousepro.dto.response.WareHouseResponse;
+package com.warehousepro.dto.response.warehouse;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

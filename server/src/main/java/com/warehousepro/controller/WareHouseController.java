@@ -2,7 +2,7 @@ package com.warehousepro.controller;
 
 import com.warehousepro.dto.request.WareHouseRequestDto;
 import com.warehousepro.dto.request.WareHouseUpdateRequestDto;
-import com.warehousepro.dto.response.WareHouseResponse.*;
+import com.warehousepro.dto.response.warehouse.*;
 import com.warehousepro.mapstruct.WareHouseMapper;
 import com.warehousepro.service.WareHouseService;
 import lombok.AccessLevel;
