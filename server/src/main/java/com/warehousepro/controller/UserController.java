@@ -6,6 +6,7 @@ import com.warehousepro.entity.User;
 import com.warehousepro.mapstruct.UserMapper;
 import com.warehousepro.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -33,20 +34,22 @@ public class UserController {
         .build();
   }
 
-    @Operation(summary = "Get a book by its id")
+    @Operation(summary = "Get a user by its id")
     @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "Found the book",
+        @ApiResponse(responseCode = "200", description = "Found the user",
             content = { @Content(mediaType = "application/json",
                 schema = @Schema(implementation = User.class)) }),
         @ApiResponse(responseCode = "400", description = "Invalid id supplied",
             content = { @Content(mediaType = "application/json",
                 schema = @Schema(implementation = Error.class)) }),
 
-        @ApiResponse(responseCode = "404", description = "Book not found",
+        @ApiResponse(responseCode = "404", description = "User not found",
             content = {@Content(mediaType = "application/json",
                 schema = @Schema(implementation = Error.class))})})
   @GetMapping("/{userId}")
-  UserResponse getUser(@PathVariable String userId) {
+  UserResponse getUser(@PathVariable
+                       @Parameter(description = "id of user to be searched")
+                       String userId) {
     var user = userService.getUser(userId);
     return UserResponse.builder().id(user.getId()).username(user.getUsername())
         .email(user.getEmail()).createdAt(user.getCreatedAt()).updatedAt(user.getUpdatedAt())
