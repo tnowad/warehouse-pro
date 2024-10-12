@@ -36,8 +36,8 @@ public class AuthenticationService {
 
   public LoginResponse authenticate(LoginRequest loginRequest) throws JOSEException {
 
-    var user = userRepository.findByUsername(loginRequest.getEmail())
-        .orElseThrow(RuntimeException::new);
+    var user =
+        userRepository.findByUsername(loginRequest.getEmail()).orElseThrow(RuntimeException::new);
     boolean authenticated = passwordEncoder.matches(loginRequest.getPassword(), user.getPassword());
 
     if (!authenticated)
