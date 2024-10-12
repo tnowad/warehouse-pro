@@ -1,9 +1,8 @@
 package com.warehousepro.controller;
 
 import com.nimbusds.jose.JOSEException;
-import com.warehousepro.dto.request.LoginRequest;
-import com.warehousepro.dto.response.ApiResponse;
-import com.warehousepro.dto.response.LoginResponse;
+import com.warehousepro.dto.request.auth.LoginRequest;
+import com.warehousepro.dto.response.auth.LoginResponse;
 import com.warehousepro.mapstruct.UserMapper;
 import com.warehousepro.service.AuthenticationService;
 import jakarta.validation.Valid;
@@ -18,18 +17,13 @@ import org.springframework.web.bind.annotation.*;
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class AuthenticationController {
 
-    AuthenticationService authenticationService;
-    UserMapper userMapper;
+  AuthenticationService authenticationService;
+  UserMapper userMapper;
 
-    @PostMapping("/login")
-    public LoginResponse authenticate(@RequestBody @Valid LoginRequest request) throws JOSEException {
-        var result = authenticationService.authenticate(request);
-        return LoginResponse.builder()
-                .token(result.getToken())
-                .user(result.getUser())
-                .build();
-    }
-
-
+  @PostMapping("/login")
+  public LoginResponse authenticate(@RequestBody @Valid LoginRequest request) throws JOSEException {
+    var result = authenticationService.authenticate(request);
+    return LoginResponse.builder().token(result.getToken()).user(result.getUser()).build();
+  }
 
 }

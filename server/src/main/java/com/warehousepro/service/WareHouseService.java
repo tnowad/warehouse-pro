@@ -1,7 +1,7 @@
 package com.warehousepro.service;
 
-import com.warehousepro.dto.request.WareHouseRequestDto;
-import com.warehousepro.dto.request.WareHouseUpdateRequestDto;
+import com.warehousepro.dto.request.warehouse.CreateWareHouseRequest;
+import com.warehousepro.dto.request.warehouse.UpdateWarehouseRequestDto;
 import com.warehousepro.entity.Warehouse;
 import com.warehousepro.mapstruct.WareHouseMapper;
 import com.warehousepro.repository.WareHouseRepository;
@@ -16,7 +16,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
-
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
@@ -24,74 +23,75 @@ import java.util.Map;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-@FieldDefaults(level = AccessLevel.PRIVATE , makeFinal = true)
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class WareHouseService {
 
-    WareHouseRepository warehouseRepository;
+  WareHouseRepository warehouseRepository;
 
-    WareHouseMapper warehouseMapper;
+  WareHouseMapper warehouseMapper;
 
-    WareHouseSpecification wareHouseSpecification;
+  WareHouseSpecification wareHouseSpecification;
 
-    public Page<Warehouse> filterWarehouses(int limit, int offset, Map<String, String> filterBy, String sortBy, String orderBy) {
+  public Page<Warehouse> filterWarehouses(int limit, int offset, Map<String, String> filterBy,
+      String sortBy, String orderBy) {
 
-        Integer capacity = null;
-        Integer managerId  = null;
-        LocalDate createdAt = null;
-        LocalDate updatedAt = null;
-        if(filterBy.get("capacity")!=null) {
-            capacity = Integer.parseInt(filterBy.get("capacity"));
-        }
-        if(filterBy.get("managerId")!=null) {
-            managerId = Integer.parseInt(filterBy.get("managerId"));
-        }
-        if(filterBy.get("createdAt")!=null) {
-            createdAt = LocalDate.parse(filterBy.get("createdAt"));
-        }
-        if(filterBy.get("updatedAt")!=null) {
-            updatedAt = LocalDate.parse(filterBy.get("updatedAt"));
-        }
-
-        Specification<Warehouse> spec = Specification.where(wareHouseSpecification.hasName(filterBy.get("warehouseName")))
-                .and(wareHouseSpecification.hasLocation(filterBy.get("location")))
-                .and(wareHouseSpecification.hasCapacityGreaterThanOrEqual(capacity))
-                .and(wareHouseSpecification.hasManagerId(managerId))
-                .and(wareHouseSpecification.onCreatedAt(createdAt))
-                .and(wareHouseSpecification.onUpdatedAt(updatedAt));
-
-        Pageable pageable;
-        if(sortBy!=null) {
-            Sort sort = Sort.by(orderBy.equalsIgnoreCase("asc") ? Sort.Direction.ASC : Sort.Direction.DESC, sortBy);
-            pageable = PageRequest.of(offset/limit, limit, sort);
-        }
-        else {
-            pageable = PageRequest.of(offset/limit, limit);
-        }
-
-        return warehouseRepository.findAll(spec,pageable);
+    Integer capacity = null;
+    Integer managerId = null;
+    LocalDate createdAt = null;
+    LocalDate updatedAt = null;
+    if (filterBy.get("capacity") != null) {
+      capacity = Integer.parseInt(filterBy.get("capacity"));
+    }
+    if (filterBy.get("managerId") != null) {
+      managerId = Integer.parseInt(filterBy.get("managerId"));
+    }
+    if (filterBy.get("createdAt") != null) {
+      createdAt = LocalDate.parse(filterBy.get("createdAt"));
+    }
+    if (filterBy.get("updatedAt") != null) {
+      updatedAt = LocalDate.parse(filterBy.get("updatedAt"));
     }
 
+    Specification<Warehouse> spec =
+        Specification.where(wareHouseSpecification.hasName(filterBy.get("warehouseName")))
+            .and(wareHouseSpecification.hasLocation(filterBy.get("location")))
+            .and(wareHouseSpecification.hasCapacityGreaterThanOrEqual(capacity))
+            .and(wareHouseSpecification.hasManagerId(managerId))
+            .and(wareHouseSpecification.onCreatedAt(createdAt))
+            .and(wareHouseSpecification.onUpdatedAt(updatedAt));
 
-    public Warehouse getWareHouse(int warehouseId) {
-        return warehouseRepository.findByWarehouseId(warehouseId).orElseThrow(); //not supported Exception
+    Pageable pageable;
+    if (sortBy != null) {
+      Sort sort = Sort
+          .by(orderBy.equalsIgnoreCase("asc") ? Sort.Direction.ASC : Sort.Direction.DESC, sortBy);
+      pageable = PageRequest.of(offset / limit, limit, sort);
+    } else {
+      pageable = PageRequest.of(offset / limit, limit);
     }
 
-    public Warehouse createWareHouse(WareHouseRequestDto warehouseRequest) {
-        if(warehouseRepository.existsById(warehouseRequest.getWarehouseId()))
-            throw new RuntimeException("WarehouseId was existed"); //not supported Exception
-        return warehouseRepository.save(warehouseMapper.toWareHouse(warehouseRequest));
-    }
+    return warehouseRepository.findAll(spec, pageable);
+  }
 
-    public Warehouse updateWareHouse(int warehouseId, WareHouseUpdateRequestDto wareHouseUpdateRequestDto) {
-        Warehouse wareHouse = getWareHouse(warehouseId);
+  public Warehouse getWareHouse(int warehouseId) {
+    return warehouseRepository.findByWarehouseId(warehouseId).orElseThrow(); // not supported Exception
+  }
 
-        warehouseMapper.updateWarehouse(wareHouse, wareHouseUpdateRequestDto);
+  public Warehouse createWareHouse(CreateWareHouseRequest warehouseRequest) {
+    if (warehouseRepository.existsById(warehouseRequest.getWarehouseId()))
+      throw new RuntimeException("WarehouseId was existed"); // not supported Exception
+    return warehouseRepository.save(warehouseMapper.toWareHouse(warehouseRequest));
+  }
 
-        return warehouseRepository.save(wareHouse);
-    }
+  public Warehouse updateWareHouse(int warehouseId,
+      UpdateWarehouseRequestDto wareHouseUpdateRequestDto) {
+    Warehouse wareHouse = getWareHouse(warehouseId);
 
-    public void deleteWareHouse(int warehouseId) {
-        warehouseRepository.deleteById(warehouseId);
-    }
+    warehouseMapper.updateWarehouse(wareHouse, wareHouseUpdateRequestDto);
+
+    return warehouseRepository.save(wareHouse);
+  }
+
+  public void deleteWareHouse(int warehouseId) {
+    warehouseRepository.deleteById(warehouseId);
+  }
 }
-

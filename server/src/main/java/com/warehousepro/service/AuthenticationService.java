@@ -3,15 +3,11 @@ package com.warehousepro.service;
 import com.nimbusds.jose.*;
 import com.nimbusds.jose.crypto.MACSigner;
 import com.nimbusds.jwt.JWTClaimsSet;
-import com.warehousepro.dto.request.IntrospectRequest;
-import com.warehousepro.dto.request.LoginRequest;
-
-import com.warehousepro.dto.response.IntrospectResponse;
-import com.warehousepro.dto.response.LoginResponse;
+import com.warehousepro.dto.request.auth.LoginRequest;
+import com.warehousepro.dto.response.auth.LoginResponse;
 import com.warehousepro.entity.User;
 import com.warehousepro.mapstruct.UserMapper;
 import com.warehousepro.repository.UserRepository;
-import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -20,66 +16,53 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Date;
 
-
 @Slf4j
 @Service
 @RequiredArgsConstructor
-@FieldDefaults(level = AccessLevel.PRIVATE , makeFinal = true)
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class AuthenticationService {
 
-    UserRepository userRepository;
-    PasswordEncoder passwordEncoder;
-    UserMapper userMapper;
+  UserRepository userRepository;
+  PasswordEncoder passwordEncoder;
+  UserMapper userMapper;
 
-    @NonFinal
-    @Value("${jwt.signerKey}")
-    protected String SIGNER_KEY;
+  @NonFinal
+  @Value("${jwt.signerKey}")
+  protected String SIGNER_KEY;
 
-//    public IntrospectResponse introspect(IntrospectRequest request){
-//
-//    }
+  public LoginResponse authenticate(LoginRequest loginRequest) throws JOSEException {
 
+    var user = userRepository.findByUsername(loginRequest.getEmail())
+        .orElseThrow(RuntimeException::new);
+    boolean authenticated = passwordEncoder.matches(loginRequest.getPassword(), user.getPassword());
 
+    if (!authenticated)
+      throw new RuntimeException("Unauthenticated");
 
+    var token = generateToken(user);
 
-    public LoginResponse authenticate(LoginRequest loginRequest) throws JOSEException {
+    return LoginResponse.builder().token(token).user(userMapper.toUserResponse(user)).build();
+  }
 
-        var user = userRepository.findByUsername(loginRequest.getUsername()).orElseThrow(
-                RuntimeException::new);
-        boolean authenticated = passwordEncoder.matches(loginRequest.getPassword(), user.getPassword());
+  private String generateToken(User user) throws JOSEException {
+    JWSHeader jwsHeader = new JWSHeader(JWSAlgorithm.HS512);
 
-        if(!authenticated) throw new RuntimeException("Unauthenticated");
+    JWTClaimsSet jwtClaimsSet =
+        new JWTClaimsSet.Builder().subject(user.getUsername()).issueTime(new Date())
+            .expirationTime(new Date(Instant.now().plus(3600, ChronoUnit.SECONDS).toEpochMilli()))
+            .build();
 
-        var token = generateToken(user);
+    Payload payload = new Payload(jwtClaimsSet.toJSONObject());
 
-        return LoginResponse.builder()
-                .token(token)
-                .user(userMapper.toUserResponse(user))
-                .build();
-    }
+    JWSObject jwsObject = new JWSObject(jwsHeader, payload);
 
-    private String generateToken(User user) throws JOSEException {
-        JWSHeader jwsHeader = new JWSHeader(JWSAlgorithm.HS512);
+    jwsObject.sign(new MACSigner(SIGNER_KEY.getBytes()));
 
-        JWTClaimsSet jwtClaimsSet = new JWTClaimsSet.Builder()
-                .subject(user.getUsername())
-                .issueTime(new Date())
-                .expirationTime(new Date(
-                        Instant.now().plus(3600, ChronoUnit.SECONDS).toEpochMilli()))
-                .build();
-
-        Payload payload = new Payload(jwtClaimsSet.toJSONObject());
-
-        JWSObject jwsObject = new JWSObject(jwsHeader ,payload);
-
-        jwsObject.sign(new MACSigner(SIGNER_KEY.getBytes()));
-
-        return jwsObject.serialize();
-    }
+    return jwsObject.serialize();
+  }
 
 }

@@ -1,25 +1,17 @@
-package com.warehousepro.entity;
+package com.warehousepro.dto.response.auth;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 import java.time.LocalDate;
 
-@Entity
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class Permission {
-
-  @Id
+@Builder
+public class PermissionResponse {
   String name;
-
   String description;
-
-  LocalDate createdAt;
-
-  LocalDate updatedAt;
+  LocalDate creareAt;
+  LocalDate updateAt;
 }

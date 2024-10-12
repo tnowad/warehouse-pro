@@ -15,25 +15,14 @@ import org.springframework.security.web.DefaultSecurityFilterChain;
 @Configuration
 public class SecurityConfig {
 
+  @Bean
+  public DefaultSecurityFilterChain configure(HttpSecurity httpSecurity) throws Exception {
+    return httpSecurity.csrf(AbstractHttpConfigurer::disable).build();
+  }
 
-    @Bean
-    public DefaultSecurityFilterChain configure(HttpSecurity httpSecurity) throws Exception{
-        return httpSecurity.csrf(AbstractHttpConfigurer::disable)
-
-                .build();
-    }
-
-
-
-
-
-
-    @Bean
-    PasswordEncoder passwordEncoder(){
-        return new BCryptPasswordEncoder();
-    }
-
-
+  @Bean
+  PasswordEncoder passwordEncoder() {
+    return new BCryptPasswordEncoder();
+  }
 
 }
-

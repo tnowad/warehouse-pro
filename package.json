@@ -1,0 +1,17 @@
+{
+  "name": "warehouse-pro",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "client:lint": "cd client && pnpm lint",
+    "server:lint": "cd server && mvn checkstyle:check",
+    "lint": "pnpm client:lint && pnpm server:lint",
+    "client:format": "cd client && pnpx prettier --write .",
+    "server:format": "cd server && mvn formatter:format",
+    "format": "npm run client:format && npm run server:format"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}

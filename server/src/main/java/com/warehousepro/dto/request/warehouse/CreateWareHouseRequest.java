@@ -1,9 +1,7 @@
-package com.warehousepro.dto.request;
-
+package com.warehousepro.dto.request.warehouse;
 
 import lombok.*;
 import lombok.experimental.FieldDefaults;
-
 import java.time.LocalDate;
 
 @Data
@@ -11,12 +9,10 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class PermissionRequest {
-    String name;
-
-    String des;
-
-    LocalDate creareAt;
-
-    LocalDate updateAt;
+public class CreateWareHouseRequest {
+  int warehouseId;
+  String warehouseName;
+  String location;
+  int capacity;
+  int managerId;
 }

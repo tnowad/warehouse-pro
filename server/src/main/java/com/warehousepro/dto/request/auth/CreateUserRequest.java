@@ -1,23 +1,16 @@
-package com.warehousepro.entity;
+package com.warehousepro.dto.request.auth;
 
-import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 import java.time.LocalDate;
 import java.util.Set;
 
-@Entity
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
-@Table(name = "users")
-public class User {
-
-  @Id
-  @GeneratedValue(strategy = GenerationType.UUID)
-  String id;
+public class CreateUserRequest {
 
   String username;
 
@@ -29,7 +22,5 @@ public class User {
 
   LocalDate updatedAt;
 
-  @ManyToMany
-  Set<Role> roles;
-
+  // Set<String> roles;
 }

@@ -1,8 +1,7 @@
-package com.warehousepro.dto.response;
+package com.warehousepro.dto.response.auth;
 
 import lombok.*;
 import lombok.experimental.FieldDefaults;
-
 import java.time.LocalDate;
 import java.util.Set;
 
@@ -12,10 +11,10 @@ import java.util.Set;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Builder
 public class UserResponse {
-    String id;
-    String username;
-    String email;
-    LocalDate createdAt;
-    LocalDate updatedAt;
-    Set<RoleResponse> roles;
+  String id;
+  String username;
+  String email;
+  LocalDate createdAt;
+  LocalDate updatedAt;
+  Set<RoleResponse> roles;
 }

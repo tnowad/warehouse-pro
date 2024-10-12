@@ -1,9 +1,7 @@
-package com.warehousepro.dto.response;
+package com.warehousepro.dto.request.warehouse;
 
-import com.warehousepro.entity.User;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
-
 import java.time.LocalDate;
 
 @Data
@@ -11,7 +9,9 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class LoginResponse {
-    String token;
-    UserResponse user;
+public class UpdateWarehouseRequestDto {
+  String warehouseName;
+  String location;
+  int capacity;
+  int managerId;
 }

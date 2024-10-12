@@ -5,10 +5,8 @@ import jakarta.persistence.Id;
 import jakarta.persistence.ManyToMany;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
-
 import java.time.LocalDate;
 import java.util.Set;
-
 
 @Entity
 @Data
@@ -18,15 +16,15 @@ import java.util.Set;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class Role {
 
-    @Id
-    String name;
+  @Id
+  String name;
 
-    String des;
+  String description;
 
-    LocalDate creareAt;
+  LocalDate createdAt;
 
-    LocalDate updateAt;
+  LocalDate updatedAt;
 
-    @ManyToMany
-    Set<Permission> permissions;
+  @ManyToMany
+  Set<Permission> permissions;
 }

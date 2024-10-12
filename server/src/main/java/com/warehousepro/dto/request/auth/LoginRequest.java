@@ -1,4 +1,4 @@
-package com.warehousepro.dto.request;
+package com.warehousepro.dto.request.auth;
 
 import jakarta.validation.constraints.NotEmpty;
 import lombok.*;
@@ -11,9 +11,9 @@ import lombok.experimental.FieldDefaults;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class LoginRequest {
 
-    @NotEmpty(message = "Không được bỏ trống user name")
-    private String username;
+  @NotEmpty(message = "Không được bỏ trống email")
+  private String email;
 
-    @NotEmpty(message = "Không được bỏ trống mật khẩu")
-    private String password;
+  @NotEmpty(message = "Không được bỏ trống mật khẩu")
+  private String password;
 }

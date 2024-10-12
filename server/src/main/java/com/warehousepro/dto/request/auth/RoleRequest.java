@@ -1,9 +1,7 @@
-package com.warehousepro.dto.request;
-
+package com.warehousepro.dto.request.auth;
 
 import lombok.*;
 import lombok.experimental.FieldDefaults;
-
 import java.time.LocalDate;
 import java.util.Set;
 
@@ -12,17 +10,15 @@ import java.util.Set;
 @AllArgsConstructor
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class UserRequest {
+public class RoleRequest {
 
-    String username;
+  String name;
 
-    String password;
+  String des;
 
-    String email;
+  LocalDate createdAt;
 
-    LocalDate createdAt;
+  LocalDate updatedAt;
 
-    LocalDate updatedAt;
-
-//    Set<String> roles;
+  Set<String> permissions;
 }
