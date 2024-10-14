@@ -32,7 +32,7 @@ public class AuthenticationController {
   @ApiResponses(value = {
       @ApiResponse(responseCode = "200", description = "Login success",
           content = { @Content(mediaType = "application/json",
-              schema = @Schema(implementation = LoginRequest.class)) }),
+              schema = @Schema(implementation = LoginResponse.class)) }),
       @ApiResponse(responseCode = "400", description = "Bad request",
           content = { @Content(mediaType = "application/json",
               schema = @Schema(implementation = Error.class , example = "Invalid username or password")) }),

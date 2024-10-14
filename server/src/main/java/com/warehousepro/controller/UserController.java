@@ -41,7 +41,7 @@ public class UserController {
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "Found the user",
             content = { @Content(mediaType = "application/json",
-                schema = @Schema(implementation = User.class)) }),
+                schema = @Schema(implementation = UserResponse.class)) }),
         @ApiResponse(responseCode = "400", description = "Invalid id supplied",
             content = { @Content(mediaType = "application/json",
                 schema = @Schema(implementation = Error.class)) }),

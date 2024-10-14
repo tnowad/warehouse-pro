@@ -13,9 +13,9 @@ import lombok.experimental.FieldDefaults;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class LoginRequest {
 
-  @Parameter(schema = @Schema(type = "string", format = "email"))
+  @NotEmpty(message = "Không được bỏ trống email")
   private String email;
 
-  @Parameter(schema = @Schema(type = "string", format = "password"))
+  @NotEmpty(message = "Không được bỏ trống mật khẩu")
   private String password;
 }
