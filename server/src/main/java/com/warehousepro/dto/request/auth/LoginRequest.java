@@ -1,5 +1,7 @@
 package com.warehousepro.dto.request.auth;
 
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -11,9 +13,9 @@ import lombok.experimental.FieldDefaults;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class LoginRequest {
 
-  @NotEmpty(message = "Không được bỏ trống email")
+  @Parameter(schema = @Schema(type = "string", format = "email"))
   private String email;
 
-  @NotEmpty(message = "Không được bỏ trống mật khẩu")
+  @Parameter(schema = @Schema(type = "string", format = "password"))
   private String password;
 }

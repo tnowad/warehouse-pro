@@ -26,6 +26,9 @@ public class UserController {
   UserService userService;
   UserMapper userMapper;
 
+
+
+
   @PostMapping
   UserResponse create(@RequestBody CreateUserRequest request) {
     var user = userService.createUser(request);
@@ -60,5 +63,7 @@ public class UserController {
   List<UserResponse> getUsers() {
     return userService.getUsers();
   }
+
+
 
 }
