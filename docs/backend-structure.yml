@@ -42,9 +42,9 @@ modules:
       services:
         UserService:
           functions:
-            - createUser(userDetails)
-            - getUserById(id)
-            - getAllUsers()
+            # - createUser(userDetails) 
+            # - getUserById(id)
+            # - getAllUsers()
             - updateUser(userDetails)
             - deleteUser(id)
             - assignRole(userId, role)
