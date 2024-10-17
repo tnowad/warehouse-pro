@@ -1,15 +1,12 @@
-import axiosInstance from "./axios-instance";
-import { useToken } from "@/hooks/use-token";
+import { useTokenStore } from "@/hooks/use-token";
+import { postAuthRefresh } from "./api/endpoints/post-auth-refresh";
+import { isAxiosError } from "axios";
 
 let refreshPromise: Promise<string> | null = null;
 
-const getRefreshToken = async ({ refreshToken }: { refreshToken: string }) =>
-  axiosInstance.post<{
-    accessToken: string;
-  }>("/auth/refresh", { refreshToken });
-
 export async function refreshAccessToken() {
-  const refreshToken = useToken.getState().refreshToken;
+  const refreshToken = useTokenStore.getState().actions.getRefreshToken();
+
   if (!refreshToken) {
     throw new Error("No refresh token found");
   }
@@ -18,19 +15,20 @@ export async function refreshAccessToken() {
     return refreshPromise;
   }
 
-  refreshPromise = getRefreshToken({ refreshToken })
-    .then(({ data: { accessToken } }) => {
-      useToken.getState().setToken(accessToken, refreshToken);
-      return accessToken;
-    })
-    .catch((error) => {
-      useToken.setState({ refreshToken: null });
+  refreshPromise = (async () => {
+    try {
+      const data = await postAuthRefresh({ refreshToken });
+      useTokenStore.setState({ accessToken: data.accessToken });
       refreshPromise = null;
-      throw error;
-    })
-    .finally(() => {
+      return data.accessToken;
+    } catch (error) {
       refreshPromise = null;
-    });
+      if (isAxiosError(error)) {
+        throw error;
+      }
+      throw new Error("Failed to refresh access token");
+    }
+  })();
 
   return refreshPromise;
 }
