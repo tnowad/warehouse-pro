@@ -47,4 +47,16 @@ public class JwtService {
     }
     return claims;
   }
+
+  public String extractRefreshUserId(String token) {
+    try {
+      JWTVerifier verifier =
+          JWT.require(Algorithm.HMAC256(jwtProperties.getRefresh().getSecret())).build();
+      DecodedJWT decodedJWT = verifier.verify(token);
+      return decodedJWT.getSubject();
+    } catch (Exception e) {
+      return null;
+    }
+  }
+
 }

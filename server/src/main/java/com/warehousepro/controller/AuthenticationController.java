@@ -1,7 +1,9 @@
 package com.warehousepro.controller;
 
 import com.warehousepro.dto.request.auth.LoginRequest;
+import com.warehousepro.dto.request.auth.RefreshTokenRequest;
 import com.warehousepro.dto.response.auth.LoginResponse;
+import com.warehousepro.dto.response.auth.RefreshTokenResponse;
 import com.warehousepro.dto.response.error.ValidationErrorResponse;
 import com.warehousepro.service.AuthenticationService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -26,23 +28,24 @@ public class AuthenticationController {
   AuthenticationService authenticationService;
 
   @Operation(summary = "Login")
-  @ApiResponses(
-      value = {
-          @ApiResponse(responseCode = "200", description = "Login success",
-              content = {@Content(mediaType = "application/json",
-                  schema = @Schema(implementation = LoginResponse.class))}),
-          @ApiResponse(responseCode = "400", description = "Bad request",
-              content = {
-                  @Content(mediaType = "application/json",
-                      schema = @Schema(implementation = Error.class,
-                          example = "Invalid username or password"))}),
-          @ApiResponse(responseCode = "404", description = "User not found",
-              content = {@Content(mediaType = "application/json",
-                  schema = @Schema(implementation = ValidationErrorResponse.class,
-                      example = "User not found"))})})
+  @ApiResponses(value = {
+      @ApiResponse(responseCode = "200", description = "Login success",
+          content = {@Content(mediaType = "application/json",
+              schema = @Schema(implementation = LoginResponse.class))}),
+      @ApiResponse(responseCode = "404", description = "User not found",
+          content = {@Content(mediaType = "application/json",
+              schema = @Schema(implementation = ValidationErrorResponse.class,
+                  example = "User not found"))})})
   @PostMapping("/login")
   public ResponseEntity<LoginResponse> authenticate(@RequestBody @Valid @Parameter(
       description = "Login request body", required = true) LoginRequest request) {
     return ResponseEntity.ok(authenticationService.login(request));
+  }
+
+  @Operation(summary = "Refresh token")
+  @PostMapping("/refresh")
+  public ResponseEntity<RefreshTokenResponse> refreshToken(@RequestBody @Valid @Parameter(
+      description = "Refresh token request body", required = true) RefreshTokenRequest request) {
+    return ResponseEntity.ok(authenticationService.refreshToken(request.getRefreshToken()));
   }
 }
