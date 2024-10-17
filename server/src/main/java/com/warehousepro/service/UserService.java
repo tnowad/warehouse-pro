@@ -10,7 +10,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestBody;
 import java.util.List;
 
 @Service
@@ -24,7 +23,7 @@ public class UserService {
 
   public UserResponse createUser(CreateUserRequest request) {
 
-    if (userRepository.existsByUsername(request.getUsername())) {
+    if (userRepository.existsByEmail(request.getEmail())) {
       throw new RuntimeException("User exists");
     }
 

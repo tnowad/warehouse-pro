@@ -5,6 +5,7 @@ import com.nimbusds.jose.crypto.MACSigner;
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.warehousepro.dto.request.auth.LoginRequest;
 import com.warehousepro.dto.response.auth.LoginResponse;
+import com.warehousepro.dto.response.auth.TokensResponse;
 import com.warehousepro.entity.User;
 import com.warehousepro.mapstruct.UserMapper;
 import com.warehousepro.repository.UserRepository;
@@ -34,35 +35,60 @@ public class AuthenticationService {
   @Value("${jwt.signerKey}")
   protected String SIGNER_KEY;
 
-  public LoginResponse authenticate(LoginRequest loginRequest) throws JOSEException {
+  public User authenticate(String email, String password) {
+    User user = userRepository.findByEmail(email).orElseThrow(() -> {
+      log.warn("User not found for email: {}", email);
+      throw new Error("User not found");
+    });
 
-    var user =
-        userRepository.findByUsername(loginRequest.getEmail()).orElseThrow(RuntimeException::new);
-    boolean authenticated = passwordEncoder.matches(loginRequest.getPassword(), user.getPassword());
+    if (!passwordEncoder.matches(password, user.getPassword())) {
+      log.warn("Password mismatch for email: {}", email);
+      throw new Error("Password mismatch");
+    }
 
-    if (!authenticated)
-      throw new RuntimeException("Unauthenticated");
-
-    var token = generateToken(user);
-
-    return LoginResponse.builder().token(token).user(userMapper.toUserResponse(user)).build();
+    return user;
   }
 
-  private String generateToken(User user) throws JOSEException {
+  public LoginResponse login(LoginRequest loginRequest) {
+    try {
+      User user = authenticate(loginRequest.getEmail(), loginRequest.getPassword());
+      String accessToken = generateAccessToken(user);
+      String refreshToken = generateRefreshToken(user);
+
+      return LoginResponse.builder().user(userMapper.toUserResponse(user))
+          .tokens(
+              TokensResponse.builder().accessToken(accessToken).refreshToken(refreshToken).build())
+          .build();
+
+    } catch (JOSEException e) {
+      throw new RuntimeException("Error while generating token");
+    } catch (RuntimeException e) {
+      throw new RuntimeException("Error while authenticating user");
+    }
+  }
+
+  private String generateAccessToken(User user) throws JOSEException {
+    return generateToken(user, 5 * 60);
+  }
+
+  private String generateRefreshToken(User user) throws JOSEException {
+    return generateToken(user, 30 * 24 * 60 * 60);
+  }
+
+  private String generateToken(User user, long expirationInSeconds) throws JOSEException {
     JWSHeader jwsHeader = new JWSHeader(JWSAlgorithm.HS512);
 
     JWTClaimsSet jwtClaimsSet =
         new JWTClaimsSet.Builder().subject(user.getUsername()).issueTime(new Date())
-            .expirationTime(new Date(Instant.now().plus(3600, ChronoUnit.SECONDS).toEpochMilli()))
+            .expirationTime(new Date(
+                Instant.now().plus(expirationInSeconds, ChronoUnit.SECONDS).toEpochMilli()))
             .build();
 
     Payload payload = new Payload(jwtClaimsSet.toJSONObject());
 
     JWSObject jwsObject = new JWSObject(jwsHeader, payload);
-
     jwsObject.sign(new MACSigner(SIGNER_KEY.getBytes()));
 
     return jwsObject.serialize();
   }
-
 }
