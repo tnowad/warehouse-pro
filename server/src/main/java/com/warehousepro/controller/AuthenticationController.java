@@ -14,6 +14,7 @@ import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -25,26 +26,23 @@ public class AuthenticationController {
   AuthenticationService authenticationService;
 
   @Operation(summary = "Login")
-  @ApiResponses(value = {
-      @ApiResponse(responseCode = "200", description = "Login success",
-          content = {@Content(mediaType = "application/json",
-              schema = @Schema(implementation = LoginResponse.class))}),
-      @ApiResponse(responseCode = "400", description = "Bad request",
-          content = {@Content(mediaType = "application/json",
-              schema = @Schema(implementation = Error.class,
-                  example = "Invalid username or password"))}),
-
-      @ApiResponse(responseCode = "404", description = "User not found",
-          content = {@Content(mediaType = "application/json",
-              schema = @Schema(implementation = ValidationErrorResponse.class,
-                  example = "User not found"))})})
+  @ApiResponses(
+      value = {
+          @ApiResponse(responseCode = "200", description = "Login success",
+              content = {@Content(mediaType = "application/json",
+                  schema = @Schema(implementation = LoginResponse.class))}),
+          @ApiResponse(responseCode = "400", description = "Bad request",
+              content = {
+                  @Content(mediaType = "application/json",
+                      schema = @Schema(implementation = Error.class,
+                          example = "Invalid username or password"))}),
+          @ApiResponse(responseCode = "404", description = "User not found",
+              content = {@Content(mediaType = "application/json",
+                  schema = @Schema(implementation = ValidationErrorResponse.class,
+                      example = "User not found"))})})
   @PostMapping("/login")
-  public LoginResponse authenticate(@RequestBody @Valid @Parameter(
+  public ResponseEntity<LoginResponse> authenticate(@RequestBody @Valid @Parameter(
       description = "Login request body", required = true) LoginRequest request) {
-    try {
-      return authenticationService.login(request);
-    } catch (Exception e) {
-      throw e;
-    }
+    return ResponseEntity.ok(authenticationService.login(request));
   }
 }

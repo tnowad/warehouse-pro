@@ -3,6 +3,7 @@ package com.warehousepro.service;
 import com.warehousepro.dto.request.auth.CreateUserRequest;
 import com.warehousepro.dto.response.auth.UserResponse;
 import com.warehousepro.entity.User;
+import com.warehousepro.exception.ValidationException;
 import com.warehousepro.mapstruct.UserMapper;
 import com.warehousepro.repository.UserRepository;
 import lombok.AccessLevel;
@@ -11,6 +12,7 @@ import lombok.experimental.FieldDefaults;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import java.util.List;
+import java.util.Map;
 
 @Service
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
@@ -19,20 +21,18 @@ public class UserService {
 
   UserRepository userRepository;
   UserMapper userMapper;
-  PasswordEncoder passwordEncoder;
+  final PasswordEncoder passwordEncoder;
 
   public UserResponse createUser(CreateUserRequest request) {
-
-    if (userRepository.existsByEmail(request.getEmail())) {
-      throw new RuntimeException("User exists");
+    if (userRepository.findByEmail(request.getEmail()).isPresent()) {
+      throw new ValidationException(Map.of("email", List.of("Email has been used")),
+          "User already exists");
     }
 
-    User user = userMapper.toUser(request);
-    user.setPassword(passwordEncoder.encode(request.getPassword()));
+    User user = User.builder().email(request.getEmail()).name(request.getName())
+        .password(passwordEncoder.encode(request.getPassword())).build();
 
-    userRepository.save(user);
-
-    return userMapper.toUserResponse(user);
+    return userMapper.toUserResponse(userRepository.save(user));
   }
 
   public UserResponse getUser(String id) {

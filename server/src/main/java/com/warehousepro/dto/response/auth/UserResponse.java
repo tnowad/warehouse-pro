@@ -3,7 +3,6 @@ package com.warehousepro.dto.response.auth;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 import java.time.LocalDate;
-import java.util.Set;
 
 @Data
 @NoArgsConstructor
@@ -12,9 +11,8 @@ import java.util.Set;
 @Builder
 public class UserResponse {
   String id;
-  String username;
   String email;
+  String name;
   LocalDate createdAt;
   LocalDate updatedAt;
-  Set<RoleResponse> roles;
 }
