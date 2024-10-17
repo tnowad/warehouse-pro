@@ -17,6 +17,7 @@ import lombok.extern.slf4j.Slf4j;
 public class GlobalExceptionHandler {
   @ExceptionHandler(RuntimeException.class)
   public ResponseEntity<ErrorResponse> handleGenericException(Exception ex) {
+    log.error("An error occurred", ex);
     return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
         .body(new ErrorResponse("An error occurred. Please try again later"));
   }
