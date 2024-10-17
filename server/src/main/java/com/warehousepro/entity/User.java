@@ -12,24 +12,30 @@ import java.util.Set;
 @AllArgsConstructor
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
-@Table(name = "users")
+@Table(name = "users", uniqueConstraints = {@UniqueConstraint(columnNames = "email")})
 public class User {
 
   @Id
   @GeneratedValue(strategy = GenerationType.UUID)
   String id;
 
-  String username;
-
-  String password;
-
+  @Column(name = "email", nullable = false, unique = true)
   String email;
 
+  @Column(name = "name", nullable = false)
+  String name;
+
+  @Column(name = "password", nullable = false)
+  String password;
+
+  @Column(name = "created_at", nullable = false)
   LocalDate createdAt;
 
+  @Column(name = "updated_at")
   LocalDate updatedAt;
 
-  @ManyToMany
+  @ManyToMany(fetch = FetchType.EAGER)
+  @JoinTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"),
+      inverseJoinColumns = @JoinColumn(name = "role_id"))
   Set<Role> roles;
-
 }

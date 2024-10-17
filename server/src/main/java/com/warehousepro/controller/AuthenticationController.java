@@ -2,6 +2,7 @@ package com.warehousepro.controller;
 
 import com.warehousepro.dto.request.auth.LoginRequest;
 import com.warehousepro.dto.response.auth.LoginResponse;
+import com.warehousepro.dto.response.error.ValidationErrorResponse;
 import com.warehousepro.service.AuthenticationService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -35,15 +36,15 @@ public class AuthenticationController {
 
       @ApiResponse(responseCode = "404", description = "User not found",
           content = {@Content(mediaType = "application/json",
-              schema = @Schema(implementation = Error.class, example = "User not found"))})})
+              schema = @Schema(implementation = ValidationErrorResponse.class,
+                  example = "User not found"))})})
   @PostMapping("/login")
   public LoginResponse authenticate(@RequestBody @Valid @Parameter(
       description = "Login request body", required = true) LoginRequest request) {
     try {
-      var loginResponse = authenticationService.login(request);
-      return loginResponse;
+      return authenticationService.login(request);
     } catch (Exception e) {
-      throw new RuntimeException("Error while generating token");
+      throw e;
     }
   }
 }

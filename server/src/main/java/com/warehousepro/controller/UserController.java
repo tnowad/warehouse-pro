@@ -24,7 +24,6 @@ import java.util.List;
 public class UserController {
 
   UserService userService;
-  UserMapper userMapper;
 
   @PostMapping
   UserResponse create(@RequestBody CreateUserRequest request) {
@@ -42,7 +41,6 @@ public class UserController {
       @ApiResponse(responseCode = "400", description = "Invalid id supplied",
           content = {@Content(mediaType = "application/json",
               schema = @Schema(implementation = Error.class))}),
-
       @ApiResponse(responseCode = "404", description = "User not found",
           content = {@Content(mediaType = "application/json",
               schema = @Schema(implementation = Error.class))})})

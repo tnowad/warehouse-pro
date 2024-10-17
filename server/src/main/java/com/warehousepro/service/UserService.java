@@ -44,4 +44,9 @@ public class UserService {
   public List<UserResponse> getUsers() {
     return userRepository.findAll().stream().map(userMapper::toUserResponse).toList();
   }
+
+  public User getUserByEmail(String email) {
+    return userRepository.findByEmail(email).orElse(null);
+  }
+
 }

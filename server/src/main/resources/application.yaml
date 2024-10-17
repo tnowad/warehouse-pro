@@ -1,8 +1,13 @@
 spring:
   jpa:
     hibernate:
-      ddl-auto: update
-    show-sql: true
+      ddl-auto: ${JPA_HIBERNATE_DDL_AUTO:update}
+    show-sql: ${JPA_SHOW_SQL:true}
 
 jwt:
-  signerKey: ${signer_key}
+  access:
+    secret: ${JWT_ACCESS_SECRET:your-access-secret}
+    expiration: ${JWT_ACCESS_EXPIRATION:3600000}
+  refresh:
+    secret: ${JWT_REFRESH_SECRET:your-refresh-secret}
+    expiration: ${JWT_REFRESH_EXPIRATION:86400000}
