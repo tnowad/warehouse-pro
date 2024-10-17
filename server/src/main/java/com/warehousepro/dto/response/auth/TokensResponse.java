@@ -8,11 +8,11 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
 
 @Data
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class LoginResponse {
-  UserResponse user;
-  TokensResponse tokens;
+public class TokensResponse {
+  String accessToken;
+  String refreshToken;
 }

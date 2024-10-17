@@ -1,68 +1,59 @@
 package com.warehousepro.service;
 
-import com.nimbusds.jose.*;
-import com.nimbusds.jose.crypto.MACSigner;
-import com.nimbusds.jwt.JWTClaimsSet;
-import com.warehousepro.dto.request.auth.LoginRequest;
-import com.warehousepro.dto.response.auth.LoginResponse;
-import com.warehousepro.entity.User;
-import com.warehousepro.mapstruct.UserMapper;
-import com.warehousepro.repository.UserRepository;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import lombok.experimental.NonFinal;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.crypto.password.PasswordEncoder;
+import java.io.UnsupportedEncodingException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
-import java.time.Instant;
-import java.time.temporal.ChronoUnit;
-import java.util.Date;
+import com.warehousepro.dto.request.auth.LoginRequest;
+import com.warehousepro.dto.response.auth.LoginResponse;
+import com.warehousepro.dto.response.auth.TokensResponse;
+import com.warehousepro.exception.EmailNotFoundException;
+import com.warehousepro.exception.IncorrectPasswordException;
+import com.warehousepro.exception.TokenGenerationException;
+import com.warehousepro.mapstruct.UserMapper;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class AuthenticationService {
-
-  UserRepository userRepository;
-  PasswordEncoder passwordEncoder;
+  private final JwtService jwtService;
+  private final UserService userService;
+  private final BCryptPasswordEncoder passwordEncoder;
   UserMapper userMapper;
 
-  @NonFinal
-  @Value("${jwt.signerKey}")
-  protected String SIGNER_KEY;
+  public LoginResponse login(LoginRequest request) {
+    try {
+      var user = userService.getUserByEmail(request.getEmail());
 
-  public LoginResponse authenticate(LoginRequest loginRequest) throws JOSEException {
+      if (user == null) {
+        throw new EmailNotFoundException("User not found");
+      }
 
-    var user =
-        userRepository.findByUsername(loginRequest.getEmail()).orElseThrow(RuntimeException::new);
-    boolean authenticated = passwordEncoder.matches(loginRequest.getPassword(), user.getPassword());
+      if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
+        throw new IncorrectPasswordException("Incorrect password");
+      }
 
-    if (!authenticated)
-      throw new RuntimeException("Unauthenticated");
+      String refreshToken;
+      String accessToken;
 
-    var token = generateToken(user);
+      try {
+        refreshToken = jwtService.generateRefreshToken(user.getId());
+        accessToken = jwtService.generateAccessToken(user.getId());
+      } catch (UnsupportedEncodingException e) {
+        log.error("Unsupported encoding during token generation for user ID {}: {}", user.getId(),
+            e.getMessage());
+        throw new TokenGenerationException("Error generating token. Please try again later.", e);
+      }
 
-    return LoginResponse.builder().token(token).user(userMapper.toUserResponse(user)).build();
+      return LoginResponse.builder().user(userMapper.toUserResponse(user))
+          .tokens(new TokensResponse(accessToken, refreshToken)).build();
+    } catch (EmailNotFoundException | IncorrectPasswordException e) {
+      log.warn("Error while logging in: {}", e.getMessage());
+      throw e;
+    }
   }
-
-  private String generateToken(User user) throws JOSEException {
-    JWSHeader jwsHeader = new JWSHeader(JWSAlgorithm.HS512);
-
-    JWTClaimsSet jwtClaimsSet =
-        new JWTClaimsSet.Builder().subject(user.getUsername()).issueTime(new Date())
-            .expirationTime(new Date(Instant.now().plus(3600, ChronoUnit.SECONDS).toEpochMilli()))
-            .build();
-
-    Payload payload = new Payload(jwtClaimsSet.toJSONObject());
-
-    JWSObject jwsObject = new JWSObject(jwsHeader, payload);
-
-    jwsObject.sign(new MACSigner(SIGNER_KEY.getBytes()));
-
-    return jwsObject.serialize();
-  }
-
 }

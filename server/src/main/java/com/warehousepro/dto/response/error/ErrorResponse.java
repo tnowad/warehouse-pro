@@ -1,18 +1,15 @@
-package com.warehousepro.dto.response.auth;
+package com.warehousepro.dto.response.error;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
 
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
-@Builder
+@NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class LoginResponse {
-  UserResponse user;
-  TokensResponse tokens;
+public class ErrorResponse {
+  String message;
 }
