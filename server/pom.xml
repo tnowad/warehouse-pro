@@ -137,6 +137,11 @@
       <groupId>com.auth0</groupId>
       <artifactId>java-jwt</artifactId>
       <version>3.3.0</version>
+      </dependency>
+    <dependency>
+      <groupId>net.datafaker</groupId>
+      <artifactId>datafaker</artifactId>
+      <version>2.4.0</version>
     </dependency>
   </dependencies>
 
