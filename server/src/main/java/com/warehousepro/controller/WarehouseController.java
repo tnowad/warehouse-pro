@@ -8,7 +8,7 @@ import com.warehousepro.dto.response.Pagination;
 import com.warehousepro.dto.response.SortField;
 import com.warehousepro.dto.response.warehouse.*;
 import com.warehousepro.mapstruct.WareHouseMapper;
-import com.warehousepro.service.WareHouseService;
+import com.warehousepro.service.WarehouseService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -22,9 +22,9 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @RequestMapping("/warehouses")
-public class WareHouseController {
+public class WarehouseController {
 
-  WareHouseService warehouseService;
+  WarehouseService warehouseService;
 
   WareHouseMapper warehouseMapper;
 
@@ -40,7 +40,7 @@ public class WareHouseController {
 
     List<WareHouseResponseDto> items =
         warehouseService.filterWarehouses(limit, offset, filtersBy, sortBy, orderBy).stream()
-            .map(warehouseMapper::toWareHouseResponse).toList();
+            .map(warehouseMapper::toWarehouseResponse).toList();
     int totalCount = items.size();
     int totalPageCount = (int) Math.ceil((double) totalCount / limit);
     Pagination pagination = new Pagination(offset, limit, Math.max(offset - limit, 0),
@@ -53,25 +53,25 @@ public class WareHouseController {
   }
 
   @GetMapping("/{id}")
-  public WareHouseResponseDto getWarehouse(@PathVariable("id") int id) {
-    return warehouseMapper.toWareHouseResponse(warehouseService.getWareHouse(id));
+  public WareHouseResponseDto getWarehouse(@PathVariable("id") String id) {
+    return warehouseMapper.toWarehouseResponse(warehouseService.getWareHouse(id));
   }
 
   @PostMapping
   public WareHouseResponseDto createWarehouse(
       @RequestBody CreateWareHouseRequest warehouseRequest) {
-    return warehouseMapper.toWareHouseResponse(warehouseService.createWareHouse(warehouseRequest));
+    return warehouseMapper.toWarehouseResponse(warehouseService.createWareHouse(warehouseRequest));
   }
 
   @PutMapping("/{id}")
-  public WareHouseResponseDto updateWarehouse(@PathVariable("id") int id,
+  public WareHouseResponseDto updateWarehouse(@PathVariable("id") String id,
       @RequestBody UpdateWarehouseRequestDto warehouseRequest) {
     return warehouseMapper
-        .toWareHouseResponse(warehouseService.updateWareHouse(id, warehouseRequest));
+        .toWarehouseResponse(warehouseService.updateWareHouse(id, warehouseRequest));
   }
 
   @DeleteMapping("/{id}")
-  public ResponseEntity<Void> deleteWarehouse(@PathVariable("id") int id) {
+  public ResponseEntity<Void> deleteWarehouse(@PathVariable("id") String id) {
     warehouseService.deleteWareHouse(id);
     return ResponseEntity.noContent().build();
   }
