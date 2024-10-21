@@ -1,19 +1,29 @@
-import { useMutation } from "@tanstack/react-query";
+import { getWarehouseList } from "@/lib/api/endpoints/get-warehouse-list";
+import {
+  GetWarehouseListErrorResponseSchema,
+  GetWarehouseListQueryParams,
+  GetWarehouseListResponse,
+} from "@/lib/api/schemas/get-warehouse-list-schema";
+import { useQuery } from "@tanstack/react-query";
 
-export function useGetWarehouseListQuery() {
-  return useMutation({
-    mutationKey: ["getWarehouseList"],
-    mutationFn: async () => {
-      return {
-        items: [
-          { id: "1", name: "Warehouse 1" },
-          { id: "2", name: "Warehouse 2" },
-          { id: "3", name: "Warehouse 3" },
-          { id: "4", name: "Warehouse 4" },
-          { id: "5", name: "Warehouse 5" },
-        ],
-      };
-    },
+export const getEndpointQueryKey = <T, R extends string>(
+  params: T,
+  endpoint: R,
+) => [endpoint, ...(params ? [params] : [])] as const;
+
+export function useGetWarehouseListQuery({
+  params,
+}: {
+  params: GetWarehouseListQueryParams;
+}) {
+  const queryKey = getEndpointQueryKey(params, "getWarehouseList");
+  return useQuery<
+    GetWarehouseListQueryParams,
+    GetWarehouseListErrorResponseSchema,
+    GetWarehouseListResponse
+  >({
+    queryKey,
+    queryFn: () => getWarehouseList(params),
   });
 }
 export function useGetWarehouseDetailsQuery() {}

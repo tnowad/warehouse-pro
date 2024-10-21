@@ -23,6 +23,17 @@ export const apiClient = {
       config,
     );
   },
+
+  get: <TResponse = unknown, TQueryParams = unknown>(
+    url: string,
+    params?: TQueryParams,
+    config?: AxiosRequestConfig<TQueryParams>,
+  ): Promise<AxiosResponse<TResponse, TQueryParams>> => {
+    return client.get<TResponse, AxiosResponse<TResponse, TQueryParams>>(url, {
+      params,
+      ...config,
+    });
+  },
 };
 
 client.interceptors.request.use(
