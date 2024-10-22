@@ -4,26 +4,30 @@ import {
   GetWarehouseListQueryParams,
   GetWarehouseListResponse,
 } from "@/lib/api/schemas/get-warehouse-list-schema";
-import { useQuery } from "@tanstack/react-query";
+import {
+  keepPreviousData,
+  useQuery,
+  UseQueryResult,
+} from "@tanstack/react-query";
 
 export const getEndpointQueryKey = <T, R extends string>(
   params: T,
   endpoint: R,
 ) => [endpoint, ...(params ? [params] : [])] as const;
 
-export function useGetWarehouseListQuery({
+export function useGetWarehouseListQuery<T>({
   params,
 }: {
   params: GetWarehouseListQueryParams;
-}) {
+}): UseQueryResult<
+  GetWarehouseListResponse,
+  GetWarehouseListErrorResponseSchema
+> {
   const queryKey = getEndpointQueryKey(params, "getWarehouseList");
-  return useQuery<
-    GetWarehouseListQueryParams,
-    GetWarehouseListErrorResponseSchema,
-    GetWarehouseListResponse
-  >({
+  return useQuery({
     queryKey,
     queryFn: () => getWarehouseList(params),
+    placeholderData: keepPreviousData,
   });
 }
 export function useGetWarehouseDetailsQuery() {}

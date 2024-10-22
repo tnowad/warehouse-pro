@@ -60,7 +60,7 @@ client.interceptors.request.use(
         >(error)
       ) {
         switch (error.response?.data.type) {
-          case "Unauthorized":
+          case "UnauthorizedError":
           case "ValidationError":
             useTokenStore.getState().actions.clearTokens();
             break;

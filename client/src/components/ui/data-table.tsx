@@ -1,16 +1,6 @@
 "use client";
 
-import {
-  ColumnDef,
-  ColumnFiltersState,
-  flexRender,
-  getCoreRowModel,
-  getFilteredRowModel,
-  getPaginationRowModel,
-  getSortedRowModel,
-  SortingState,
-  useReactTable,
-} from "@tanstack/react-table";
+import { ColumnDef, flexRender, useReactTable } from "@tanstack/react-table";
 
 import {
   Table,
@@ -29,35 +19,17 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "./pagination";
-import { useState } from "react";
+import { DataTablePagination } from "./data-table-pagination";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
-  data: TData[];
+  table: ReturnType<typeof useReactTable<TData>>;
 }
 
 export function DataTable<TData, TValue>({
   columns,
-  data,
+  table,
 }: DataTableProps<TData, TValue>) {
-  const [sorting, setSorting] = useState<SortingState>([]);
-  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
-
-  const table = useReactTable({
-    data,
-    columns,
-    getCoreRowModel: getCoreRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
-    onSortingChange: setSorting,
-    getSortedRowModel: getSortedRowModel(),
-    onColumnFiltersChange: setColumnFilters,
-    getFilteredRowModel: getFilteredRowModel(),
-    state: {
-      sorting,
-      columnFilters,
-    },
-  });
-
   return (
     <div>
       <div className="rounded-md border">
@@ -111,25 +83,12 @@ export function DataTable<TData, TValue>({
         </Table>
       </div>
 
-      <Pagination>
-        <PaginationContent>
-          <PaginationItem>
-            <PaginationPrevious
-              isActive={table.getCanPreviousPage()}
-              href="#"
-            />
-          </PaginationItem>
-          <PaginationItem>
-            <PaginationLink href="#">1</PaginationLink>
-          </PaginationItem>
-          <PaginationItem>
-            <PaginationEllipsis />
-          </PaginationItem>
-          <PaginationItem>
-            <PaginationNext isActive={table.getCanNextPage()} href="#" />
-          </PaginationItem>
-        </PaginationContent>
-      </Pagination>
+      <DataTablePagination
+        totalPages={table.getPageCount()}
+        currentPage={table.getState().pagination.pageIndex}
+        onPageChange={(pageNumber) => table.setPageIndex(pageNumber)}
+        showPreviousNext={true}
+      />
     </div>
   );
 }
