@@ -38,10 +38,11 @@ public class WarehouseController {
             && !entry.getKey().equals("sortBy") && !entry.getKey().equals("orderBy"))
         .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 
+    var page = warehouseService.filterWarehouses(limit, offset, filtersBy, sortBy, orderBy);
+
     List<WareHouseResponseDto> items =
-        warehouseService.filterWarehouses(limit, offset, filtersBy, sortBy, orderBy).stream()
-            .map(warehouseMapper::toWarehouseResponse).toList();
-    int totalCount = items.size();
+        page.stream().map(warehouseMapper::toWarehouseResponse).toList();
+    int totalCount = (int) page.getTotalElements();
     int totalPageCount = (int) Math.ceil((double) totalCount / limit);
     Pagination pagination = new Pagination(offset, limit, Math.max(offset - limit, 0),
         Math.min(offset + limit, totalCount), offset / limit + 1, totalPageCount, totalCount);
