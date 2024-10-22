@@ -1,4 +1,5 @@
 import { getWarehouseList } from "@/lib/api/endpoints/get-warehouse-list";
+import { postWarehouseCreate } from "@/lib/api/endpoints/post-warehouse-create";
 import {
   GetWarehouseListErrorResponseSchema,
   GetWarehouseListQueryParams,
@@ -6,7 +7,9 @@ import {
 } from "@/lib/api/schemas/get-warehouse-list-schema";
 import {
   keepPreviousData,
+  useMutation,
   useQuery,
+  useQueryClient,
   UseQueryResult,
 } from "@tanstack/react-query";
 
@@ -31,6 +34,20 @@ export function useGetWarehouseListQuery<T>({
   });
 }
 export function useGetWarehouseDetailsQuery() {}
-export function useCreateWarehouseMutation() {}
+export function useCreateWarehouseMutation() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationKey: ["createWarehouse"],
+    mutationFn: (data) => postWarehouseCreate(data),
+    onSuccess(data) {
+      queryClient.invalidateQueries({
+        predicate: (query) => {
+          return query.queryKey[0] === "getWarehouseList";
+        },
+      });
+    },
+  });
+}
 export function useUpdateWarehouseMutation() {}
 export function useDeleteWarehouseMutation() {}

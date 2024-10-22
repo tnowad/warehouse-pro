@@ -7,14 +7,41 @@ import {
   CardContent,
   CardFooter,
 } from "@/components/ui/card";
-import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import {
+  type CreateWarehouseRequest,
+  createWarehouseRequestSchema,
+} from "@/lib/api/schemas/create-warehouse-request-schema";
 
-export default function Component() {
+export default function Page() {
+  const createWarehouseForm = useForm<CreateWarehouseRequest>({
+    resolver: zodResolver(createWarehouseRequestSchema),
+    defaultValues: {
+      name: "",
+      capacity: 0,
+      location: "",
+    },
+  });
+
+  const onSubmit = createWarehouseForm.handleSubmit((values) => {
+    console.log(values);
+  });
+
   return (
-    <Card className="w-full max-w-2xl mx-auto">
+    <Card className="w-full mx-auto">
       <CardHeader>
         <CardTitle>Create New Warehouse</CardTitle>
         <CardDescription>
@@ -23,54 +50,65 @@ export default function Component() {
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <form className="grid gap-4">
-          <div className="grid grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <Label htmlFor="name">Warehouse Name</Label>
-              <Input id="name" placeholder="Enter warehouse name" />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="contact">Contact Person</Label>
-              <Input id="contact" placeholder="Enter contact name" />
-            </div>
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="address">Address</Label>
-            <Textarea
-              id="address"
-              placeholder="Enter warehouse address"
-              rows={3}
+        <Form {...createWarehouseForm}>
+          <form onSubmit={onSubmit}>
+            <FormField
+              control={createWarehouseForm.control}
+              name="name"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Name</FormLabel>
+                  <FormControl>
+                    <Input placeholder="Warehouse" {...field} />
+                  </FormControl>
+                  <FormDescription>The name of the warehouse.</FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
             />
-          </div>
-          <div className="grid grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <Label htmlFor="phone">Phone</Label>
-              <Input id="phone" placeholder="Enter phone number" type="tel" />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="email">Email</Label>
-              <Input
-                id="email"
-                placeholder="Enter email address"
-                type="email"
-              />
-            </div>
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="notes">Additional Notes</Label>
-            <Textarea
-              id="notes"
-              placeholder="Enter any additional details"
-              rows={3}
+
+            <FormField
+              control={createWarehouseForm.control}
+              name="capacity"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Capacity</FormLabel>
+                  <FormControl>
+                    <Input type="number" placeholder="100" {...field} />
+                  </FormControl>
+                  <FormDescription>
+                    The maximum capacity of the warehouse.
+                  </FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
             />
-          </div>
-        </form>
+
+            <FormField
+              control={createWarehouseForm.control}
+              name="location"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Location</FormLabel>
+                  <FormControl>
+                    <Input placeholder="New York" {...field} />
+                  </FormControl>
+                  <FormDescription>
+                    The location of the warehouse.
+                  </FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            {/* TODO: Add query list users to assign role */}
+            <Button type="submit" className="mt-4">
+              Create Warehouse
+            </Button>
+          </form>
+        </Form>
       </CardContent>
-      <CardFooter>
-        <Button type="submit" className="ml-auto">
-          Create Warehouse
-        </Button>
-      </CardFooter>
+      <CardFooter></CardFooter>
     </Card>
   );
 }

@@ -22,11 +22,14 @@ import {
   DropdownMenuItem,
   DropdownMenuContent,
   DropdownMenuTrigger,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
 import { EllipsisIcon } from "lucide-react";
 import Link from "next/link";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { DataTableColumnHeader } from "@/components/ui/data-table-column-header";
 
 const columns: ColumnDef<WarehouseResponseSchema>[] = [
   {
@@ -55,23 +58,33 @@ const columns: ColumnDef<WarehouseResponseSchema>[] = [
   },
   {
     accessorKey: "name",
-    header: "Name",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Name" />
+    ),
   },
   {
     accessorKey: "location",
-    header: "Location",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Location" />
+    ),
   },
   {
     accessorKey: "capacity",
-    header: "Capacity",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Capacity" />
+    ),
   },
   {
     accessorKey: "createdAt",
-    header: "Created At",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Created At" />
+    ),
   },
   {
     accessorKey: "updatedAt",
-    header: "Updated At",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Updated At" />
+    ),
   },
   {
     accessorKey: "actions",
@@ -84,13 +97,21 @@ const columns: ColumnDef<WarehouseResponseSchema>[] = [
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent>
-          <DropdownMenuItem asChild>
-            <Link href={`/dashboard/warehouses/${row.original.id}`}>View</Link>
+          <DropdownMenuLabel>Actions</DropdownMenuLabel>
+          <DropdownMenuItem
+            onClick={() => navigator.clipboard.writeText(row.original.id)}
+          >
+            Copy warehouse ID
           </DropdownMenuItem>
-
+          <DropdownMenuSeparator />
+          <DropdownMenuItem asChild>
+            <Link href={`/dashboard/warehouses/${row.original.id}`}>
+              View details
+            </Link>
+          </DropdownMenuItem>
           <DropdownMenuItem asChild>
             <Link href={`/dashboard/warehouses/${row.original.id}/edit`}>
-              Edit
+              Edit information
             </Link>
           </DropdownMenuItem>
         </DropdownMenuContent>
@@ -138,12 +159,12 @@ export default function Page() {
     <Card>
       <CardHeader>
         <h2 className="text-lg font-semibold">Warehouses</h2>
-        <Link href="/dashboard/warehouses/create">
+        <Link href="/warehouses/new">
           <Button>Create Warehouse</Button>
         </Link>
       </CardHeader>
-
       <CardContent>
+        <div></div>
         <DataTable table={table} />
       </CardContent>
     </Card>
