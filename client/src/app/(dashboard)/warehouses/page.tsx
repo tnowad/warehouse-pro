@@ -3,7 +3,6 @@
 import { useState } from "react";
 
 import { useGetWarehouseListQuery } from "@/hooks/apis/warehouse";
-import { GetWarehouseListQueryParams } from "@/lib/api/schemas/get-warehouse-list-schema";
 import { DataTable } from "@/components/ui/data-table";
 import {
   ColumnDef,
@@ -27,6 +26,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { EllipsisIcon } from "lucide-react";
 import Link from "next/link";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
 
 const columns: ColumnDef<WarehouseResponseSchema>[] = [
   {
@@ -102,21 +102,18 @@ const columns: ColumnDef<WarehouseResponseSchema>[] = [
 ];
 
 export default function Page() {
-  const [getWarehouseListQueryParams, setGetWarehouseListQueryParams] =
-    useState<GetWarehouseListQueryParams>({
-      limit: 10,
-      offset: 0,
-    });
-
-  const getWarehouseListQuery = useGetWarehouseListQuery({
-    params: getWarehouseListQueryParams,
-  });
-
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [pagination, setPagination] = useState<PaginationState>({
     pageIndex: 0,
     pageSize: 10,
+  });
+
+  const getWarehouseListQuery = useGetWarehouseListQuery({
+    params: {
+      limit: pagination.pageSize,
+      offset: pagination.pageIndex * pagination.pageSize,
+    },
   });
 
   const table = useReactTable({
@@ -129,6 +126,7 @@ export default function Page() {
     getFilteredRowModel: getFilteredRowModel(),
     onPaginationChange: setPagination,
     manualPagination: true,
+    rowCount: getWarehouseListQuery.data?.metadata.pagination.totalCount,
     state: {
       pagination,
       sorting,
@@ -136,5 +134,18 @@ export default function Page() {
     },
   });
 
-  return <DataTable table={table} columns={columns} />;
+  return (
+    <Card>
+      <CardHeader>
+        <h2 className="text-lg font-semibold">Warehouses</h2>
+        <Link href="/dashboard/warehouses/create">
+          <Button>Create Warehouse</Button>
+        </Link>
+      </CardHeader>
+
+      <CardContent>
+        <DataTable table={table} />
+      </CardContent>
+    </Card>
+  );
 }
