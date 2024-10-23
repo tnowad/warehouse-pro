@@ -76,8 +76,6 @@ public class WarehouseService {
   }
 
   public Warehouse createWareHouse(CreateWareHouseRequest warehouseRequest) {
-    if (warehouseRepository.existsById(warehouseRequest.getId()))
-      throw new RuntimeException("WarehouseId was existed"); // not supported Exception
     return warehouseRepository.save(warehouseMapper.toWarehouse(warehouseRequest));
   }
 

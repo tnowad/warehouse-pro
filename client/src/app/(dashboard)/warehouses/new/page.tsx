@@ -10,7 +10,6 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useForm } from "react-hook-form";
-import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
   Form,
@@ -25,8 +24,13 @@ import {
   type CreateWarehouseRequest,
   createWarehouseRequestSchema,
 } from "@/lib/api/schemas/create-warehouse-request-schema";
+import { useCreateWarehouseMutation } from "@/hooks/apis/warehouse";
+import { useToast } from "@/hooks/use-toast";
+import { useRouter } from "next/navigation";
 
 export default function Page() {
+  const { toast } = useToast();
+  const router = useRouter();
   const createWarehouseForm = useForm<CreateWarehouseRequest>({
     resolver: zodResolver(createWarehouseRequestSchema),
     defaultValues: {
@@ -35,9 +39,25 @@ export default function Page() {
       location: "",
     },
   });
+  const createWarehouseMutation = useCreateWarehouseMutation();
 
   const onSubmit = createWarehouseForm.handleSubmit((values) => {
-    console.log(values);
+    createWarehouseMutation.mutate(values, {
+      onSuccess(data) {
+        createWarehouseForm.reset();
+        toast({
+          title: "Warehouse Created",
+          description: "The warehouse has been created successfully.",
+        });
+        router.push(`/warehouses/${data.id}`);
+      },
+      onError(error) {
+        toast({
+          title: "Error",
+          description: error.message,
+        });
+      },
+    });
   });
 
   return (

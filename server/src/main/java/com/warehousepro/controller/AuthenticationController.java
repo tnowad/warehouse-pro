@@ -4,6 +4,7 @@ import com.warehousepro.dto.request.auth.LoginRequest;
 import com.warehousepro.dto.request.auth.RefreshTokenRequest;
 import com.warehousepro.dto.response.auth.LoginResponse;
 import com.warehousepro.dto.response.auth.RefreshTokenResponse;
+import com.warehousepro.dto.response.auth.UserResponse;
 import com.warehousepro.dto.response.error.ValidationErrorResponse;
 import com.warehousepro.service.AuthenticationService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -16,6 +17,7 @@ import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import java.util.Random;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -48,4 +50,17 @@ public class AuthenticationController {
       description = "Refresh token request body", required = true) RefreshTokenRequest request) {
     return ResponseEntity.ok(authenticationService.refreshToken(request.getRefreshToken()));
   }
+
+  @GetMapping("/current-user")
+  public ResponseEntity<UserResponse> currentUser(
+      @RequestHeader(required = false, name = "Authorization") String token) {
+    System.out.println("Token: " + token);
+    if (token == null) {
+      throw new RuntimeException("Unauthorized");
+    }
+
+    return ResponseEntity.ok(UserResponse.builder().id("0e8b3b3b-4b3b-4b3b-4b3b-4b3b4b3b4b3b")
+        .name("Admin").email("admin@warehouse-pro.com").build());
+  }
+
 }
