@@ -1,25 +1,24 @@
 "use client";
 import { Header } from "@/components/layout/header";
 import Sidebar from "@/components/layout/sidebar";
-import { useCurrentUser } from "@/hooks/use-current-user";
-import { useRouter } from "next/navigation";
+import { useGetCurrentUserQuery } from "@/hooks/apis/auth";
+import { useCurrentUserActions } from "@/hooks/use-current-user";
+import { redirect } from "next/navigation";
 
 export default function DashboardLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const router = useRouter();
-  const { currentUser, isLoading } = useCurrentUser();
+  const { data, isError, isLoading } = useGetCurrentUserQuery();
+  const { setCurrentUser } = useCurrentUserActions();
+  if (isLoading) return null;
 
-  if (isLoading) {
-    return null;
+  if (!data || isError) {
+    redirect("/login");
   }
 
-  if (!currentUser) {
-    router.push("/login");
-    return null;
-  }
+  setCurrentUser(data);
 
   return (
     <div className="flex">
