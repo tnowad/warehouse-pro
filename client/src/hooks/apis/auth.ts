@@ -20,7 +20,6 @@ import {
   GetCurrentUserRequestSchema,
   GetCurrentUserResponseSchema,
 } from "@/lib/api/schemas/get-current-user-schema";
-import Cookies from "js-cookie";
 
 export function useLoginMutation() {
   const queryClient = useQueryClient();
@@ -48,6 +47,7 @@ export function useLoginMutation() {
 
 export function useGetCurrentUserQuery() {
   const queryKey = ["current-user"];
+  const { getRefreshToken } = useTokenActions();
 
   return useQuery<
     GetCurrentUserRequestSchema,
@@ -60,11 +60,13 @@ export function useGetCurrentUserQuery() {
     staleTime: 1000 * 60 * 5,
     refetchOnWindowFocus: false,
     retry: false,
+    enabled: !!getRefreshToken(),
   });
 }
 
 export function useGetCurrentUserSuspenseQuery() {
   const queryKey = ["current-user"];
+  const { getRefreshToken } = useTokenActions();
 
   return useSuspenseQuery<
     GetCurrentUserRequestSchema,
@@ -73,7 +75,8 @@ export function useGetCurrentUserSuspenseQuery() {
     typeof queryKey
   >({
     queryKey,
-    queryFn: () => getCurrentUser(),
+    queryFn: () =>
+      getRefreshToken() ? getCurrentUser() : Promise.resolve(null),
     staleTime: 1000 * 60 * 5,
     retry: false,
   });

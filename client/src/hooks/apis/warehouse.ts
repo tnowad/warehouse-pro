@@ -1,5 +1,10 @@
+import { getWarehouseDetails } from "@/lib/api/endpoints/get-warehouse-details";
 import { getWarehouseList } from "@/lib/api/endpoints/get-warehouse-list";
 import { postWarehouseCreate } from "@/lib/api/endpoints/post-warehouse-create";
+import {
+  GetWarehouseDetailsErrorResponseSchema,
+  GetWarehouseDetailsResponseSchema,
+} from "@/lib/api/schemas/get-warehouse-details-schema";
 import {
   GetWarehouseListErrorResponseSchema,
   GetWarehouseListQueryParams,
@@ -13,7 +18,9 @@ import {
 import { getEndpointQueryKey } from "@/lib/utils";
 import {
   keepPreviousData,
+  queryOptions,
   useMutation,
+  usePrefetchQuery,
   useQuery,
   useQueryClient,
   UseQueryResult,
@@ -34,7 +41,26 @@ export function useGetWarehouseListQuery({
     placeholderData: keepPreviousData,
   });
 }
-export function useGetWarehouseDetailsQuery() {}
+
+export function createGetWarehouseDetailsOptions(id: string) {
+  return queryOptions<
+    GetWarehouseDetailsResponseSchema,
+    GetWarehouseDetailsErrorResponseSchema
+  >({
+    queryKey: ["getWarehouseDetails", id],
+    queryFn: () => getWarehouseDetails(id),
+  });
+}
+
+export function useGetWarehouseDetailsQuery(
+  id: string,
+): UseQueryResult<
+  GetWarehouseDetailsResponseSchema,
+  GetWarehouseDetailsErrorResponseSchema
+> {
+  return useQuery(createGetWarehouseDetailsOptions(id));
+}
+
 export function useCreateWarehouseMutation() {
   const queryClient = useQueryClient();
 

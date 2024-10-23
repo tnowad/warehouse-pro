@@ -42,7 +42,6 @@ const columns: ColumnDef<WarehouseResponseSchema>[] = [
         }
         onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
         aria-label="Select all"
-        className="translate-y-0.5"
       />
     ),
     cell: ({ row }) => (
@@ -50,7 +49,6 @@ const columns: ColumnDef<WarehouseResponseSchema>[] = [
         checked={row.getIsSelected()}
         onCheckedChange={(value) => row.toggleSelected(!!value)}
         aria-label="Select row"
-        className="translate-y-0.5"
       />
     ),
     enableSorting: false,
@@ -105,12 +103,10 @@ const columns: ColumnDef<WarehouseResponseSchema>[] = [
           </DropdownMenuItem>
           <DropdownMenuSeparator />
           <DropdownMenuItem asChild>
-            <Link href={`/dashboard/warehouses/${row.original.id}`}>
-              View details
-            </Link>
+            <Link href={`/warehouses/${row.original.id}`}>View details</Link>
           </DropdownMenuItem>
           <DropdownMenuItem asChild>
-            <Link href={`/dashboard/warehouses/${row.original.id}/edit`}>
+            <Link href={`/warehouses/${row.original.id}/edit`}>
               Edit information
             </Link>
           </DropdownMenuItem>
