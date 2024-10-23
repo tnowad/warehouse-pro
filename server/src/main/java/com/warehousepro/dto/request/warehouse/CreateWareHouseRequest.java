@@ -2,7 +2,6 @@ package com.warehousepro.dto.request.warehouse;
 
 import lombok.*;
 import lombok.experimental.FieldDefaults;
-import java.time.LocalDate;
 
 @Data
 @NoArgsConstructor
@@ -10,9 +9,7 @@ import java.time.LocalDate;
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class CreateWareHouseRequest {
-  int warehouseId;
-  String warehouseName;
+  String name;
   String location;
-  int capacity;
-  int managerId;
+  Integer capacity;
 }

@@ -10,11 +10,10 @@ import java.time.LocalDate;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Builder
 public class WareHouseResponseDto {
-  int warehouseId;
-  String warehouseName;
+  String id;
+  String name;
   String location;
-  int capacity;
-  int managerId;
+  Integer capacity;
   LocalDate createdAt;
   LocalDate updatedAt;
 }

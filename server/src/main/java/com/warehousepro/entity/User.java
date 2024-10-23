@@ -5,6 +5,8 @@ import lombok.*;
 import lombok.experimental.FieldDefaults;
 import java.time.LocalDate;
 import java.util.Set;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 @Entity
 @Data
@@ -29,9 +31,11 @@ public class User {
   String password;
 
   @Column(name = "created_at", nullable = false)
+  @CreationTimestamp
   LocalDate createdAt;
 
-  @Column(name = "updated_at")
+  @Column(name = "updated_at", nullable = false)
+  @UpdateTimestamp
   LocalDate updatedAt;
 
   @ManyToMany(fetch = FetchType.EAGER)

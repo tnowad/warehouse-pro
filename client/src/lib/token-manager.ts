@@ -18,7 +18,7 @@ export async function refreshAccessToken() {
   refreshPromise = (async () => {
     try {
       const data = await postAuthRefresh({ refreshToken });
-      useTokenStore.setState({ accessToken: data.accessToken });
+      useTokenStore.getState().actions.setAccessToken(data.accessToken);
       refreshPromise = null;
       return data.accessToken;
     } catch (error) {

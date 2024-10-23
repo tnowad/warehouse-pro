@@ -8,7 +8,7 @@ import com.warehousepro.dto.response.Pagination;
 import com.warehousepro.dto.response.SortField;
 import com.warehousepro.dto.response.warehouse.*;
 import com.warehousepro.mapstruct.WareHouseMapper;
-import com.warehousepro.service.WareHouseService;
+import com.warehousepro.service.WarehouseService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -22,9 +22,9 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @RequestMapping("/warehouses")
-public class WareHouseController {
+public class WarehouseController {
 
-  WareHouseService warehouseService;
+  WarehouseService warehouseService;
 
   WareHouseMapper warehouseMapper;
 
@@ -38,10 +38,11 @@ public class WareHouseController {
             && !entry.getKey().equals("sortBy") && !entry.getKey().equals("orderBy"))
         .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 
+    var page = warehouseService.filterWarehouses(limit, offset, filtersBy, sortBy, orderBy);
+
     List<WareHouseResponseDto> items =
-        warehouseService.filterWarehouses(limit, offset, filtersBy, sortBy, orderBy).stream()
-            .map(warehouseMapper::toWareHouseResponse).toList();
-    int totalCount = items.size();
+        page.stream().map(warehouseMapper::toWarehouseResponse).toList();
+    int totalCount = (int) page.getTotalElements();
     int totalPageCount = (int) Math.ceil((double) totalCount / limit);
     Pagination pagination = new Pagination(offset, limit, Math.max(offset - limit, 0),
         Math.min(offset + limit, totalCount), offset / limit + 1, totalPageCount, totalCount);
@@ -53,26 +54,43 @@ public class WareHouseController {
   }
 
   @GetMapping("/{id}")
-  public WareHouseResponseDto getWarehouse(@PathVariable("id") int id) {
-    return warehouseMapper.toWareHouseResponse(warehouseService.getWareHouse(id));
+  public WareHouseResponseDto getWarehouse(@PathVariable("id") String id) {
+    return warehouseMapper.toWarehouseResponse(warehouseService.getWareHouse(id));
   }
 
   @PostMapping
   public WareHouseResponseDto createWarehouse(
       @RequestBody CreateWareHouseRequest warehouseRequest) {
-    return warehouseMapper.toWareHouseResponse(warehouseService.createWareHouse(warehouseRequest));
+    return warehouseMapper.toWarehouseResponse(warehouseService.createWareHouse(warehouseRequest));
   }
 
   @PutMapping("/{id}")
-  public WareHouseResponseDto updateWarehouse(@PathVariable("id") int id,
+  public WareHouseResponseDto updateWarehouse(@PathVariable("id") String id,
       @RequestBody UpdateWarehouseRequestDto warehouseRequest) {
     return warehouseMapper
-        .toWareHouseResponse(warehouseService.updateWareHouse(id, warehouseRequest));
+        .toWarehouseResponse(warehouseService.updateWareHouse(id, warehouseRequest));
   }
 
   @DeleteMapping("/{id}")
-  public ResponseEntity<Void> deleteWarehouse(@PathVariable("id") int id) {
+  public ResponseEntity<Void> deleteWarehouse(@PathVariable("id") String id) {
+    // TODO: Soft delete: Set `deleted_at` field to current date
     warehouseService.deleteWareHouse(id);
+    // FIXME: Should return content instead of no content because this is a soft
+    // delete operation
     return ResponseEntity.noContent().build();
   }
+
+  @DeleteMapping("/{id}/hard-delete")
+  public ResponseEntity<Void> hardDeleteWarehouse(@PathVariable("id") String id) {
+    // TODO: Hard delete: Remove the record from the database
+    throw new UnsupportedOperationException("Not implemented yet");
+  }
+
+  @PutMapping("/{id}/restore")
+  public ResponseEntity<Void> restoreWarehouse(@PathVariable("id") String id) {
+    // TODO: Restore: Set `deleted_at` field to null
+    throw new UnsupportedOperationException("Not implemented yet");
+  }
+
+  // TODO: Bulk soft delete and bulk hard delete
 }

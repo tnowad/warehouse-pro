@@ -9,9 +9,9 @@ import org.mapstruct.MappingTarget;
 
 @Mapper(componentModel = "spring")
 public interface WareHouseMapper {
-  Warehouse toWareHouse(CreateWareHouseRequest warehouseRequest);
+  Warehouse toWarehouse(CreateWareHouseRequest warehouseRequest);
 
-  WareHouseResponseDto toWareHouseResponse(Warehouse warehouse);
+  WareHouseResponseDto toWarehouseResponse(Warehouse warehouse);
 
   void updateWarehouse(@MappingTarget Warehouse warehouse,
       UpdateWarehouseRequestDto wareHouseRequestDto);
