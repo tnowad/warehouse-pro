@@ -73,7 +73,24 @@ public class WarehouseController {
 
   @DeleteMapping("/{id}")
   public ResponseEntity<Void> deleteWarehouse(@PathVariable("id") String id) {
+    // TODO: Soft delete: Set `deleted_at` field to current date
     warehouseService.deleteWareHouse(id);
+    // FIXME: Should return content instead of no content because this is a soft
+    // delete operation
     return ResponseEntity.noContent().build();
   }
+
+  @DeleteMapping("/{id}/hard-delete")
+  public ResponseEntity<Void> hardDeleteWarehouse(@PathVariable("id") String id) {
+    // TODO: Hard delete: Remove the record from the database
+    throw new UnsupportedOperationException("Not implemented yet");
+  }
+
+  @PutMapping("/{id}/restore")
+  public ResponseEntity<Void> restoreWarehouse(@PathVariable("id") String id) {
+    // TODO: Restore: Set `deleted_at` field to null
+    throw new UnsupportedOperationException("Not implemented yet");
+  }
+
+  // TODO: Bulk soft delete and bulk hard delete
 }

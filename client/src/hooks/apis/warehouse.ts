@@ -76,7 +76,6 @@ export function useGetWarehouseDetailsQuery(
 
 export function useCreateWarehouseMutation() {
   const queryClient = useQueryClient();
-
   return useMutation<
     PostWarehouseCreateResponseSchema,
     PostWarehouseCreateErrorResponseSchema,
@@ -96,7 +95,6 @@ export function useCreateWarehouseMutation() {
 
 export function useUpdateWarehouseDetailsMutation(warehouseId: string) {
   const queryClient = useQueryClient();
-
   return useMutation<
     PostWarehouseDetailsUpdateResponseSchema,
     PostWarehouseDetailsUpdateErrorResponseSchema,
@@ -118,4 +116,42 @@ export function useUpdateWarehouseDetailsMutation(warehouseId: string) {
   });
 }
 
-export function useDeleteWarehouseMutation() {}
+export function useSoftDeleteWarehouseMutation(warehouseId: string) {
+  const queryClient = useQueryClient();
+  return useMutation<void, void, void>({
+    mutationKey: ["deleteWarehouse", warehouseId],
+    mutationFn: () => {
+      return Promise.resolve();
+    },
+    onSuccess() {
+      queryClient.invalidateQueries({
+        predicate: (query) => {
+          return (
+            query.queryKey[0] === "getWarehouseDetails" ||
+            query.queryKey[0] === "getWarehouseList"
+          );
+        },
+      });
+    },
+  });
+}
+
+export function useHardDeleteWarehouseMutation(warehouseId: string) {
+  const queryClient = useQueryClient();
+  return useMutation<void, void, void>({
+    mutationKey: ["deleteWarehouse", warehouseId],
+    mutationFn: () => {
+      return Promise.resolve();
+    },
+    onSuccess() {
+      queryClient.invalidateQueries({
+        predicate: (query) => {
+          return (
+            query.queryKey[0] === "getWarehouseDetails" ||
+            query.queryKey[0] === "getWarehouseList"
+          );
+        },
+      });
+    },
+  });
+}

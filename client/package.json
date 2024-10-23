@@ -17,6 +17,7 @@
     "@kubb/swagger-ts": "^2.28.3",
     "@nivo/bar": "^0.87.0",
     "@nivo/line": "^0.87.0",
+    "@radix-ui/react-alert-dialog": "^1.1.2",
     "@radix-ui/react-checkbox": "^1.1.2",
     "@radix-ui/react-dialog": "^1.1.2",
     "@radix-ui/react-dropdown-menu": "^2.1.2",

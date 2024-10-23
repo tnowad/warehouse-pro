@@ -10,9 +10,24 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import { useGetWarehouseDetailsQuery } from "@/hooks/apis/warehouse";
+import {
+  useGetWarehouseDetailsQuery,
+  useHardDeleteWarehouseMutation,
+  useSoftDeleteWarehouseMutation,
+} from "@/hooks/apis/warehouse";
 import { CopyIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 
 type WarehouseDetailProps = {
   warehouseId: string;
@@ -20,6 +35,10 @@ type WarehouseDetailProps = {
 export function WarehouseDetails({ warehouseId }: WarehouseDetailProps) {
   const router = useRouter();
   const warehouseDetailsQuery = useGetWarehouseDetailsQuery(warehouseId);
+  const warehoudeSoftDeleteMutation =
+    useSoftDeleteWarehouseMutation(warehouseId);
+  const warehouseHardDeleteMutation =
+    useHardDeleteWarehouseMutation(warehouseId);
 
   const warehouse = warehouseDetailsQuery.data;
 
@@ -86,9 +105,34 @@ export function WarehouseDetails({ warehouseId }: WarehouseDetailProps) {
         <Separator />
       </CardContent>
       <CardFooter className="justify-end gap-2">
-        <Button size={"sm"} variant={"ghost"}>
-          Delete
-        </Button>
+        <AlertDialog>
+          <AlertDialogTrigger asChild>
+            <Button size={"sm"} variant={"ghost"}>
+              Delete
+            </Button>
+          </AlertDialogTrigger>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>
+                Are you sure you want to delete this warehouse?
+              </AlertDialogTitle>
+              <AlertDialogDescription>
+                Please carefully consider the consequences of this action.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>Cancel</AlertDialogCancel>
+              <AlertDialogAction
+                onClick={() => {
+                  warehoudeSoftDeleteMutation.mutate();
+                }}
+              >
+                Delete
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
+
         <Button size={"sm"} variant={"ghost"}>
           Deactivate
         </Button>
