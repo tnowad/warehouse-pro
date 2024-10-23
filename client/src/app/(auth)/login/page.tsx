@@ -40,7 +40,7 @@ export default function LoginPage() {
     resolver: zodResolver(loginRequestSchema),
     defaultValues: {
       email: "admin@warehouse-pro.com",
-      password: "Password@123",
+      password: "",
     },
   });
 

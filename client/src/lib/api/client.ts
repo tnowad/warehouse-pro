@@ -34,6 +34,18 @@ export const apiClient = {
       ...config,
     });
   },
+
+  put: <TResponse = unknown, RRequest = unknown>(
+    url: string,
+    data: RRequest,
+    config?: AxiosRequestConfig<RRequest>,
+  ): Promise<AxiosResponse<TResponse, RRequest>> => {
+    return client.put<TResponse, AxiosResponse<TResponse>, RRequest>(
+      url,
+      data,
+      config,
+    );
+  },
 };
 
 client.interceptors.request.use(
