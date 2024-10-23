@@ -1,3 +1,4 @@
+"use client";
 import { MobileSidebar } from "./mobile-sidebar";
 
 export function Header() {
@@ -7,9 +8,7 @@ export function Header() {
         <div className={"block md:hidden"}>
           <MobileSidebar />
         </div>
-        <div className="flex items-center gap-2">
-          <div>user</div>
-        </div>
+        <div className="flex items-center gap-2">user</div>
       </nav>
     </header>
   );

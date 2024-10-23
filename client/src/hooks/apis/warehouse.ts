@@ -5,6 +5,7 @@ import {
   GetWarehouseListQueryParams,
   GetWarehouseListResponse,
 } from "@/lib/api/schemas/get-warehouse-list-schema";
+import { getEndpointQueryKey } from "@/lib/utils";
 import {
   keepPreviousData,
   useMutation,
@@ -12,11 +13,6 @@ import {
   useQueryClient,
   UseQueryResult,
 } from "@tanstack/react-query";
-
-export const getEndpointQueryKey = <T, R extends string>(
-  params: T,
-  endpoint: R,
-) => [endpoint, ...(params ? [params] : [])] as const;
 
 export function useGetWarehouseListQuery<T>({
   params,

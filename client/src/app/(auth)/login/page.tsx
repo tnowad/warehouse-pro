@@ -39,8 +39,8 @@ export default function LoginPage() {
   const loginForm = useForm<LoginRequestSchema>({
     resolver: zodResolver(loginRequestSchema),
     defaultValues: {
-      email: "",
-      password: "",
+      email: "admin@warehouse-pro.com",
+      password: "Password@123",
     },
   });
 

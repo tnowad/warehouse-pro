@@ -1,20 +1,30 @@
 "use client";
 import { Header } from "@/components/layout/header";
 import Sidebar from "@/components/layout/sidebar";
-import { useCurrentUserStore } from "@/providers/current-user-store-provider";
+import { useCurrentUser } from "@/hooks/use-current-user";
+import { useRouter } from "next/navigation";
 
 export default function DashboardLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const user = useCurrentUserStore((state) => state.user);
+  const router = useRouter();
+  const { currentUser, isLoading } = useCurrentUser();
+
+  if (isLoading) {
+    return null;
+  }
+
+  if (!currentUser) {
+    router.push("/login");
+    return null;
+  }
 
   return (
     <div className="flex">
       <Sidebar />
       <main className="w-full flex-1 overflow-hidden">
-        {JSON.stringify(user)}
         <Header />
         {children}
       </main>

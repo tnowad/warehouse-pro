@@ -38,7 +38,7 @@ export const apiClient = {
 
 client.interceptors.request.use(
   async (config) => {
-    const accessToken = useTokenStore.getState().accessToken;
+    const accessToken = useTokenStore.getState().actions.getAccessToken();
     if (accessToken) {
       const decoded = jwtDecode(accessToken);
       if (decoded.exp && decoded.exp * 1000 > Date.now()) {

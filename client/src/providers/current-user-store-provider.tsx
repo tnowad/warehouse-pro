@@ -22,6 +22,7 @@ export function CurrentUserStoreProvider({
   children,
 }: CurrentUserStoreProviderProps) {
   const storeRef = useRef<CurrentUserStoreApi>();
+
   if (!storeRef.current) {
     storeRef.current = createCurrentUserStore(initialCurrentUserStore());
   }

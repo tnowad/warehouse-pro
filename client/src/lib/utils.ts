@@ -16,3 +16,8 @@ export function mapFieldErrorToFormError<T extends FieldValues>(
     });
   }
 }
+
+export const getEndpointQueryKey = <T, R extends string>(
+  params: T,
+  endpoint: R,
+) => [endpoint, ...(params ? [params] : [])] as const;
