@@ -11,6 +11,7 @@ public class WareHouseSpecificationImpl implements WareHouseSpecification {
   public Specification<Warehouse> hasName(String name) {
     return (root, query, criteriaBuilder) -> {
       if (name == null || name.isEmpty()) {
+
         return criteriaBuilder.conjunction();
       }
       return criteriaBuilder.like(criteriaBuilder.lower(root.get("warehouseName")),
