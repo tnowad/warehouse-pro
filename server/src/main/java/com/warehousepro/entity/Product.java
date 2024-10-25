@@ -14,13 +14,13 @@ import java.time.LocalDate;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class Product {
   @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  int productId;
+  @GeneratedValue(strategy = GenerationType.UUID)
+  String id;
 
   String name;
   String description;
   String sku;
-  double price;
+  Double price;
   LocalDate createdAt;
   LocalDate updatedAt;
 

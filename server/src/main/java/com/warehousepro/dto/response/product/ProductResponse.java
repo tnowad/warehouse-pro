@@ -11,10 +11,11 @@ import java.time.LocalDate;
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class ProductResponse {
+  String id;
   String name;
   String description;
   String sku;
-  double price;
+  Double price;
   LocalDate createdAt;
   LocalDate updatedAt;
 }

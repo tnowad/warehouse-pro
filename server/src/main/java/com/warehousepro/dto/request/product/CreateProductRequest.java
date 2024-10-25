@@ -14,7 +14,6 @@ public class CreateProductRequest {
   String name;
   String description;
   String sku;
-  double price;
-  LocalDate createdAt;
-  LocalDate updatedAt;
+  Double price;
+
 }

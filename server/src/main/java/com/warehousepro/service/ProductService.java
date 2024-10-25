@@ -17,6 +17,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 
@@ -33,16 +34,14 @@ public class ProductService {
   public ProductResponse createProduct(CreateProductRequest request){
      Product product = productMapper.toProduct(request);
 
+     product.setCreatedAt(LocalDate.now());
+     product.setUpdatedAt(LocalDate.now());
+
      productRepository.save(product);
 
      return productMapper.toProductResponse(product);
 
   }
-
-  public List<ProductResponse> findAll(){
-    return productRepository.findAll().stream().map(productMapper::toProductResponse).toList();
-  }
-
 
 
   public Page<Product> findAll(Pageable pageable) {
