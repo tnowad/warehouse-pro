@@ -23,11 +23,34 @@ export const apiClient = {
       config,
     );
   },
+
+  get: <TResponse = unknown, TQueryParams = unknown>(
+    url: string,
+    params?: TQueryParams,
+    config?: AxiosRequestConfig<TQueryParams>,
+  ): Promise<AxiosResponse<TResponse, TQueryParams>> => {
+    return client.get<TResponse, AxiosResponse<TResponse, TQueryParams>>(url, {
+      params,
+      ...config,
+    });
+  },
+
+  put: <TResponse = unknown, RRequest = unknown>(
+    url: string,
+    data: RRequest,
+    config?: AxiosRequestConfig<RRequest>,
+  ): Promise<AxiosResponse<TResponse, RRequest>> => {
+    return client.put<TResponse, AxiosResponse<TResponse>, RRequest>(
+      url,
+      data,
+      config,
+    );
+  },
 };
 
 client.interceptors.request.use(
   async (config) => {
-    const accessToken = useTokenStore.getState().accessToken;
+    const accessToken = useTokenStore.getState().actions.getAccessToken();
     if (accessToken) {
       const decoded = jwtDecode(accessToken);
       if (decoded.exp && decoded.exp * 1000 > Date.now()) {
@@ -49,7 +72,7 @@ client.interceptors.request.use(
         >(error)
       ) {
         switch (error.response?.data.type) {
-          case "Unauthorized":
+          case "UnauthorizedError":
           case "ValidationError":
             useTokenStore.getState().actions.clearTokens();
             break;

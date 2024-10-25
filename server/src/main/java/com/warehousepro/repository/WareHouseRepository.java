@@ -11,8 +11,8 @@ import java.util.Optional;
 
 @Repository
 public interface WareHouseRepository
-    extends JpaRepository<Warehouse, Integer>, JpaSpecificationExecutor<Warehouse> {
-  Optional<Warehouse> findByWarehouseId(int warehouseId);
+    extends JpaRepository<Warehouse, String>, JpaSpecificationExecutor<Warehouse> {
+  Optional<Warehouse> findById(String id);
 
   @Override
   Page<Warehouse> findAll(Pageable pageable);
@@ -24,12 +24,12 @@ public interface WareHouseRepository
   long count();
 
   @Override
-  Warehouse getById(Integer integer);
+  Warehouse getById(String id);
 
   @Override
-  void deleteById(Integer integer);
+  void deleteById(String id);
 
   @Override
-  boolean existsById(Integer integer);
+  boolean existsById(String id);
 
 }

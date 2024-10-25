@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 import java.time.LocalDate;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 @Entity
 @Data
@@ -15,25 +17,23 @@ import java.time.LocalDate;
 public class Warehouse {
 
   @Id
-  @GeneratedValue(strategy = GenerationType.AUTO)
-  int warehouseId;
-  String warehouseName;
+  @GeneratedValue(strategy = GenerationType.UUID)
+  String id;
+
+  @Column(name = "name", nullable = false)
+  String name;
+
+  @Column(name = "location", nullable = false)
   String location;
-  int capacity;
-  int managerId;
-  @Column(name = "createdAt", nullable = false, updatable = false)
+
+  @Column(name = "capacity", nullable = false)
+  Integer capacity;
+
+  @Column(name = "created_at", nullable = false)
+  @CreationTimestamp
   LocalDate createdAt;
-  @Column(name = "updatedAt", nullable = false)
+
+  @Column(name = "updated_at", nullable = false)
+  @UpdateTimestamp
   LocalDate updatedAt;
-
-  @PrePersist
-  protected void onCreate() {
-    createdAt = LocalDate.now();
-    updatedAt = LocalDate.now();
-  }
-
-  @PreUpdate
-  protected void onUpdate() {
-    updatedAt = LocalDate.now();
-  }
 }

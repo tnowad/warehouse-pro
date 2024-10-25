@@ -17,14 +17,13 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import java.time.LocalDate;
-import java.util.List;
 import java.util.Map;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
-public class WareHouseService {
+public class WarehouseService {
 
   WareHouseRepository warehouseRepository;
 
@@ -53,7 +52,7 @@ public class WareHouseService {
     }
 
     Specification<Warehouse> spec =
-        Specification.where(wareHouseSpecification.hasName(filterBy.get("warehouseName")))
+        Specification.where(wareHouseSpecification.hasName(filterBy.get("name")))
             .and(wareHouseSpecification.hasLocation(filterBy.get("location")))
             .and(wareHouseSpecification.hasCapacityGreaterThanOrEqual(capacity))
             .and(wareHouseSpecification.hasManagerId(managerId))
@@ -72,26 +71,23 @@ public class WareHouseService {
     return warehouseRepository.findAll(spec, pageable);
   }
 
-  public Warehouse getWareHouse(int warehouseId) {
-    return warehouseRepository.findByWarehouseId(warehouseId).orElseThrow(); // not supported Exception
+  public Warehouse getWareHouse(String id) {
+    return warehouseRepository.findById(id).orElseThrow(); // not supported Exception
   }
 
   public Warehouse createWareHouse(CreateWareHouseRequest warehouseRequest) {
-    if (warehouseRepository.existsById(warehouseRequest.getWarehouseId()))
-      throw new RuntimeException("WarehouseId was existed"); // not supported Exception
-    return warehouseRepository.save(warehouseMapper.toWareHouse(warehouseRequest));
+    return warehouseRepository.save(warehouseMapper.toWarehouse(warehouseRequest));
   }
 
-  public Warehouse updateWareHouse(int warehouseId,
-      UpdateWarehouseRequestDto wareHouseUpdateRequestDto) {
-    Warehouse wareHouse = getWareHouse(warehouseId);
+  public Warehouse updateWareHouse(String id, UpdateWarehouseRequestDto wareHouseUpdateRequestDto) {
+    Warehouse wareHouse = getWareHouse(id);
 
     warehouseMapper.updateWarehouse(wareHouse, wareHouseUpdateRequestDto);
 
     return warehouseRepository.save(wareHouse);
   }
 
-  public void deleteWareHouse(int warehouseId) {
-    warehouseRepository.deleteById(warehouseId);
+  public void deleteWareHouse(String id) {
+    warehouseRepository.deleteById(id);
   }
 }
