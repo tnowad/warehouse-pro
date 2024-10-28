@@ -2,6 +2,7 @@ package com.warehousepro.service;
 
 import java.util.ArrayList;
 import java.util.List;
+import com.warehousepro.repository.ProductRepository;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,12 +22,14 @@ public class SeedService {
   final UserRepository userRepository;
   final WareHouseRepository wareHouseRepository;
   final BCryptPasswordEncoder passwordEncoder;
+  final ProductRepository productRepository;
   final Faker faker = new Faker();
 
   @Transactional
   public void clearSeeds() {
     wareHouseRepository.deleteAllInBatch();
     userRepository.deleteAllInBatch();
+    productRepository.deleteAllInBatch();
   }
 
   @Transactional

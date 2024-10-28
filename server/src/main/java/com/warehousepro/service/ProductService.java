@@ -16,9 +16,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
-
-import java.time.LocalDate;
-import java.util.List;
 import java.util.Map;
 
 @Service
@@ -31,42 +28,39 @@ public class ProductService {
 
 
   @Transactional
-  public ProductResponse createProduct(CreateProductRequest request){
-     Product product = productMapper.toProduct(request);
+  public ProductResponse createProduct(CreateProductRequest request) {
+    Product product = productMapper.toProduct(request);
 
-     product.setCreatedAt(LocalDate.now());
-     product.setUpdatedAt(LocalDate.now());
+    productRepository.save(product);
 
-     productRepository.save(product);
-
-     return productMapper.toProductResponse(product);
+    return productMapper.toProductResponse(product);
 
   }
 
 
   public Page<Product> findAll(Pageable pageable) {
-      return this.productRepository.findAll(pageable);
+    return this.productRepository.findAll(pageable);
   }
 
   public Page<Product> findByCriteria(Map<String, String> searchCriteria, Pageable pageable) {
-      Specification<Product> spec = Specification.where(null);
+    Specification<Product> spec = Specification.where(null);
 
-      if(StringUtils.hasLength(searchCriteria.get("name"))){
-          spec = spec.and(specification.containName(searchCriteria.get("name")));
-      }
+    if (StringUtils.hasLength(searchCriteria.get("name"))) {
+      spec = spec.and(specification.containName(searchCriteria.get("name")));
+    }
 
-      if (StringUtils.hasLength(searchCriteria.get("description"))) {
-          spec = spec.and(specification.containDesc(searchCriteria.get("description")));
-      }
+    if (StringUtils.hasLength(searchCriteria.get("description"))) {
+      spec = spec.and(specification.containDesc(searchCriteria.get("description")));
+    }
 
-      if (StringUtils.hasLength(searchCriteria.get("sku"))) {
-          spec = spec.and(specification.containSku(searchCriteria.get("sku")));
-      }
+    if (StringUtils.hasLength(searchCriteria.get("sku"))) {
+      spec = spec.and(specification.containSku(searchCriteria.get("sku")));
+    }
 
-      if (StringUtils.hasLength(searchCriteria.get("price"))) {
-          spec = spec.and(specification.hasPrice(searchCriteria.get("price")));
-      }
+    if (StringUtils.hasLength(searchCriteria.get("price"))) {
+      spec = spec.and(specification.hasPrice(searchCriteria.get("price")));
+    }
 
-      return productRepository.findAll(spec, pageable);
+    return productRepository.findAll(spec, pageable);
   }
 }

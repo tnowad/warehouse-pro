@@ -2,8 +2,7 @@ package com.warehousepro.dto.response.product;
 
 import lombok.*;
 import lombok.experimental.FieldDefaults;
-
-import java.time.LocalDate;
+import java.util.Date;
 
 @Data
 @NoArgsConstructor
@@ -16,6 +15,6 @@ public class ProductResponse {
   String description;
   String sku;
   Double price;
-  LocalDate createdAt;
-  LocalDate updatedAt;
+  Date createdAt;
+  Date updatedAt;
 }

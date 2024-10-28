@@ -3,8 +3,6 @@ package com.warehousepro.dto.request.product;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
-import java.time.LocalDate;
-
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -15,5 +13,4 @@ public class CreateProductRequest {
   String description;
   String sku;
   Double price;
-
 }
