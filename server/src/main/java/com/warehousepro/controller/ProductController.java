@@ -3,7 +3,6 @@ package com.warehousepro.controller;
 import com.warehousepro.dto.request.product.CreateProductRequest;
 import com.warehousepro.dto.response.product.ProductResponse;
 import com.warehousepro.entity.Product;
-import com.warehousepro.mapstruct.ProductMapper;
 import com.warehousepro.service.ProductService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -21,26 +20,14 @@ import java.util.Map;
 public class ProductController {
 
   ProductService productService;
-  ProductMapper productMapper;
-
 
   @PostMapping()
   public  ProductResponse create(@RequestBody CreateProductRequest request){
     return productService.createProduct(request);
   }
 
-
-
   @GetMapping
-  public ResponseEntity<Page<Product>>  getAll(Pageable pageable){
-    return ResponseEntity.ok(productService.findAll(pageable));
-  }
-
-
-
-  @PostMapping("/search")
-  public ResponseEntity<Page<Product>>  findProductByCriteria(@RequestBody Map<String, String> searchCriteria, Pageable pageable){
+  public ResponseEntity<Page<Product>>  findProductByCriteria(@RequestParam Map<String, String> searchCriteria, Pageable pageable){
     return ResponseEntity.ok(productService.findByCriteria(searchCriteria , pageable));
-
   }
 }

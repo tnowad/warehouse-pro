@@ -37,11 +37,6 @@ public class ProductService {
 
   }
 
-
-  public Page<Product> findAll(Pageable pageable) {
-    return this.productRepository.findAll(pageable);
-  }
-
   public Page<Product> findByCriteria(Map<String, String> searchCriteria, Pageable pageable) {
     Specification<Product> spec = Specification.where(null);
 
