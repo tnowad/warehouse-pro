@@ -5,6 +5,7 @@ import com.warehousepro.dto.request.product.CreateProductRequest;
 import com.warehousepro.dto.response.product.ProductResponse;
 import com.warehousepro.entity.Product;
 import com.warehousepro.mapstruct.ProductMapper;
+import com.warehousepro.repository.InventoryRepository;
 import com.warehousepro.repository.ProductRepository;
 import com.warehousepro.specification.ProductSpecification;
 import jakarta.transaction.Transactional;
@@ -26,14 +27,11 @@ public class ProductService {
   ProductSpecification specification;
   ProductMapper productMapper;
 
-
   @Transactional
-  public ProductResponse createProduct(CreateProductRequest request) {
+  public Product createProduct(CreateProductRequest request) {
     Product product = productMapper.toProduct(request);
-
     productRepository.save(product);
-
-    return productMapper.toProductResponse(product);
+    return product;
 
   }
 

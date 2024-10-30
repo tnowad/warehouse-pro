@@ -1,7 +1,11 @@
 package com.warehousepro.dto.request.product;
 
+import com.warehousepro.dto.request.inventory.InventoryRequest;
+import com.warehousepro.entity.Inventory;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
+
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -13,4 +17,5 @@ public class CreateProductRequest {
   String description;
   String sku;
   Double price;
+  List<InventoryRequest> inventories;
 }

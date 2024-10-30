@@ -3,6 +3,7 @@ package com.warehousepro.controller;
 import com.warehousepro.dto.request.product.CreateProductRequest;
 import com.warehousepro.dto.response.product.ProductResponse;
 import com.warehousepro.entity.Product;
+import com.warehousepro.mapstruct.ProductMapper;
 import com.warehousepro.service.ProductService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -20,10 +21,12 @@ import java.util.Map;
 public class ProductController {
 
   ProductService productService;
+  ProductMapper productMapper;
 
-  @PostMapping()
-  public  ProductResponse create(@RequestBody CreateProductRequest request){
-    return productService.createProduct(request);
+  @PostMapping
+  public  ResponseEntity<ProductResponse> create(@RequestBody CreateProductRequest request){
+    ProductResponse productResponse = productMapper.toProductResponse(productService.createProduct(request));
+    return ResponseEntity.ok(productResponse);
   }
 
   @GetMapping
