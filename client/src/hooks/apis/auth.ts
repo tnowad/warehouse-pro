@@ -13,7 +13,6 @@ import {
   PostAuthLoginRequestSchema,
   PostAuthLoginResponseSchema,
 } from "@/lib/api/schemas/post-auth-login-schema";
-import { useCurrentUserActions } from "../use-current-user";
 import { getCurrentUser } from "@/lib/api/endpoints/get-current-user";
 import {
   GetCurrentUserErrorResponseSchema,
@@ -24,7 +23,6 @@ import {
 export function useLoginMutation() {
   const queryClient = useQueryClient();
   const { setAccessToken, setRefreshToken } = useTokenActions();
-  const { setCurrentUser } = useCurrentUserActions();
 
   return useMutation<
     PostAuthLoginResponseSchema,
@@ -36,7 +34,6 @@ export function useLoginMutation() {
     onSuccess(data) {
       setRefreshToken(data.tokens.refreshToken);
       setAccessToken(data.tokens.accessToken);
-      setCurrentUser(data.user);
       queryClient.invalidateQueries({
         queryKey: ["current-user"],
       });

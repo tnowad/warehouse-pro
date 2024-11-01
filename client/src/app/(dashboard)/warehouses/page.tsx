@@ -30,6 +30,8 @@ import { EllipsisIcon } from "lucide-react";
 import Link from "next/link";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { DataTableColumnHeader } from "@/components/ui/data-table-column-header";
+import { useInfiniteQuery } from "@tanstack/react-query";
+import { createListWarehousesInfinityQueryOptions } from "@/hooks/queries/list-warehouses.query";
 
 const columns: ColumnDef<WarehouseResponseSchema>[] = [
   {
@@ -126,29 +128,32 @@ export default function Page() {
     pageSize: 10,
   });
 
-  const getWarehouseListQuery = useGetWarehouseListQuery({
-    params: {
+  const {
+    data: warehouses,
+    isLoading,
+    isError,
+    fetchNextPage,
+    hasNextPage,
+  } = useInfiniteQuery(
+    createListWarehousesInfinityQueryOptions({
       limit: pagination.pageSize,
-      offset: pagination.pageIndex * pagination.pageSize,
-    },
-  });
+    }),
+  );
 
   const table = useReactTable({
-    data: getWarehouseListQuery.data?.items ?? [],
+    data: warehouses ? warehouses.pages.flatMap((page) => page.items) : [],
     columns,
-    getCoreRowModel: getCoreRowModel(),
-    onSortingChange: setSorting,
-    getSortedRowModel: getSortedRowModel(),
-    onColumnFiltersChange: setColumnFilters,
-    getFilteredRowModel: getFilteredRowModel(),
-    onPaginationChange: setPagination,
-    manualPagination: true,
-    rowCount: getWarehouseListQuery.data?.metadata.pagination.totalCount,
     state: {
-      pagination,
       sorting,
       columnFilters,
+      pagination,
     },
+    onPaginationChange: setPagination,
+    onSortingChange: setSorting,
+    onColumnFiltersChange: setColumnFilters,
+    getCoreRowModel: getCoreRowModel(),
+    getSortedRowModel: getSortedRowModel(),
+    getFilteredRowModel: getFilteredRowModel(),
   });
 
   return (
@@ -160,7 +165,6 @@ export default function Page() {
         </Link>
       </CardHeader>
       <CardContent>
-        <div></div>
         <DataTable table={table} />
       </CardContent>
     </Card>
