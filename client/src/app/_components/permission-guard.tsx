@@ -1,15 +1,15 @@
 import React from "react";
 
 type PermissionGuardProps<T> = {
-  permissions: T[];
-  requiredPermissions: T[] | T;
+  permissions?: T[];
+  requiredPermissions?: T[] | T;
   children: React.ReactNode;
   operator?: "AND" | "OR";
   fallback?: React.ReactNode;
 };
 
 export function PermissionGuard<T>({
-  permissions,
+  permissions = [],
   requiredPermissions,
   children,
   operator = "AND",
@@ -17,12 +17,12 @@ export function PermissionGuard<T>({
 }: PermissionGuardProps<T>) {
   const requiredPermissionsArray = Array.isArray(requiredPermissions)
     ? requiredPermissions
-    : [requiredPermissions];
+    : [requiredPermissions].filter((perm): perm is T => perm !== undefined);
 
   const hasPermission =
     operator === "AND"
       ? requiredPermissionsArray.every((perm) => permissions.includes(perm))
       : requiredPermissionsArray.some((perm) => permissions.includes(perm));
 
-  return hasPermission ? <>{children}</> : <>{fallback}</>;
+  return hasPermission ? children : fallback;
 }
