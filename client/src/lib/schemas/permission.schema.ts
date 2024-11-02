@@ -3,6 +3,7 @@ import { z } from "zod";
 export const permissionNameSchema = z.enum([
   // General
   "VIEW_DASHBOARD",
+  "VIEW_SETTINGS",
 
   // User Management
   "ASSIGN_ROLE",
