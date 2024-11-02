@@ -43,6 +43,7 @@ import { useInfiniteQuery } from "@tanstack/react-query";
 import { createListWarehousesInfinityQueryOptions } from "@/hooks/queries/list-warehouses.query";
 import { DataTablePagination } from "@/components/ui/data-table-pagination";
 import { Input } from "@/components/ui/input";
+import { DataTableViewOptions } from "@/components/ui/data-table-view-options";
 
 export function WarehouseTable() {
   const columns = useMemo<ColumnDef<WarehouseSchema>[]>(
@@ -179,6 +180,7 @@ export function WarehouseTable() {
           }
           className="max-w-sm"
         />
+        <DataTableViewOptions table={table} />
       </div>
       <div className="rounded-md border">
         <Table className="w-full">
