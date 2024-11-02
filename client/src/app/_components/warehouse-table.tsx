@@ -7,8 +7,6 @@ import {
   ColumnFiltersState,
   getCoreRowModel,
   getFacetedRowModel,
-  getFilteredRowModel,
-  getPaginationRowModel,
   getSortedRowModel,
   PaginationState,
   SortingState,
@@ -45,6 +43,7 @@ import { createListWarehousesQueryOptions } from "@/hooks/queries/list-warehouse
 import { DataTablePagination } from "@/components/ui/data-table-pagination";
 import { Input } from "@/components/ui/input";
 import { DataTableViewOptions } from "@/components/ui/data-table-view-options";
+import { ListWarehousesQueryFilterSchema } from "@/lib/apis/list-warehouses.api";
 
 export function WarehouseTable() {
   const columns = useMemo<ColumnDef<WarehouseSchema>[]>(
@@ -157,6 +156,10 @@ export function WarehouseTable() {
       query: globalFilter,
       page: pagination.pageIndex + 1,
       pageSize: pagination.pageSize,
+      ...(columnFilters.reduce(
+        (acc, { id, value }) => ({ ...acc, [id]: value }),
+        {},
+      ) as ListWarehousesQueryFilterSchema),
     }),
   );
 

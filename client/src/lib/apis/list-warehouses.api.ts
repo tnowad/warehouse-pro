@@ -2,11 +2,26 @@ import { z } from "zod";
 import { warehouseSchema } from "../schemas/warehouse.schema";
 import { apiClient } from "../api/client";
 
-export const listWarehousesQuerySchema = z.object({
-  query: z.string().optional(),
-  page: z.number().optional(),
-  pageSize: z.number().optional(),
+export const listWarehousesQueryFilterSchema = z.object({
+  ids: z.array(z.string().uuid()).optional(),
+  name: z.string().optional(),
+  location: z.string().optional(),
+  capacity: z.string().optional(),
+  createdAt: z.string().optional(),
+  updatedAt: z.string().optional(),
 });
+export type ListWarehousesQueryFilterSchema = z.infer<
+  typeof listWarehousesQueryFilterSchema
+>;
+
+export const listWarehousesQuerySchema = z
+  .object({
+    query: z.string().optional(),
+    page: z.number().optional(),
+    pageSize: z.number().optional(),
+  })
+  .merge(listWarehousesQueryFilterSchema);
+
 export type ListWarehousesQuerySchema = z.infer<
   typeof listWarehousesQuerySchema
 >;
