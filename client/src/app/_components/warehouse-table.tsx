@@ -150,9 +150,11 @@ export function WarehouseTable() {
     pageIndex: 0,
     pageSize: 10,
   });
+  const [globalFilter, setGlobalFilter] = useState<string>("");
 
   const { data, error, status } = useQuery(
     createListWarehousesQueryOptions({
+      query: globalFilter,
       page: pagination.pageIndex + 1,
       pageSize: pagination.pageSize,
     }),
@@ -167,16 +169,22 @@ export function WarehouseTable() {
     debugTable: true,
     getCoreRowModel: getCoreRowModel(),
     getFacetedRowModel: getFacetedRowModel(),
-    getFilteredRowModel: getFilteredRowModel(),
     getSortedRowModel: getSortedRowModel(),
     onColumnFiltersChange: setColumnFilters,
     onSortingChange: setSorting,
     onColumnVisibilityChange: setColumnVisibility,
     onRowSelectionChange: setRowSelection,
 
+    // Global filter
+    onGlobalFilterChange: setGlobalFilter,
+
+    // Pagination
     manualPagination: true,
     rowCount,
     onPaginationChange: setPagination,
+
+    // Filtering
+    manualFiltering: true,
 
     state: {
       sorting,
@@ -184,6 +192,7 @@ export function WarehouseTable() {
       columnVisibility,
       rowSelection,
       pagination,
+      globalFilter,
     },
   });
 
@@ -191,11 +200,11 @@ export function WarehouseTable() {
     <div>
       <div className="flex items-center py-4">
         <Input
-          placeholder="Filter name..."
-          value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
+          value={globalFilter}
           onChange={(event) =>
-            table.getColumn("name")?.setFilterValue(event.target.value)
+            table.setGlobalFilter(String(event.target.value))
           }
+          placeholder="Search..."
           className="max-w-sm"
         />
         <DataTableViewOptions table={table} />

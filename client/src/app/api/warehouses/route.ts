@@ -6,11 +6,17 @@ export async function GET(request: NextRequest) {
   const searchParams = request.nextUrl.searchParams;
   const page = Number(searchParams.get("page")) || 1;
   const pageSize = Number(searchParams.get("pageSize")) || 10;
+  const query = searchParams.get("query") || "";
 
-  const items = warehouses.slice((page - 1) * pageSize, page * pageSize);
+  const allItems = warehouses.filter(
+    (warehouse) =>
+      warehouse.name.includes(query) || warehouse.location.includes(query),
+  );
+
+  const items = allItems.slice((page - 1) * pageSize, page * pageSize);
 
   return Response.json({
     items: items,
-    rowCount: warehouses.length,
+    rowCount: allItems.length,
   } satisfies ListWarehousesResponseSchema);
 }

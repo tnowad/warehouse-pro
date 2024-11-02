@@ -3,6 +3,7 @@ import { warehouseSchema } from "../schemas/warehouse.schema";
 import { apiClient } from "../api/client";
 
 export const listWarehousesQuerySchema = z.object({
+  query: z.string().optional(),
   page: z.number().optional(),
   pageSize: z.number().optional(),
 });

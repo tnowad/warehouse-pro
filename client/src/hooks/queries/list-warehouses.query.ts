@@ -38,8 +38,8 @@ export function createListWarehousesInfinityQueryOptions(
   >({
     queryKey,
     queryFn: ({ pageParam }) => listWarehousesApi(pageParam),
-    getNextPageParam: (lastPage) => ({}),
-    getPreviousPageParam: (firstPage) => ({}),
+    getNextPageParam: () => undefined,
+    getPreviousPageParam: () => undefined,
     initialPageParam: query,
 
     placeholderData: keepPreviousData,
