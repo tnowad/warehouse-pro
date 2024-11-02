@@ -109,7 +109,7 @@ const mainNav = [
       },
       {
         title: "List Orders",
-        url: "/orders/list",
+        url: "/orders",
         permission: "LIST_ORDERS",
       },
     ],
@@ -125,7 +125,7 @@ const mainNav = [
       },
       {
         title: "List Procurements",
-        url: "/procurements/list",
+        url: "/procurements",
         permission: "LIST_PROCUREMENTS",
       },
     ],
@@ -141,7 +141,7 @@ const mainNav = [
       },
       {
         title: "List Products",
-        url: "/products/list",
+        url: "/products",
         permission: "LIST_PRODUCTS",
       },
       {
@@ -162,7 +162,7 @@ const mainNav = [
       },
       {
         title: "List Shipments",
-        url: "/shipments/list",
+        url: "/shipments",
         permission: "LIST_SHIPMENTS",
       },
     ],
@@ -178,7 +178,7 @@ const mainNav = [
       },
       {
         title: "List Returns",
-        url: "/returns/list",
+        url: "/returns",
         permission: "LIST_RETURNS",
       },
     ],
@@ -194,7 +194,7 @@ const mainNav = [
       },
       {
         title: "List Suppliers",
-        url: "/suppliers/list",
+        url: "/suppliers",
         permission: "LIST_SUPPLIERS",
       },
     ],
@@ -210,12 +210,13 @@ const mainNav = [
       },
       {
         title: "List Warehouses",
-        url: "/warehouses/list",
+        url: "/warehouses",
         permission: "LIST_WAREHOUSES",
       },
     ],
   },
 ];
+
 export function AppSidebar() {
   const { data, isError } = useSuspenseQuery(
     getCurrentUserPermissionsQueryOptions,
@@ -266,14 +267,15 @@ export function AppSidebar() {
                               <Minus className="ml-auto group-data-[state=closed]/collapsible:hidden" />
                             </SidebarMenuButton>
                           </CollapsibleTrigger>
-                          <PermissionGuard
-                            permissions={data.permissions}
-                            requiredPermissions={item.permission}
-                          >
-                            <CollapsibleContent>
-                              <SidebarMenuSub>
-                                {item.items.map((item) => (
-                                  <SidebarMenuSubItem key={item.title}>
+                          <CollapsibleContent>
+                            <SidebarMenuSub>
+                              {item.items.map((item) => (
+                                <PermissionGuard
+                                  permissions={data.permissions}
+                                  requiredPermissions={item.permission}
+                                  key={item.title}
+                                >
+                                  <SidebarMenuSubItem>
                                     <SidebarMenuSubButton
                                       asChild
                                       isActive={false}
@@ -281,10 +283,10 @@ export function AppSidebar() {
                                       <Link href={item.url}>{item.title}</Link>
                                     </SidebarMenuSubButton>
                                   </SidebarMenuSubItem>
-                                ))}
-                              </SidebarMenuSub>
-                            </CollapsibleContent>
-                          </PermissionGuard>
+                                </PermissionGuard>
+                              ))}
+                            </SidebarMenuSub>
+                          </CollapsibleContent>
                         </SidebarMenuItem>
                       </Collapsible>
                     </PermissionGuard>
