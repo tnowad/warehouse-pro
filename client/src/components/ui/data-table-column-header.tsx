@@ -21,7 +21,6 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { FilterIcon } from "lucide-react";
-import { Input } from "./input";
 import { DebouncedInput } from "./debounced-input";
 
 interface DataTableColumnHeaderProps<TData, TValue>
@@ -61,11 +60,17 @@ export function DataTableColumnHeader<TData, TValue>({
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="start">
-          <DropdownMenuItem onClick={() => column.toggleSorting(false)}>
+          <DropdownMenuItem
+            onClick={() =>
+              column.toggleSorting(false, column.getCanMultiSort())
+            }
+          >
             <ArrowUpIcon className="mr-2 h-3.5 w-3.5 text-muted-foreground/70" />
             Asc
           </DropdownMenuItem>
-          <DropdownMenuItem onClick={() => column.toggleSorting(true)}>
+          <DropdownMenuItem
+            onClick={() => column.toggleSorting(true, column.getCanMultiSort())}
+          >
             <ArrowDownIcon className="mr-2 h-3.5 w-3.5 text-muted-foreground/70" />
             Desc
           </DropdownMenuItem>

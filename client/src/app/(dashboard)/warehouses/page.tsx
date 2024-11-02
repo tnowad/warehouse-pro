@@ -1,17 +1,19 @@
 "use client";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { WarehouseTable } from "@/app/_components/warehouse-table";
 
 export default function Page() {
   return (
     <Card>
       <CardHeader>
-        <h2 className="text-lg font-semibold">Warehouses</h2>
-        <Link href="/warehouses/new">
-          <Button>Create Warehouse</Button>
-        </Link>
+        <CardTitle className="flex justify-between items-center">
+          Warehouses
+          <Button asChild variant={"default"}>
+            <Link href="/warehouses/new">Create Warehouse</Link>
+          </Button>
+        </CardTitle>
       </CardHeader>
       <CardContent>
         <WarehouseTable />

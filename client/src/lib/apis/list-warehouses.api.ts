@@ -19,6 +19,7 @@ export const listWarehousesQuerySchema = z
     query: z.string().optional(),
     page: z.number().optional(),
     pageSize: z.number().optional(),
+    sort: z.string().optional(),
   })
   .merge(listWarehousesQueryFilterSchema);
 

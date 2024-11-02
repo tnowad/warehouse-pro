@@ -43,7 +43,7 @@ import { createListWarehousesQueryOptions } from "@/hooks/queries/list-warehouse
 import { DataTablePagination } from "@/components/ui/data-table-pagination";
 import { Input } from "@/components/ui/input";
 import { DataTableViewOptions } from "@/components/ui/data-table-view-options";
-import { ListWarehousesQueryFilterSchema } from "@/lib/apis/list-warehouses.api";
+import { listWarehousesQueryFilterSchema } from "@/lib/apis/list-warehouses.api";
 
 export function WarehouseTable() {
   const columns = useMemo<ColumnDef<WarehouseSchema>[]>(
@@ -156,10 +156,17 @@ export function WarehouseTable() {
       query: globalFilter,
       page: pagination.pageIndex + 1,
       pageSize: pagination.pageSize,
-      ...(columnFilters.reduce(
-        (acc, { id, value }) => ({ ...acc, [id]: value }),
-        {},
-      ) as ListWarehousesQueryFilterSchema),
+
+      ...(listWarehousesQueryFilterSchema.safeParse(
+        columnFilters.reduce(
+          (acc, { id, value }) => ({ ...acc, [id]: value }),
+          {},
+        ),
+      ).data ?? {}),
+
+      sort: sorting
+        .map(({ id, desc }) => `${id}:${desc ? "desc" : "asc"}`)
+        .join(","),
     }),
   );
 
@@ -189,6 +196,10 @@ export function WarehouseTable() {
     // Filtering
     manualFiltering: true,
 
+    // Sorting
+    manualSorting: true,
+    enableMultiSort: true,
+
     state: {
       sorting,
       columnFilters,
@@ -201,15 +212,26 @@ export function WarehouseTable() {
 
   return (
     <div>
-      <div className="flex items-center py-4">
+      <div className="flex items-center py-4 gap-2">
         <Input
-          value={globalFilter}
+          value={globalFilter ?? ""}
           onChange={(event) =>
             table.setGlobalFilter(String(event.target.value))
           }
           placeholder="Search..."
           className="max-w-sm"
         />
+        <Button
+          variant="outline"
+          className="ml-auto"
+          size={"sm"}
+          onClick={() => {
+            table.resetGlobalFilter();
+            table.resetColumnFilters();
+          }}
+        >
+          Clear Filter
+        </Button>
         <DataTableViewOptions table={table} />
       </div>
       <div className="rounded-md border">
