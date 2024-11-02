@@ -8,7 +8,22 @@ import {
   InfiniteData,
   infiniteQueryOptions,
   keepPreviousData,
+  queryOptions,
 } from "@tanstack/react-query";
+
+export function createListWarehousesQueryOptions(
+  query: ListWarehousesQuerySchema,
+) {
+  const queryKey = ["list-warehouses", query] as const;
+  return queryOptions<
+    ListWarehousesResponseSchema,
+    ListWarehousesErrorResponseSchema
+  >({
+    queryKey,
+    queryFn: () => listWarehousesApi(query),
+    placeholderData: keepPreviousData,
+  });
+}
 
 export function createListWarehousesInfinityQueryOptions(
   query: ListWarehousesQuerySchema,

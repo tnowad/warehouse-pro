@@ -10,6 +10,7 @@ import {
   getFilteredRowModel,
   getPaginationRowModel,
   getSortedRowModel,
+  PaginationState,
   SortingState,
   VisibilityState,
 } from "@tanstack/react-table";
@@ -39,8 +40,8 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { useInfiniteQuery } from "@tanstack/react-query";
-import { createListWarehousesInfinityQueryOptions } from "@/hooks/queries/list-warehouses.query";
+import { useQuery } from "@tanstack/react-query";
+import { createListWarehousesQueryOptions } from "@/hooks/queries/list-warehouses.query";
 import { DataTablePagination } from "@/components/ui/data-table-pagination";
 import { Input } from "@/components/ui/input";
 import { DataTableViewOptions } from "@/components/ui/data-table-view-options";
@@ -141,17 +142,24 @@ export function WarehouseTable() {
     ],
     [],
   );
-  const { data, error, status } = useInfiniteQuery({
-    ...createListWarehousesInfinityQueryOptions({}),
-  });
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = useState({});
+  const [pagination, setPagination] = useState<PaginationState>({
+    pageIndex: 0,
+    pageSize: 10,
+  });
 
-  const warehouses = useMemo(() => {
-    return data?.pages.flatMap((page) => page.items) ?? [];
-  }, [data]);
+  const { data, error, status } = useQuery(
+    createListWarehousesQueryOptions({
+      page: pagination.pageIndex + 1,
+      pageSize: pagination.pageSize,
+    }),
+  );
+
+  const warehouses = data?.items ?? [];
+  const rowCount = data?.rowCount ?? 0;
 
   const table = useReactTable({
     data: warehouses,
@@ -160,13 +168,23 @@ export function WarehouseTable() {
     getCoreRowModel: getCoreRowModel(),
     getFacetedRowModel: getFacetedRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
     getSortedRowModel: getSortedRowModel(),
     onColumnFiltersChange: setColumnFilters,
     onSortingChange: setSorting,
     onColumnVisibilityChange: setColumnVisibility,
     onRowSelectionChange: setRowSelection,
-    state: { sorting, columnFilters, columnVisibility, rowSelection },
+
+    manualPagination: true,
+    rowCount,
+    onPaginationChange: setPagination,
+
+    state: {
+      sorting,
+      columnFilters,
+      columnVisibility,
+      rowSelection,
+      pagination,
+    },
   });
 
   return (
