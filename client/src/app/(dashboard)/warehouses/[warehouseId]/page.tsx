@@ -1,6 +1,6 @@
 import { WarehouseDetails } from "./_components/warehouse-details";
 import { getQueryClient } from "@/app/get-query-client";
-import { createGetWarehouseDetailsOptions } from "@/hooks/apis/warehouse";
+import { createGetWarehouseDetailsOptions } from "@/hooks/queries/get-warehouse-details.query";
 import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
 
 type WarehouseDetailPageProps = {
@@ -15,7 +15,7 @@ export default async function WarehouseDetailPage({
   const queryClient = getQueryClient();
 
   await queryClient.prefetchQuery(
-    createGetWarehouseDetailsOptions(warehouseId),
+    createGetWarehouseDetailsOptions({ id: warehouseId }),
   );
 
   return (
