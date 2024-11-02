@@ -74,7 +74,6 @@ const mainNav = [
   },
   {
     title: "Roles & Permissions",
-    permission: "VIEW_ROLES",
     items: [
       {
         title: "Create Role",
@@ -83,7 +82,7 @@ const mainNav = [
       },
       {
         title: "View Roles",
-        url: "/roles/view",
+        url: "/roles",
         permission: "VIEW_ROLES",
       },
       {

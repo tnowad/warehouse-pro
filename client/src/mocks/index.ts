@@ -1,3 +1,4 @@
+import { RoleSchema } from "@/lib/schemas/role.schema";
 import { TokenSchema } from "@/lib/schemas/token.schema";
 import { UserSchema } from "@/lib/schemas/user.schema";
 import { WarehouseSchema } from "@/lib/schemas/warehouse.schema";
@@ -26,6 +27,14 @@ export const tokensFaker = (): TokenSchema => ({
   refreshToken: faker.string.uuid(),
 });
 
+export const roleFaker = (): RoleSchema => ({
+  id: faker.string.uuid(),
+  name: faker.commerce.department(),
+  description: faker.commerce.productDescription(),
+  createdAt: faker.date.recent().toISOString(),
+  updatedAt: faker.date.recent().toISOString(),
+});
+
 export const warehouses: WarehouseSchema[] = Array.from(
   { length: 100 },
   warehouseFaker,
@@ -39,3 +48,5 @@ export const users: UserSchema[] = [
     password: "Password@123",
   },
 ];
+
+export const roles: RoleSchema[] = Array.from({ length: 50 }, roleFaker);
