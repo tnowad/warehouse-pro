@@ -1,5 +1,9 @@
 package com.warehousepro.entity;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import com.warehousepro.dto.request.inventory.CreateInventoryRequest;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -7,7 +11,8 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.util.Date;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @AllArgsConstructor
@@ -38,10 +43,12 @@ public class Product {
   @UpdateTimestamp
   Date updatedAt;
 
-  @OneToMany(cascade = CascadeType.ALL ,
+  @OneToMany(cascade = CascadeType.ALL , fetch = FetchType.LAZY,
     mappedBy = "product",
     orphanRemoval = true
   )
-  List<Inventory> inventories;
+  public Set<Inventory> inventories = new HashSet<>();
+
+
 
 }

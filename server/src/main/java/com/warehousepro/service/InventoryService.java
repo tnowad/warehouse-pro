@@ -1,13 +1,16 @@
 package com.warehousepro.service;
 
-import com.warehousepro.dto.request.inventory.InventoryRequest;
+import com.warehousepro.dto.request.inventory.CreateInventoryRequest;
 import com.warehousepro.dto.response.inventory.InventoryResponse;
 import com.warehousepro.entity.Inventory;
 import com.warehousepro.entity.Product;
+import com.warehousepro.entity.Warehouse;
 import com.warehousepro.mapstruct.InventoryMapper;
 import com.warehousepro.repository.InventoryRepository;
+import com.warehousepro.repository.ProductRepository;
+import com.warehousepro.repository.WareHouseRepository;
 import com.warehousepro.specification.InventorySpecification;
-import jakarta.transaction.Transactional;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -26,10 +29,16 @@ public class InventoryService {
   InventoryRepository inventoryRepository;
   InventoryMapper inventoryMapper;
   InventorySpecification specification;
+  ProductRepository productRepository;
+  WareHouseRepository wareHouseRepository;
 
-  @Transactional
-  public Inventory createInventory(InventoryRequest request){
+  public Inventory createInventory(CreateInventoryRequest request){
+    Product product = productRepository.findById(request.getProduct().getId());
+    Warehouse warehouse = wareHouseRepository.findById(request.getWarehouse().getId())
+      .orElseThrow(() -> new EntityNotFoundException("Warehouse not found"));
     Inventory inventory = inventoryMapper.toInventory(request);
+    inventory.setProduct(product);
+    inventory.setWarehouse(warehouse);
     inventoryRepository.save(inventory);
     return inventory;
   }
@@ -53,7 +62,15 @@ public class InventoryService {
       spec = spec.and(specification.onUpdatedAt(searchCriteria.get("lastUpDate")));
     }
 
-    return inventoryRepository.findAll(spec, pageable);
+    if(StringUtils.hasLength(searchCriteria.get("product"))) {
+      spec = spec.and(specification.hasProduct(searchCriteria.get("product")));
+    }
 
+    return inventoryRepository.findAll(spec, pageable);
   }
+
+  public Page<Inventory> findAllByProductId(String id , Pageable pageable){
+       return  inventoryRepository.getListByProductId(id , pageable);
+  }
+
 }

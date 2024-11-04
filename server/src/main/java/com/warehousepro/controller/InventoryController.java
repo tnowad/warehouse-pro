@@ -1,6 +1,7 @@
 package com.warehousepro.controller;
 
-import com.warehousepro.dto.request.inventory.InventoryRequest;
+import com.warehousepro.dto.request.inventory.CreateInventoryRequest;
+
 import com.warehousepro.dto.response.inventory.InventoryResponse;
 import com.warehousepro.entity.Inventory;
 import com.warehousepro.entity.Product;
@@ -17,7 +18,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/inventory")
+@RequestMapping("/inventorys")
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class InventoryController {
@@ -25,15 +26,26 @@ public class InventoryController {
   InventoryService inventoryService;
 
   @PostMapping
-  public ResponseEntity<InventoryResponse> create(@RequestBody InventoryRequest request){
+  public ResponseEntity<InventoryResponse> create(@RequestBody CreateInventoryRequest request){
     Inventory inventory = inventoryService.createInventory(request);
     return ResponseEntity.ok(inventoryMapper.toInventoryResponse(inventory));
   }
 
   @GetMapping
-  public ResponseEntity<Page<Inventory>>  findProductByCriteria(@RequestParam Map<String, String> searchCriteria, Pageable pageable){
-    return ResponseEntity.ok(inventoryService.findByCriteria(searchCriteria,pageable));
+  public ResponseEntity<Page<InventoryResponse>>  findProductByCriteria(@RequestParam Map<String, String> searchCriteria, Pageable pageable){
+    Page<Inventory> inventories = inventoryService.findByCriteria(searchCriteria,pageable);
+    Page<InventoryResponse> inventoryResponses = inventories.map(inventoryMapper::toInventoryResponse);
+    return ResponseEntity.ok(inventoryResponses);
   }
+
+  @GetMapping("/{id}")
+  public ResponseEntity<Page<InventoryResponse>> findInventoryByProductId(@PathVariable("id") String id,
+                                                                          Pageable pageable){
+    Page<Inventory> inventories = inventoryService.findAllByProductId(id, pageable);
+    Page<InventoryResponse> inventoryResponses = inventories.map(inventoryMapper::toInventoryResponse);
+    return ResponseEntity.ok(inventoryResponses);
+  }
+
 
 
 }

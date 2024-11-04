@@ -19,6 +19,4 @@ public class ProductResponse {
   Double price;
   Date createdAt;
   Date updatedAt;
-  List<InventoryResponse> inventories;
-
 }

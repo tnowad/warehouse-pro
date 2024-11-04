@@ -1,5 +1,6 @@
 package com.warehousepro.entity;
 
+
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -24,7 +25,7 @@ public class Inventory {
   Integer quantity;
 
   @UpdateTimestamp
-  @Column(name = "last")
+  @Column(name = "lastUpDate")
   Date lastUpDate;
 
   @Column(name = "minimumStockLevel")
@@ -37,6 +38,8 @@ public class Inventory {
   @JoinColumn(name = "product_id")
   Product product;
 
-
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "warehouse_id")
+  Warehouse warehouse;
 
 }

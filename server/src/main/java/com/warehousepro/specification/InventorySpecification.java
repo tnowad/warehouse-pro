@@ -1,18 +1,13 @@
 package com.warehousepro.specification;
 
 import com.warehousepro.entity.Inventory;
-import com.warehousepro.entity.Product;
-import com.warehousepro.entity.Warehouse;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Component;
 
-import java.time.LocalDate;
-import java.util.Date;
 
 @Component
 public class InventorySpecification {
 
-//  Product product;
 
   public Specification<Inventory> containStatus(String providedStatus) {
     return (root, query, criteriaBuilder) -> criteriaBuilder
@@ -37,4 +32,10 @@ public class InventorySpecification {
     return (root, query, criteriaBuilder) -> criteriaBuilder.equal(root.get("quantity"),
       providedQuantity);
   }
+
+  public Specification<Inventory> hasProduct(String provideProduct){
+    return (root, query, criteriaBuilder) -> criteriaBuilder.equal(root.get("product"), provideProduct);
+  }
+
+
 }

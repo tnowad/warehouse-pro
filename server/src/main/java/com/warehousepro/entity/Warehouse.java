@@ -4,6 +4,9 @@ import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 import java.time.LocalDate;
+import java.util.HashSet;
+import java.util.Set;
+
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -36,4 +39,11 @@ public class Warehouse {
   @Column(name = "updated_at", nullable = false)
   @UpdateTimestamp
   LocalDate updatedAt;
+
+  @OneToMany(cascade = CascadeType.ALL , fetch = FetchType.LAZY,
+    mappedBy = "warehouse",
+    orphanRemoval = true
+  )
+  public Set<Inventory> inventories = new HashSet<>();
+
 }
