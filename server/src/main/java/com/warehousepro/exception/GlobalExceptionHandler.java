@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import com.warehousepro.dto.response.error.ErrorResponse;
 import com.warehousepro.dto.response.error.ValidationErrorResponse;
 import lombok.extern.slf4j.Slf4j;
@@ -51,5 +52,13 @@ public class GlobalExceptionHandler {
         .computeIfAbsent(error.getField(), key -> List.of()).add(error.getDefaultMessage()));
     ValidationErrorResponse response = new ValidationErrorResponse(message, errors);
     return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(response);
+  }
+
+  @ExceptionHandler(Exception.class)
+  @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+  public ResponseEntity<ErrorResponse> handleException(Exception ex) {
+    log.error("An error occurred", ex);
+    return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+        .body(new ErrorResponse("An error occurred. Please try again later"));
   }
 }

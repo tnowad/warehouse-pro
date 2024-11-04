@@ -24,23 +24,21 @@ import { useToast } from "@/hooks/use-toast";
 import Link from "next/link";
 import { useLoginMutation } from "@/hooks/apis/auth";
 import { useRouter } from "next/navigation";
-import {
-  loginRequestSchema,
-  LoginRequestSchema,
-} from "@/lib/api/schemas/login-request-schema";
+
 import { zodResolver } from "@hookform/resolvers/zod";
 import { mapFieldErrorToFormError } from "@/lib/utils";
+import { loginBodySchema, LoginBodySchema } from "@/lib/apis/login.api";
 
 export default function LoginPage() {
   const router = useRouter();
   const { toast } = useToast();
   const loginMutation = useLoginMutation();
 
-  const loginForm = useForm<LoginRequestSchema>({
-    resolver: zodResolver(loginRequestSchema),
+  const loginForm = useForm<LoginBodySchema>({
+    resolver: zodResolver(loginBodySchema),
     defaultValues: {
       email: "admin@warehouse-pro.com",
-      password: "",
+      password: "Password@123",
     },
   });
 

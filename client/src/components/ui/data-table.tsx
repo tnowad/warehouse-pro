@@ -20,6 +20,8 @@ import {
   PaginationPrevious,
 } from "./pagination";
 import { DataTablePagination } from "./data-table-pagination";
+import { Button } from "./button";
+import { useInView } from "react-intersection-observer";
 
 interface DataTableProps<TData, TValue> {
   table: ReturnType<typeof useReactTable<TData>>;
@@ -29,6 +31,7 @@ export function DataTable<TData, TValue>({
   table,
 }: DataTableProps<TData, TValue>) {
   const columns: ColumnDef<TData>[] = table.getAllColumns();
+  const { ref, inView } = useInView();
 
   return (
     <div>
@@ -83,7 +86,22 @@ export function DataTable<TData, TValue>({
         </Table>
       </div>
       <div className="py-4">
-        <DataTablePagination table={table} />
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={() => table.previousPage()}
+          disabled={!table.getCanPreviousPage()}
+        >
+          Previous
+        </Button>
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={() => table.nextPage()}
+          disabled={!table.getCanNextPage()}
+        >
+          Next
+        </Button>
       </div>
     </div>
   );
