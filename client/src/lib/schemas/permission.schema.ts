@@ -90,6 +90,4 @@ export type PermissionName = z.infer<typeof permissionNameSchema>;
 export const permissionSchema = z.object({
   name: permissionNameSchema,
   description: z.string(),
-  createdAt: z.string().date(),
-  updatedAt: z.string().date(),
 });

@@ -4,11 +4,7 @@ import { getCurrentUserPermissionsQueryOptions } from "@/hooks/queries/get-curre
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { redirect } from "next/navigation";
 import { PermissionGuard } from "../_components/permission-guard";
-import {
-  SidebarInset,
-  SidebarProvider,
-  SidebarTrigger,
-} from "@/components/ui/sidebar";
+import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/app-sidebar";
 
 export default function DashboardLayout({
