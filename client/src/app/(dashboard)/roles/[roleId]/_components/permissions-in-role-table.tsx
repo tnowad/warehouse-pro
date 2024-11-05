@@ -1,7 +1,5 @@
 "use client";
 
-import { useMemo, useState } from "react";
-import { Checkbox } from "@/components/ui/checkbox";
 import {
   DropdownMenu,
   DropdownMenuItem,
@@ -12,48 +10,26 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
 import { EllipsisIcon } from "lucide-react";
-import { Input } from "@/components/ui/input";
 import { useQuery } from "@tanstack/react-query";
-import {} from "@/hooks/queries/list-warehouse-permissions.query";
-import { listPermissionsQueryFilterSchema } from "@/lib/apis/list-permissions.api";
+import Link from "next/dist/client/link";
+import { createListRolePermissionsQuery } from "@/hooks/queries/list-role-permissions.query";
+import { Switch } from "@/components/ui/switch";
 
-export function PlainPermissionList() {
-  const [columnFilters, setColumnFilters] = useState({});
-  const [globalFilter, setGlobalFilter] = useState<string>("");
-
+type PermissionsInRoleTableProps = {
+  roleId: string;
+};
+export function PermissionsInRoleTable({
+  roleId,
+}: PermissionsInRoleTableProps) {
   const { data, error, status } = useQuery(
-    createGet({
-      query: globalFilter,
-      ...(listPermissionsQueryFilterSchema.safeParse(
-        Object.fromEntries(Object.entries(columnFilters)),
-      ).data ?? {}),
-    }),
+    createListRolePermissionsQuery({ id: roleId }),
   );
 
   const permissions = data?.items ?? [];
 
   return (
     <div>
-      <div className="flex items-center py-4 gap-2">
-        <Input
-          value={globalFilter ?? ""}
-          onChange={(event) => setGlobalFilter(event.target.value)}
-          placeholder="Search permissions..."
-          className="max-w-sm"
-        />
-        <Button
-          variant="outline"
-          className="ml-auto"
-          size={"sm"}
-          onClick={() => {
-            setGlobalFilter("");
-            setColumnFilters({});
-          }}
-        >
-          Clear Filter
-        </Button>
-      </div>
-      <div className="space-y-4">
+      <div className="grid xl:grid-cols-2 gap-2">
         {status === "pending" ? (
           <div>Loading...</div>
         ) : status === "error" ? (
@@ -64,21 +40,8 @@ export function PlainPermissionList() {
               key={permission.name}
               className="flex items-center justify-between p-2 border rounded-md"
             >
-              <div className="flex items-center gap-4">
-                <Checkbox
-                  checked={permission.enable}
-                  onCheckedChange={(value) =>
-                    setColumnFilters({ ...columnFilters, enable: value })
-                  }
-                  aria-label="Enable permission"
-                />
-                <div>
-                  <h3 className="font-semibold">{permission.name}</h3>
-                  <p className="text-sm text-gray-600">
-                    {permission.description}
-                  </p>
-                </div>
-              </div>
+              <Switch checked={permission.enable} />
+              <div>{permission.name}</div>
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button size={"icon"} variant={"ghost"}>
