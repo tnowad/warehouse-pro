@@ -27,24 +27,27 @@ import Link from "next/link";
 import { DataTableColumnHeader } from "@/components/ui/data-table-column-header";
 import { RoleSchema } from "@/lib/schemas/role.schema";
 
-import { flexRender, useReactTable } from "@tanstack/react-table";
+import { useReactTable } from "@tanstack/react-table";
+import { useQuery } from "@tanstack/react-query";
+import { DataTablePagination } from "@/components/ui/data-table-pagination";
+import { DataTable } from "@/components/ui/data-table";
 
 import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import { useQuery } from "@tanstack/react-query";
-import { createListRolesQueryOptions } from "@/hooks/queries/list-roles.query";
-import { DataTablePagination } from "@/components/ui/data-table-pagination";
-import { Input } from "@/components/ui/input";
-import { DataTableViewOptions } from "@/components/ui/data-table-view-options";
-import { listRolesQueryFilterSchema } from "@/lib/apis/list-roles.api";
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { createListWarehouseRolesQueryOptions } from "@/hooks/queries/list-warehouse-roles.query";
+import { listWarehouseRolesQueryFilterSchema } from "@/lib/apis/list-warehouse-roles.api";
 
-export function RolesTable() {
+type WarehouseRolesDetailsProps = {
+  warehouseId: string;
+};
+export function WarehouseRolesDetails({
+  warehouseId,
+}: WarehouseRolesDetailsProps) {
   const columns = useMemo<ColumnDef<RoleSchema>[]>(
     () => [
       {
@@ -144,22 +147,25 @@ export function RolesTable() {
   const [globalFilter, setGlobalFilter] = useState<string>("");
 
   const { data, error, status } = useQuery(
-    createListRolesQueryOptions({
-      query: globalFilter,
-      page: pagination.pageIndex + 1,
-      pageSize: pagination.pageSize,
+    createListWarehouseRolesQueryOptions(
+      { warehouseId },
+      {
+        query: globalFilter,
+        page: pagination.pageIndex + 1,
+        pageSize: pagination.pageSize,
 
-      ...(listRolesQueryFilterSchema.safeParse(
-        columnFilters.reduce(
-          (acc, { id, value }) => ({ ...acc, [id]: value }),
-          {},
-        ),
-      ).data ?? {}),
+        ...(listWarehouseRolesQueryFilterSchema.safeParse(
+          columnFilters.reduce(
+            (acc, { id, value }) => ({ ...acc, [id]: value }),
+            {},
+          ),
+        ).data ?? {}),
 
-      sort: sorting
-        .map(({ id, desc }) => `${id}:${desc ? "desc" : "asc"}`)
-        .join(","),
-    }),
+        sort: sorting
+          .map(({ id, desc }) => `${id}:${desc ? "desc" : "asc"}`)
+          .join(","),
+      },
+    ),
   );
 
   const roles = data?.items ?? [];
@@ -199,100 +205,21 @@ export function RolesTable() {
   });
 
   return (
-    <div>
-      <div className="flex items-center py-4 gap-2">
-        <Input
-          value={globalFilter ?? ""}
-          onChange={(event) =>
-            table.setGlobalFilter(String(event.target.value))
-          }
-          placeholder="Search..."
-          className="max-w-sm"
-        />
-        <Button
-          variant="outline"
-          className="ml-auto"
-          size={"sm"}
-          onClick={() => {
-            table.resetGlobalFilter();
-            table.resetColumnFilters();
-          }}
-        >
-          Clear Filter
-        </Button>
-        <DataTableViewOptions table={table} />
-      </div>
-      <div className="rounded-md border">
-        <Table className="w-full">
-          <TableHeader>
-            {table.getHeaderGroups().map((headerGroup) => (
-              <TableRow key={headerGroup.id}>
-                {headerGroup.headers.map((header) => {
-                  return (
-                    <TableHead key={header.id}>
-                      {header.isPlaceholder
-                        ? null
-                        : flexRender(
-                            header.column.columnDef.header,
-                            header.getContext(),
-                          )}
-                    </TableHead>
-                  );
-                })}
-              </TableRow>
-            ))}
-          </TableHeader>
-          <TableBody>
-            {status === "pending" ? (
-              <TableRow>
-                <TableCell
-                  colSpan={columns.length}
-                  className="h-24 text-center"
-                >
-                  Loading...
-                </TableCell>
-              </TableRow>
-            ) : status === "error" ? (
-              <TableRow>
-                <TableCell
-                  colSpan={columns.length}
-                  className="h-24 text-center"
-                >
-                  {error?.message}
-                </TableCell>
-              </TableRow>
-            ) : table.getRowModel().rows?.length ? (
-              table.getRowModel().rows.map((row) => (
-                <TableRow
-                  key={row.id}
-                  data-state={row.getIsSelected() && "selected"}
-                >
-                  {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id}>
-                      {flexRender(
-                        cell.column.columnDef.cell,
-                        cell.getContext(),
-                      )}
-                    </TableCell>
-                  ))}
-                </TableRow>
-              ))
-            ) : (
-              <TableRow>
-                <TableCell
-                  colSpan={columns.length}
-                  className="h-24 text-center"
-                >
-                  No results.
-                </TableCell>
-              </TableRow>
-            )}
-          </TableBody>
-        </Table>
-      </div>
-      <div className="mt-4">
-        <DataTablePagination table={table} />
-      </div>
-    </div>
+    <Card>
+      <CardHeader>
+        <CardTitle className="flex justify-between">Warehouse Roles</CardTitle>
+        <CardDescription>
+          List of roles and permissions for the warehouse
+        </CardDescription>
+      </CardHeader>
+      <CardContent>
+        <div className="rounded-md border">
+          <DataTable table={table} status={status} error={error} />
+        </div>
+        <div className="mt-4">
+          <DataTablePagination table={table} />
+        </div>
+      </CardContent>
+    </Card>
   );
 }
