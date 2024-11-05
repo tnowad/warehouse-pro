@@ -6,6 +6,7 @@ import com.warehousepro.entity.User;
 import com.warehousepro.exception.ValidationException;
 import com.warehousepro.mapstruct.UserMapper;
 import com.warehousepro.repository.UserRepository;
+import jakarta.transaction.Transactional;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -23,6 +24,7 @@ public class UserService {
   UserMapper userMapper;
   final PasswordEncoder passwordEncoder;
 
+  @Transactional
   public UserResponse createUser(CreateUserRequest request) {
     if (userRepository.findByEmail(request.getEmail()).isPresent()) {
       throw new ValidationException(Map.of("email", List.of("Email has been used")),

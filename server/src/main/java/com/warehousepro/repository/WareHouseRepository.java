@@ -1,5 +1,6 @@
 package com.warehousepro.repository;
 
+import com.warehousepro.entity.Product;
 import com.warehousepro.entity.Warehouse;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -31,5 +32,6 @@ public interface WareHouseRepository
 
   @Override
   boolean existsById(String id);
+  ;
 
 }
