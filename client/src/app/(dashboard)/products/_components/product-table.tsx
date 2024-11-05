@@ -12,7 +12,6 @@ import {
   VisibilityState,
 } from "@tanstack/react-table";
 import { Checkbox } from "@/components/ui/checkbox";
-
 import {
   DropdownMenu,
   DropdownMenuItem,
@@ -25,19 +24,18 @@ import { Button } from "@/components/ui/button";
 import { EllipsisIcon } from "lucide-react";
 import Link from "next/link";
 import { DataTableColumnHeader } from "@/components/ui/data-table-column-header";
-import { OrderSchema } from "@/lib/schemas/order.schema";
-
+import { ProductSchema } from "@/lib/schemas/product.schema";
 import { useReactTable } from "@tanstack/react-table";
 import { useQuery } from "@tanstack/react-query";
-import { createListOrdersQueryOptions } from "@/hooks/queries/list-orders.query";
+import { createListProductsQueryOptions } from "@/hooks/queries/list-products.query";
 import { DataTablePagination } from "@/components/ui/data-table-pagination";
 import { Input } from "@/components/ui/input";
 import { DataTableViewOptions } from "@/components/ui/data-table-view-options";
-import { listOrdersQueryFilterSchema } from "@/lib/apis/list-orders.api";
+import { listProductsQueryFilterSchema } from "@/lib/apis/list-products.api";
 import { DataTable } from "@/components/ui/data-table";
 
-export function OrderTable() {
-  const columns = useMemo<ColumnDef<OrderSchema>[]>(
+export function ProductTable() {
+  const columns = useMemo<ColumnDef<ProductSchema>[]>(
     () => [
       {
         id: "select",
@@ -68,31 +66,19 @@ export function OrderTable() {
       {
         accessorKey: "id",
         header: ({ column }) => (
-          <DataTableColumnHeader column={column} title="Order ID" />
+          <DataTableColumnHeader column={column} title="Product ID" />
         ),
       },
       {
-        accessorKey: "status",
+        accessorKey: "name",
         header: ({ column }) => (
-          <DataTableColumnHeader column={column} title="Status" />
+          <DataTableColumnHeader column={column} title="Product Name" />
         ),
       },
       {
-        accessorKey: "totalAmount",
+        accessorKey: "description",
         header: ({ column }) => (
-          <DataTableColumnHeader column={column} title="Total Amount" />
-        ),
-      },
-      {
-        accessorKey: "paymentStatus",
-        header: ({ column }) => (
-          <DataTableColumnHeader column={column} title="Payment Status" />
-        ),
-      },
-      {
-        accessorKey: "shippingAddress",
-        header: ({ column }) => (
-          <DataTableColumnHeader column={column} title="Shipping Address" />
+          <DataTableColumnHeader column={column} title="Description" />
         ),
       },
       {
@@ -122,14 +108,16 @@ export function OrderTable() {
               <DropdownMenuItem
                 onClick={() => navigator.clipboard.writeText(row.original.id)}
               >
-                Copy Order ID
+                Copy Product ID
               </DropdownMenuItem>
               <DropdownMenuSeparator />
               <DropdownMenuItem asChild>
-                <Link href={`/orders/${row.original.id}`}>View details</Link>
+                <Link href={`/products/${row.original.id}`}>View details</Link>
               </DropdownMenuItem>
               <DropdownMenuItem asChild>
-                <Link href={`/orders/${row.original.id}/edit`}>Edit order</Link>
+                <Link href={`/products/${row.original.id}/edit`}>
+                  Edit product
+                </Link>
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
@@ -152,12 +140,12 @@ export function OrderTable() {
   const [globalFilter, setGlobalFilter] = useState<string>("");
 
   const { data, error, status } = useQuery(
-    createListOrdersQueryOptions({
+    createListProductsQueryOptions({
       query: globalFilter,
       page: pagination.pageIndex + 1,
       pageSize: pagination.pageSize,
 
-      ...(listOrdersQueryFilterSchema.safeParse(
+      ...(listProductsQueryFilterSchema.safeParse(
         columnFilters.reduce(
           (acc, { id, value }) => ({ ...acc, [id]: value }),
           {},
@@ -170,11 +158,11 @@ export function OrderTable() {
     }),
   );
 
-  const orders = data?.items ?? [];
+  const products = data?.items ?? [];
   const rowCount = data?.rowCount ?? 0;
 
   const table = useReactTable({
-    data: orders,
+    data: products,
     columns,
     debugTable: true,
     getCoreRowModel: getCoreRowModel(),
@@ -184,18 +172,12 @@ export function OrderTable() {
     onSortingChange: setSorting,
     onColumnVisibilityChange: setColumnVisibility,
     onRowSelectionChange: setRowSelection,
-
-    onGlobalFilterChange: setGlobalFilter,
-
     manualPagination: true,
     rowCount,
     onPaginationChange: setPagination,
-
     manualFiltering: true,
-
     manualSorting: true,
     enableMultiSort: true,
-
     state: {
       sorting,
       columnFilters,
