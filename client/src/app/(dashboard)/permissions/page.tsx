@@ -1,3 +1,9 @@
+import { PermissionTable } from "./_components/permission-table";
+
 export default function Page() {
-  return <div>Page</div>;
+  return (
+    <div>
+      <PermissionTable />
+    </div>
+  );
 }

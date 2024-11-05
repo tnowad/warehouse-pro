@@ -61,10 +61,10 @@ const mainNav = [
     icon: "users",
     items: [
       { title: "Users", url: "/users", permission: "USER_DETAILS_VIEW" },
-      { title: "Roles", url: "/users/roles", permission: "ROLE_VIEW" },
+      { title: "Roles", url: "/roles", permission: "ROLE_VIEW" },
       {
         title: "Permissions",
-        url: "/users/permissions",
+        url: "/permissions",
         permission: "PERMISSION_VIEW",
       },
     ],

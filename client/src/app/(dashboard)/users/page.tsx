@@ -1,3 +1,9 @@
+import { UserTable } from "./_components/user-table";
+
 export default function Page() {
-  return <div>Page</div>;
+  return (
+    <div>
+      <UserTable />
+    </div>
+  );
 }

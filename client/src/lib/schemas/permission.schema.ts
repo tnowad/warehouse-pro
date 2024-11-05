@@ -88,6 +88,9 @@ export const permissionNameSchema = z.enum([
 export type PermissionName = z.infer<typeof permissionNameSchema>;
 
 export const permissionSchema = z.object({
+  id: z.string(),
   name: permissionNameSchema,
   description: z.string(),
 });
+
+export type PermissionSchema = z.infer<typeof permissionSchema>;

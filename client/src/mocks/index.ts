@@ -1,3 +1,7 @@
+import {
+  permissionNameSchema,
+  PermissionSchema,
+} from "@/lib/schemas/permission.schema";
 import { RoleSchema } from "@/lib/schemas/role.schema";
 import {
   AccessTokenPayloadSchema,
@@ -76,3 +80,11 @@ export const users: UserSchema[] = [
 ];
 
 export const roles: RoleSchema[] = Array.from({ length: 50 }, roleFaker);
+
+export const permissions: PermissionSchema[] = Object.values(
+  permissionNameSchema.enum,
+).map((name) => ({
+  id: faker.string.uuid(),
+  name,
+  description: faker.commerce.productDescription(),
+}));

@@ -9,7 +9,13 @@ export type ListWarehouseRolesParamsSchema = z.infer<
   typeof listWarehouseRolesParamsSchema
 >;
 
-export const listWarehouseRolesQueryFilterSchema = z.object({});
+export const listWarehouseRolesQueryFilterSchema = z.object({
+  ids: z.array(z.string()).optional(),
+  name: z.string().optional(),
+  description: z.string().optional(),
+  createdAt: z.string().optional(),
+  updatedAt: z.string().optional(),
+});
 
 export const listWarehouseRolesQuerySchema = z
   .object({
