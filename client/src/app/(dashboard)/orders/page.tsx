@@ -1,3 +1,9 @@
+import { OrderTable } from "@/app/_components/order-table";
+
 export default function Page() {
-  return <div>Page</div>;
+  return (
+    <div>
+      <OrderTable />
+    </div>
+  );
 }

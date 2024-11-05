@@ -1,4 +1,9 @@
 import {
+  OrderSchema,
+  orderStatusSchema,
+  paymentStatusSchema,
+} from "@/lib/schemas/order.schema";
+import {
   permissionNameSchema,
   PermissionSchema,
 } from "@/lib/schemas/permission.schema";
@@ -87,4 +92,16 @@ export const permissions: PermissionSchema[] = Object.values(
   id: faker.string.uuid(),
   name,
   description: faker.commerce.productDescription(),
+}));
+
+export const orders: OrderSchema[] = Array.from({ length: 100 }, () => ({
+  id: faker.string.uuid(),
+  status: faker.helpers.arrayElement(Object.values(orderStatusSchema.enum)),
+  totalAmount: faker.number.int({ min: 1, max: 1000 }),
+  paymentStatus: faker.helpers.arrayElement(
+    Object.values(paymentStatusSchema.enum),
+  ),
+  shippingAddress: faker.location.streetAddress(),
+  createdAt: faker.date.recent().toISOString(),
+  updatedAt: faker.date.recent().toISOString(),
 }));
