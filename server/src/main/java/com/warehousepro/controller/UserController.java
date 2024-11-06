@@ -2,6 +2,10 @@ package com.warehousepro.controller;
 
 import com.warehousepro.dto.request.auth.CreateUserRequest;
 import com.warehousepro.dto.response.auth.UserResponse;
+import com.warehousepro.entity.Permission;
+import com.warehousepro.entity.Role;
+import com.warehousepro.entity.User;
+import com.warehousepro.repository.UserRepository;
 import com.warehousepro.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -15,6 +19,7 @@ import lombok.experimental.FieldDefaults;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
+import java.util.Set;
 
 @RestController
 @RequestMapping("/users")
@@ -23,6 +28,7 @@ import java.util.List;
 public class UserController {
 
   UserService userService;
+  private final UserRepository userRepository;
 
   @PostMapping
   ResponseEntity<UserResponse> create(@RequestBody CreateUserRequest request) {
@@ -53,5 +59,29 @@ public class UserController {
   List<UserResponse> getUsers() {
     return userService.getUsers();
   }
+
+  @DeleteMapping("/{id}")
+  ResponseEntity<String> delete(@PathVariable("id") String id){ userService.delete(id);
+    return ResponseEntity.ok("Xóa User thành công");
+  }
+
+  @PutMapping("/assignRoleToUser/{user_id}/{role_id}")
+  ResponseEntity<User> assignRoleToUser(@PathVariable("user_id") String userId , @PathVariable("role_id") String roleId){
+      User user = userService.assignRoleToUser(userId , roleId);
+      return ResponseEntity.ok(user);
+  }
+
+  @GetMapping("/viewUserRole/{user_id}")
+  ResponseEntity<Set<Role>> viewUserRole(@PathVariable("user_id") String id){
+    Set<Role> roles = userService.viewUserRoles(id);
+    return ResponseEntity.ok(roles);
+  }
+
+  @GetMapping("/viewUserPermission/{user_id}")
+  ResponseEntity<Set<Permission>> viewUserPermission(@PathVariable("user_id") String id){
+    Set<Permission> permissions = userService.viewUserPermissions(id);
+    return ResponseEntity.ok(permissions);
+  }
+
 
 }

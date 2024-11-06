@@ -9,7 +9,7 @@ export const permissionNameSchema = z.enum([
   "ASSIGN_ROLE",
   "DELETE_USER",
   "LOGIN",
-  "REGISTER",
+  "REGISTER", // Đăng kí gì ?
   "VIEW_USER_DETAILS",
   "VIEW_USER_ROLES",
   "UPDATE_USER",

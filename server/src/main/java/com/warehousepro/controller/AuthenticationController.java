@@ -63,4 +63,7 @@ public class AuthenticationController {
         .name("Admin").email("admin@warehouse-pro.com").build());
   }
 
+
+
+
 }

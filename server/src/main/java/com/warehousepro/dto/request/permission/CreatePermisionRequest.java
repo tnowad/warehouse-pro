@@ -1,20 +1,14 @@
-package com.warehousepro.dto.response.product;
+package com.warehousepro.dto.request.permission;
 
 import lombok.*;
 import lombok.experimental.FieldDefaults;
-import java.util.Date;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class ProductResponse {
-  String id;
+public class CreatePermisionRequest {
   String name;
   String description;
-  String sku;
-  Double price;
-  Date createdAt;
-  Date updatedAt;
 }

@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 import java.time.LocalDate;
+import java.util.HashSet;
 import java.util.Set;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -38,8 +39,26 @@ public class User {
   @UpdateTimestamp
   LocalDate updatedAt;
 
-  @ManyToMany(fetch = FetchType.EAGER)
-  @JoinTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"),
-      inverseJoinColumns = @JoinColumn(name = "role_id"))
-  Set<Role> roles;
+  @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+  @JoinTable(
+    name = "user_roles",
+    joinColumns = @JoinColumn(name = "user_id"),
+    inverseJoinColumns = @JoinColumn(name = "role_id")
+  )
+  private Set<Role> roles = new HashSet<>();
+
+  public void addRole(Role role){
+    this.roles.add(role);
+  }
+
+  public void removeRole(String name){
+    Role role = this.roles.stream().filter(role1 -> role1.getName() == name).findFirst().orElse(null);
+    if(role == null){
+      this.roles.remove(role);
+      role.getUsers().remove(this);
+    }
+  }
+
+
+
 }
