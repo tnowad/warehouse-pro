@@ -2,18 +2,23 @@ package com.warehousepro.service;
 
 import com.warehousepro.dto.request.auth.CreateUserRequest;
 import com.warehousepro.dto.response.auth.UserResponse;
+import com.warehousepro.entity.Permission;
+import com.warehousepro.entity.Role;
 import com.warehousepro.entity.User;
 import com.warehousepro.exception.ValidationException;
 import com.warehousepro.mapstruct.UserMapper;
+import com.warehousepro.repository.PermissionRepository;
+import com.warehousepro.repository.RoleRepository;
 import com.warehousepro.repository.UserRepository;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import java.util.List;
-import java.util.Map;
+
+import java.util.*;
 
 @Service
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
@@ -23,6 +28,8 @@ public class UserService {
   UserRepository userRepository;
   UserMapper userMapper;
   final PasswordEncoder passwordEncoder;
+  RoleRepository roleRepository;
+  PermissionRepository permissionRepository;
 
   @Transactional
   public UserResponse createUser(CreateUserRequest request) {
@@ -53,6 +60,28 @@ public class UserService {
 
   public User getUserById(String id) {
     return userRepository.findById(id).orElse(null);
+  }
+
+  public void delete(String id){
+     userRepository.deleteById(id);
+  }
+
+  public User assignRoleToUser(String userId, String roleId) {
+    User user = userRepository.findById(userId)
+      .orElseThrow(() -> new EntityNotFoundException("User not found"));
+    Role role = roleRepository.findById(roleId)
+      .orElseThrow(() -> new EntityNotFoundException("Role not found"));
+    user.addRole(role);
+    return userRepository.save(user);
+  }
+
+
+  public Set<Role> viewUserRoles(String userid){
+    return roleRepository.findRolesByUsersId(userid);
+  }
+
+  public Set<Permission> viewUserPermissions(String userId){
+    return permissionRepository.findPermissionsByUsersId(userId);
   }
 
 }
