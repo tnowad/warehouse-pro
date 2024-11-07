@@ -1,3 +1,13 @@
+import {
+  OrderSchema,
+  orderStatusSchema,
+  paymentStatusSchema,
+} from "@/lib/schemas/order.schema";
+import {
+  permissionNameSchema,
+  PermissionSchema,
+} from "@/lib/schemas/permission.schema";
+import { ProductSchema } from "@/lib/schemas/product.schema";
 import { RoleSchema } from "@/lib/schemas/role.schema";
 import {
   AccessTokenPayloadSchema,
@@ -61,6 +71,33 @@ export const roleFaker = (): RoleSchema => ({
   updatedAt: faker.date.recent().toISOString(),
 });
 
+export const permissionFaker = (): PermissionSchema => ({
+  id: faker.string.uuid(),
+  name: faker.helpers.arrayElement(Object.values(permissionNameSchema.enum)),
+  description: faker.commerce.productDescription(),
+});
+
+export const ordersFaker = (): OrderSchema => ({
+  id: faker.string.uuid(),
+  status: faker.helpers.arrayElement(Object.values(orderStatusSchema.enum)),
+  totalAmount: faker.number.int({ min: 1, max: 1000 }),
+  paymentStatus: faker.helpers.arrayElement(
+    Object.values(paymentStatusSchema.enum),
+  ),
+  shippingAddress: faker.location.streetAddress(),
+  createdAt: faker.date.recent().toISOString(),
+  updatedAt: faker.date.recent().toISOString(),
+});
+
+export const productsFaker = (): ProductSchema => ({
+  id: faker.string.uuid(),
+  name: faker.commerce.productName(),
+  description: faker.commerce.productDescription(),
+  sku: faker.commerce.product(),
+  createdAt: faker.date.recent().toISOString(),
+  updatedAt: faker.date.recent().toISOString(),
+});
+
 export const warehouses: WarehouseSchema[] = Array.from(
   { length: 100 },
   warehouseFaker,
@@ -76,3 +113,14 @@ export const users: UserSchema[] = [
 ];
 
 export const roles: RoleSchema[] = Array.from({ length: 50 }, roleFaker);
+
+export const permissions: PermissionSchema[] = Object.values(
+  permissionNameSchema.enum,
+).map((name) => ({
+  id: faker.string.uuid(),
+  name,
+  description: faker.commerce.productDescription(),
+}));
+
+export const orders: OrderSchema[] = Array.from({ length: 100 }, ordersFaker);
+export const products = Array.from({ length: 100 }, productsFaker);

@@ -10,7 +10,12 @@ export type ListRolePermissionsParamsSchema = z.infer<
 >;
 
 export const listRolePermissionsResponseSchema = z.object({
-  items: z.record(permissionNameSchema, z.boolean()),
+  items: z.array(
+    z.object({
+      name: permissionNameSchema,
+      enable: z.boolean(),
+    }),
+  ),
 });
 export type ListRolePermissionsResponseSchema = z.infer<
   typeof listRolePermissionsResponseSchema

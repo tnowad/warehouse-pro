@@ -2,6 +2,7 @@ import { WarehouseDetails } from "./_components/warehouse-details";
 import { getQueryClient } from "@/app/get-query-client";
 import { createGetWarehouseDetailsOptions } from "@/hooks/queries/get-warehouse-details.query";
 import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
+import { WarehouseRolesDetails } from "./_components/warehouse-roles-details";
 
 type WarehouseDetailPageProps = {
   params: Promise<{
@@ -21,6 +22,7 @@ export default async function WarehouseDetailPage({
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
       <WarehouseDetails warehouseId={warehouseId} />
+      <WarehouseRolesDetails warehouseId={warehouseId} />
     </HydrationBoundary>
   );
 }

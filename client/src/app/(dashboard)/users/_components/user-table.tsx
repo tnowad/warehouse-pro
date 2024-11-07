@@ -25,27 +25,19 @@ import { Button } from "@/components/ui/button";
 import { EllipsisIcon } from "lucide-react";
 import Link from "next/link";
 import { DataTableColumnHeader } from "@/components/ui/data-table-column-header";
-import { RoleSchema } from "@/lib/schemas/role.schema";
+import { UserSchema } from "@/lib/schemas/user.schema";
 
-import { flexRender, useReactTable } from "@tanstack/react-table";
-
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
+import { useReactTable } from "@tanstack/react-table";
 import { useQuery } from "@tanstack/react-query";
-import { createListRolesQueryOptions } from "@/hooks/queries/list-roles.query";
+import { createListUsersQueryOptions } from "@/hooks/queries/list-users.query";
 import { DataTablePagination } from "@/components/ui/data-table-pagination";
 import { Input } from "@/components/ui/input";
 import { DataTableViewOptions } from "@/components/ui/data-table-view-options";
-import { listRolesQueryFilterSchema } from "@/lib/apis/list-roles.api";
+import { listUsersQueryFilterSchema } from "@/lib/apis/list-users.api";
+import { DataTable } from "@/components/ui/data-table";
 
-export function RolesTable() {
-  const columns = useMemo<ColumnDef<RoleSchema>[]>(
+export function UserTable() {
+  const columns = useMemo<ColumnDef<UserSchema>[]>(
     () => [
       {
         id: "select",
@@ -80,9 +72,9 @@ export function RolesTable() {
         ),
       },
       {
-        accessorKey: "description",
+        accessorKey: "email",
         header: ({ column }) => (
-          <DataTableColumnHeader column={column} title="Description" />
+          <DataTableColumnHeader column={column} title="Email" />
         ),
       },
       {
@@ -112,14 +104,14 @@ export function RolesTable() {
               <DropdownMenuItem
                 onClick={() => navigator.clipboard.writeText(row.original.id)}
               >
-                Copy Role ID
+                Copy User ID
               </DropdownMenuItem>
               <DropdownMenuSeparator />
               <DropdownMenuItem asChild>
-                <Link href={`/roles/${row.original.id}`}>View details</Link>
+                <Link href={`/users/${row.original.id}`}>View details</Link>
               </DropdownMenuItem>
               <DropdownMenuItem asChild>
-                <Link href={`/roles/${row.original.id}/edit`}>
+                <Link href={`/users/${row.original.id}/edit`}>
                   Edit information
                 </Link>
               </DropdownMenuItem>
@@ -144,12 +136,12 @@ export function RolesTable() {
   const [globalFilter, setGlobalFilter] = useState<string>("");
 
   const { data, error, status } = useQuery(
-    createListRolesQueryOptions({
+    createListUsersQueryOptions({
       query: globalFilter,
       page: pagination.pageIndex + 1,
       pageSize: pagination.pageSize,
 
-      ...(listRolesQueryFilterSchema.safeParse(
+      ...(listUsersQueryFilterSchema.safeParse(
         columnFilters.reduce(
           (acc, { id, value }) => ({ ...acc, [id]: value }),
           {},
@@ -162,11 +154,11 @@ export function RolesTable() {
     }),
   );
 
-  const roles = data?.items ?? [];
+  const users = data?.items ?? [];
   const rowCount = data?.rowCount ?? 0;
 
   const table = useReactTable({
-    data: roles,
+    data: users,
     columns,
     debugTable: true,
     getCoreRowModel: getCoreRowModel(),
@@ -223,72 +215,7 @@ export function RolesTable() {
         <DataTableViewOptions table={table} />
       </div>
       <div className="rounded-md border">
-        <Table className="w-full">
-          <TableHeader>
-            {table.getHeaderGroups().map((headerGroup) => (
-              <TableRow key={headerGroup.id}>
-                {headerGroup.headers.map((header) => {
-                  return (
-                    <TableHead key={header.id}>
-                      {header.isPlaceholder
-                        ? null
-                        : flexRender(
-                            header.column.columnDef.header,
-                            header.getContext(),
-                          )}
-                    </TableHead>
-                  );
-                })}
-              </TableRow>
-            ))}
-          </TableHeader>
-          <TableBody>
-            {status === "pending" ? (
-              <TableRow>
-                <TableCell
-                  colSpan={columns.length}
-                  className="h-24 text-center"
-                >
-                  Loading...
-                </TableCell>
-              </TableRow>
-            ) : status === "error" ? (
-              <TableRow>
-                <TableCell
-                  colSpan={columns.length}
-                  className="h-24 text-center"
-                >
-                  {error?.message}
-                </TableCell>
-              </TableRow>
-            ) : table.getRowModel().rows?.length ? (
-              table.getRowModel().rows.map((row) => (
-                <TableRow
-                  key={row.id}
-                  data-state={row.getIsSelected() && "selected"}
-                >
-                  {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id}>
-                      {flexRender(
-                        cell.column.columnDef.cell,
-                        cell.getContext(),
-                      )}
-                    </TableCell>
-                  ))}
-                </TableRow>
-              ))
-            ) : (
-              <TableRow>
-                <TableCell
-                  colSpan={columns.length}
-                  className="h-24 text-center"
-                >
-                  No results.
-                </TableCell>
-              </TableRow>
-            )}
-          </TableBody>
-        </Table>
+        <DataTable table={table} status={status} error={error} />
       </div>
       <div className="mt-4">
         <DataTablePagination table={table} />

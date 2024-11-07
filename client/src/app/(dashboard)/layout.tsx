@@ -23,7 +23,7 @@ export default function DashboardLayout({
   return (
     <PermissionGuard
       permissions={data.permissions}
-      requiredPermissions={"VIEW_DASHBOARD"}
+      requiredPermissions={"DASHBOARD_VIEW"}
       fallback={<div>Unauthorized</div>}
     >
       <SidebarProvider>
