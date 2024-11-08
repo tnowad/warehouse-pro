@@ -44,6 +44,12 @@ public class Warehouse {
     mappedBy = "warehouse",
     orphanRemoval = true
   )
-  public Set<Inventory> inventories = new HashSet<>();
+  Set<Inventory> inventories = new HashSet<>();
+
+  @OneToMany(cascade = CascadeType.ALL , fetch = FetchType.LAZY,
+    mappedBy = "warehouse",
+    orphanRemoval = true
+  )
+  public Set<ProcurementItem> procurementItems = new HashSet<>();
 
 }
