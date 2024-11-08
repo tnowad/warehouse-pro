@@ -1,15 +1,12 @@
 package com.warehousepro.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
-import java.time.LocalDate;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.Set;
 
 @Entity
@@ -18,13 +15,20 @@ import java.util.Set;
 @AllArgsConstructor
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class Role {
+public class Supplier {
 
   @Id
+  @GeneratedValue(strategy = GenerationType.UUID)
+  String id;
+
   @Column(name = "name")
   String name;
-  @Column(name = "description")
-  String description;
+
+  @Column(name = "contact_info")
+  String contact;
+
+  @Column(name = "address")
+  String address;
 
   @CreationTimestamp
   Date createdAt;
@@ -32,22 +36,16 @@ public class Role {
   @UpdateTimestamp
   Date updatedAt;
 
-  @ManyToMany(mappedBy = "roles", fetch = FetchType.LAZY , cascade = {
-    CascadeType.PERSIST,
-    CascadeType.MERGE
-  })
-  Set<Permission> permissions = new HashSet<>();
-
-  @ManyToMany(mappedBy = "roles", fetch = FetchType.LAZY , cascade = {
-    CascadeType.PERSIST,
-    CascadeType.MERGE
-  })
-  @JsonIgnore
-  Set<User> users = new HashSet<>();
-
   @OneToMany(cascade = CascadeType.ALL , fetch = FetchType.LAZY,
-    mappedBy = "role",
+    mappedBy = "supplier",
     orphanRemoval = true
   )
-  Set<RoleAssignment> assignments;
+  Set<Procurement> procurements;
+
+  @OneToMany(cascade = CascadeType.ALL , fetch = FetchType.LAZY,
+    mappedBy = "supplier",
+    orphanRemoval = true
+  )
+  Set<SupplierProduct> supplierProducts;
+
 }

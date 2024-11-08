@@ -1,7 +1,5 @@
 package com.warehousepro.dto.request.product;
 
-import com.warehousepro.dto.request.inventory.CreateInventoryRequest;
-import com.warehousepro.entity.Inventory;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 

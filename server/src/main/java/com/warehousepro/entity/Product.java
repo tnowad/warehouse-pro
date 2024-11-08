@@ -1,6 +1,7 @@
 package com.warehousepro.entity;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.warehousepro.dto.request.inventory.CreateInventoryRequest;
@@ -47,8 +48,24 @@ public class Product {
     mappedBy = "product",
     orphanRemoval = true
   )
-  public Set<Inventory> inventories = new HashSet<>();
+  Set<Inventory> inventories = new HashSet<>();
+
+  @OneToMany(cascade = CascadeType.ALL , fetch = FetchType.LAZY,
+    mappedBy = "product",
+    orphanRemoval = true
+  )
+  Set<ProcurementItem> procurementItems =new HashSet<>();
+
+  @OneToMany(cascade = CascadeType.ALL , fetch = FetchType.LAZY,
+    mappedBy = "product",
+    orphanRemoval = true
+  )
+  Set<SupplierProduct> supplierProducts;
 
 
-
+  @OneToMany(cascade = CascadeType.ALL , fetch = FetchType.LAZY,
+    mappedBy = "product",
+    orphanRemoval = true
+  )
+  Set<OrderItem> orderItems;
 }
