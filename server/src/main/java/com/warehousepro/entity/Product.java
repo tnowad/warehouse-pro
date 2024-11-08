@@ -56,4 +56,16 @@ public class Product {
   )
   Set<ProcurementItem> procurementItems =new HashSet<>();
 
+  @OneToMany(cascade = CascadeType.ALL , fetch = FetchType.LAZY,
+    mappedBy = "product",
+    orphanRemoval = true
+  )
+  Set<SupplierProduct> supplierProducts;
+
+
+  @OneToMany(cascade = CascadeType.ALL , fetch = FetchType.LAZY,
+    mappedBy = "product",
+    orphanRemoval = true
+  )
+  Set<OrderItem> orderItems;
 }

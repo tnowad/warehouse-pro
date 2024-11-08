@@ -35,7 +35,7 @@ public class ProcurementItemService {
     Product product = productRepository.findById(procurementItem.getProduct().getId());
     Warehouse warehouse = wareHouseRepository.getById(procurementItem.getWarehouse().getId());
     Procurement procurement = procurementRepository.getById(procurementItem.getProcurement().getId());
-    
+
 
     procurementItem.setProduct(product);
     procurementItem.setWarehouse(warehouse);

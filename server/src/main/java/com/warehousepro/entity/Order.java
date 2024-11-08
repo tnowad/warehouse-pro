@@ -1,50 +1,53 @@
 package com.warehousepro.entity;
 
-
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import java.util.Date;
-import java.util.HashSet;
 import java.util.Set;
 
 @Entity
-@AllArgsConstructor
-@NoArgsConstructor
-@Builder
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class Procurement {
-
+@Table(name = "orders")
+public class Order {
   @Id
   @GeneratedValue(strategy = GenerationType.UUID)
   String id;
 
-  @Column(name = "order_date")
-  Date orderDate;
-
-  @Column(name = "delivery_date")
-  Date deliveryDate;
-
   @Column(name = "status")
   String status;
 
-  @Column(name = "total_cost")
-  Double totalCost;
+  @Column(name = "total_amount")
+  Double totalAmount;
+
+  @Column(name = "payment_status")
+  String paymentStatus;
+
+  @Column(name = "shipping_address")
+  String shippingAddress;
 
   @CreationTimestamp
   Date createdAt;
 
+  @UpdateTimestamp
+  Date updatedAt;
+
   @OneToMany(cascade = CascadeType.ALL , fetch = FetchType.LAZY,
-    mappedBy = "procurement",
+    mappedBy = "order",
     orphanRemoval = true
   )
-  Set<ProcurementItem> procurementItems = new HashSet<>();
+  Set<Shipment> shipments;
 
-  @ManyToOne
-  @JoinColumn(name = "supplier_id")
-  Supplier supplier;
-
+  @OneToMany(cascade = CascadeType.ALL , fetch = FetchType.LAZY,
+    mappedBy = "order",
+    orphanRemoval = true
+  )
+  Set<OrderItem> orderItems;
 }

@@ -1,50 +1,51 @@
 package com.warehousepro.entity;
 
-
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import java.util.Date;
-import java.util.HashSet;
 import java.util.Set;
 
 @Entity
-@AllArgsConstructor
-@NoArgsConstructor
-@Builder
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class Procurement {
+public class Supplier {
 
   @Id
   @GeneratedValue(strategy = GenerationType.UUID)
   String id;
 
-  @Column(name = "order_date")
-  Date orderDate;
+  @Column(name = "name")
+  String name;
 
-  @Column(name = "delivery_date")
-  Date deliveryDate;
+  @Column(name = "contact_info")
+  String contact;
 
-  @Column(name = "status")
-  String status;
-
-  @Column(name = "total_cost")
-  Double totalCost;
+  @Column(name = "address")
+  String address;
 
   @CreationTimestamp
   Date createdAt;
 
+  @UpdateTimestamp
+  Date updatedAt;
+
   @OneToMany(cascade = CascadeType.ALL , fetch = FetchType.LAZY,
-    mappedBy = "procurement",
+    mappedBy = "supplier",
     orphanRemoval = true
   )
-  Set<ProcurementItem> procurementItems = new HashSet<>();
+  Set<Procurement> procurements;
 
-  @ManyToOne
-  @JoinColumn(name = "supplier_id")
-  Supplier supplier;
+  @OneToMany(cascade = CascadeType.ALL , fetch = FetchType.LAZY,
+    mappedBy = "supplier",
+    orphanRemoval = true
+  )
+  Set<SupplierProduct> supplierProducts;
 
 }

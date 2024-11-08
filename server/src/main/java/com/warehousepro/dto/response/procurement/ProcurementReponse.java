@@ -1,5 +1,6 @@
 package com.warehousepro.dto.response.procurement;
 
+import com.warehousepro.dto.response.supplier.SupplierResponse;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
@@ -17,4 +18,5 @@ public class ProcurementReponse {
   String status;
   Double totalCost;
   Date createdAt;
+  SupplierResponse supplierResponse;
 }

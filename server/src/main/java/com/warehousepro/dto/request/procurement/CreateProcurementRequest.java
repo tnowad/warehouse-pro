@@ -1,6 +1,7 @@
 package com.warehousepro.dto.request.procurement;
 
 
+import com.warehousepro.entity.Supplier;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
@@ -16,4 +17,5 @@ public class CreateProcurementRequest {
   Date deliveryDate;
   String status;
   Double totalCost;
+  Supplier supplier;
 }

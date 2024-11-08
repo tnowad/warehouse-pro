@@ -45,7 +45,13 @@ public class User {
     joinColumns = @JoinColumn(name = "user_id"),
     inverseJoinColumns = @JoinColumn(name = "role_id")
   )
-  private Set<Role> roles = new HashSet<>();
+  Set<Role> roles = new HashSet<>();
+
+  @OneToMany(cascade = CascadeType.ALL , fetch = FetchType.LAZY,
+    mappedBy = "user",
+    orphanRemoval = true
+  )
+  Set<AuditLog> auditLogs = new HashSet<>();
 
   public void addRole(Role role){
     this.roles.add(role);

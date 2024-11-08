@@ -44,4 +44,10 @@ public class Role {
   })
   @JsonIgnore
   Set<User> users = new HashSet<>();
+
+  @OneToMany(cascade = CascadeType.ALL , fetch = FetchType.LAZY,
+    mappedBy = "role",
+    orphanRemoval = true
+  )
+  Set<RoleAssignment> assignments;
 }
