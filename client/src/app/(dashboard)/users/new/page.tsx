@@ -23,7 +23,6 @@ import {
 import { useToast } from "@/hooks/use-toast";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-
 import { zodResolver } from "@hookform/resolvers/zod";
 import { cn, mapFieldErrorToFormError } from "@/lib/utils";
 import {
@@ -51,12 +50,6 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { useCallback, useMemo, useRef, useState } from "react";
 import { useDebounce } from "@/components/ui/multiple-selector";
 import { Badge } from "@/components/ui/badge";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 
 export default function Page() {
   const router = useRouter();
@@ -64,31 +57,31 @@ export default function Page() {
   const createUserMutation = useCreateUserMutation();
   const [roleSearchQuery, setRoleSearchQuery] = useState("");
   const debouncedRoleSearchQuery = useDebounce(roleSearchQuery, 300);
+
   const listRolesInfinityQuery = useInfiniteQuery(
     createListRolesInfiniteQueryOptions({
       query: debouncedRoleSearchQuery,
     }),
   );
 
-  const observer = useRef<IntersectionObserver>(null);
-
-  const lastElementRef = useCallback(
+  const lastRoleCommandItemObserver = useRef<IntersectionObserver>(null);
+  const lastRoleCommandItemElementRef = useCallback(
     (node: HTMLDivElement) => {
       if (listRolesInfinityQuery.isLoading) return;
-
-      if (observer.current) observer.current.disconnect();
-
-      observer.current = new IntersectionObserver((entries) => {
-        if (
-          entries[0].isIntersecting &&
-          listRolesInfinityQuery.hasNextPage &&
-          !listRolesInfinityQuery.isFetching
-        ) {
-          listRolesInfinityQuery.fetchNextPage();
-        }
-      });
-
-      if (node) observer.current.observe(node);
+      if (lastRoleCommandItemObserver.current)
+        lastRoleCommandItemObserver.current.disconnect();
+      lastRoleCommandItemObserver.current = new IntersectionObserver(
+        (entries) => {
+          if (
+            entries[0].isIntersecting &&
+            listRolesInfinityQuery.hasNextPage &&
+            !listRolesInfinityQuery.isFetching
+          ) {
+            listRolesInfinityQuery.fetchNextPage();
+          }
+        },
+      );
+      if (node) lastRoleCommandItemObserver.current.observe(node);
     },
     [listRolesInfinityQuery],
   );
@@ -121,9 +114,8 @@ export default function Page() {
           title: "User creation failed",
           description: error.message,
         });
-        switch (error.type) {
-          case "ValidationError":
-            mapFieldErrorToFormError(createUserForm.setError, error.errors);
+        if (error.type === "ValidationError") {
+          mapFieldErrorToFormError(createUserForm.setError, error.errors);
         }
       },
     });
@@ -136,16 +128,16 @@ export default function Page() {
   );
 
   return (
-    <Card className="mx-auto w-full space-y-6">
+    <Card className="mx-auto w-full">
       <CardHeader>
         <CardTitle>Add User</CardTitle>
         <CardDescription>
           Fill out the form below to add a new user.
         </CardDescription>
       </CardHeader>
-      <CardContent className="space-y-4">
+      <CardContent>
         <Form {...createUserForm}>
-          <form onSubmit={onSubmit}>
+          <form onSubmit={onSubmit} className="space-y-4">
             <FormField
               control={createUserForm.control}
               name="name"
@@ -212,49 +204,20 @@ export default function Page() {
                             !field.value && "text-muted-foreground",
                           )}
                         >
-                          {field.value ? (
+                          {field.value.length ? (
                             <span className="space-x-1">
                               {field.value.slice(0, 3).map((roleId) => (
                                 <Badge key={roleId}>
                                   {createUserForm.getValues("roles")[roleId]}
                                 </Badge>
                               ))}
-                              {field.value.length > 4 && (
-                                <DropdownMenu>
-                                  <DropdownMenuTrigger>
-                                    <Badge>
-                                      +{field.value.length - 4} more
-                                    </Badge>
-                                  </DropdownMenuTrigger>
-                                  <DropdownMenuContent>
-                                    {field.value
-                                      .slice(3, field.value.length - 1)
-                                      .map((roleId) => (
-                                        <DropdownMenuItem key={roleId}>
-                                          {
-                                            createUserForm.getValues("roles")[
-                                              roleId
-                                            ]
-                                          }
-                                        </DropdownMenuItem>
-                                      ))}
-                                  </DropdownMenuContent>
-                                </DropdownMenu>
-                              )}
                               {field.value.length > 3 && (
-                                <Badge>
-                                  {
-                                    createUserForm.getValues("roles")[
-                                      field.value[field.value.length - 1]
-                                    ]
-                                  }
-                                </Badge>
+                                <Badge>+{field.value.length - 3} more</Badge>
                               )}
                             </span>
                           ) : (
                             "Select role"
                           )}
-
                           <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                         </Button>
                       </FormControl>
@@ -290,14 +253,14 @@ export default function Page() {
                                   }
                                 }}
                               >
-                                {role.name}
                                 <Checkbox
                                   checked={field.value?.includes(role.id)}
                                 />
+                                {role.name}
                               </CommandItem>
                             ))}
                             {listRolesInfinityQuery.hasNextPage && (
-                              <CommandItem ref={lastElementRef}>
+                              <CommandItem ref={lastRoleCommandItemElementRef}>
                                 Loading roles...
                               </CommandItem>
                             )}
@@ -325,7 +288,7 @@ export default function Page() {
       </CardContent>
       <CardFooter className="flex justify-between">
         <Link href="/users" className="text-sm hover:text-primary">
-          Back to Users
+          Back to users list
         </Link>
       </CardFooter>
     </Card>
