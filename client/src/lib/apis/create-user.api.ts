@@ -26,6 +26,10 @@ export type CreateUserErrorResponseSchema = z.infer<
   typeof createUserErrorResponseSchema
 >;
 
-export function createUserApi(body: CreateUserBodySchema) {
-  return apiClient.post<CreateUserResponseSchema>("/users", body);
+export async function createUserApi(body: CreateUserBodySchema) {
+  const response = await apiClient.post<CreateUserResponseSchema>(
+    "/users",
+    body,
+  );
+  return response.data;
 }

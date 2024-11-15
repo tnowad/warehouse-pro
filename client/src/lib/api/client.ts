@@ -44,6 +44,20 @@ export const apiClient = {
       config,
     );
   },
+
+  delete: <TResponse = unknown, TQueryParams = unknown>(
+    url: string,
+    params?: TQueryParams,
+    config?: AxiosRequestConfig<TQueryParams>,
+  ): Promise<AxiosResponse<TResponse, TQueryParams>> => {
+    return client.delete<TResponse, AxiosResponse<TResponse, TQueryParams>>(
+      url,
+      {
+        params,
+        ...config,
+      },
+    );
+  },
 };
 
 let isRefreshing = false;

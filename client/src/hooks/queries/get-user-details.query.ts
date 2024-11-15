@@ -3,6 +3,7 @@ import {
   GetUserDetailsParamsSchema,
 } from "@/lib/apis/get-user-details.api";
 import { queryOptions } from "@tanstack/react-query";
+import { isAxiosError } from "axios";
 
 export function createGetUserDetailsQueryOptions(
   params: GetUserDetailsParamsSchema,
@@ -12,5 +13,6 @@ export function createGetUserDetailsQueryOptions(
     queryKey,
     queryFn: () => getUserDetailsApi(params),
     enabled: !!params.userId,
+    throwOnError: (error) => isAxiosError(error),
   });
 }

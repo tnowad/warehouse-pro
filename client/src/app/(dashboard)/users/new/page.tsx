@@ -50,6 +50,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { useCallback, useMemo, useRef, useState } from "react";
 import { useDebounce } from "@/components/ui/multiple-selector";
 import { Badge } from "@/components/ui/badge";
+import { RoleSchema } from "@/lib/schemas/role.schema";
 
 export default function Page() {
   const router = useRouter();
@@ -88,7 +89,7 @@ export default function Page() {
 
   const createUserForm = useForm<
     CreateUserBodySchema & {
-      roles: Record<string, string>;
+      roles: RoleSchema[];
     }
   >({
     resolver: zodResolver(createUserBodySchema),
@@ -97,6 +98,7 @@ export default function Page() {
       email: "",
       password: "",
       roleIds: [],
+      roles: [],
     },
   });
 
@@ -208,7 +210,11 @@ export default function Page() {
                             <span className="space-x-1">
                               {field.value.slice(0, 3).map((roleId) => (
                                 <Badge key={roleId}>
-                                  {createUserForm.getValues("roles")[roleId]}
+                                  {
+                                    createUserForm
+                                      .getValues("roles")
+                                      .find((role) => role.id === roleId)?.name
+                                  }
                                 </Badge>
                               ))}
                               {field.value.length > 3 && (
@@ -243,13 +249,18 @@ export default function Page() {
                                         (id) => id !== role.id,
                                       ),
                                     );
+                                    createUserForm.setValue(
+                                      "roles",
+                                      createUserForm
+                                        .getValues("roles")
+                                        .filter((r) => r.id !== role.id),
+                                    );
                                   } else {
                                     field.onChange([...field.value, role.id]);
-
-                                    createUserForm.setValue("roles", {
+                                    createUserForm.setValue("roles", [
                                       ...createUserForm.getValues("roles"),
-                                      [role.id]: role.name,
-                                    });
+                                      role,
+                                    ]);
                                   }
                                 }}
                               >

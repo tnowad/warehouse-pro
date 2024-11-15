@@ -6,19 +6,16 @@ type Params = {
   userId: string;
 };
 
-export async function GET(
-  request: NextRequest,
-  { params }: { params: Params },
-) {
+export async function GET(_: NextRequest, { params }: { params: Params }) {
   const { userId } = params;
   const user = users.find((user) => user.id === userId);
   if (!user) {
-    return Response.json({ message: "User not found" });
+    throw Response.json({ message: "User not found" }, { status: 404 });
   }
 
   return Response.json({
     ...user,
-    roles: roles.map((role) => role.id),
+    roles: roles,
   } satisfies GetUserDetailsResponseSchema);
 }
 

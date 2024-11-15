@@ -1,6 +1,7 @@
 import { z } from "zod";
 import { userSchema } from "../schemas/user.schema";
 import { apiClient } from "../api/client";
+import { roleSchema } from "../schemas/role.schema";
 
 export const getUserDetailsParamsSchema = z.object({
   userId: z.string(),
@@ -14,7 +15,7 @@ export const getUserDetailsResponseSchema = userSchema
     password: true,
   })
   .extend({
-    roles: z.array(z.string()),
+    roles: z.array(roleSchema),
   });
 export type GetUserDetailsResponseSchema = z.infer<
   typeof getUserDetailsResponseSchema
