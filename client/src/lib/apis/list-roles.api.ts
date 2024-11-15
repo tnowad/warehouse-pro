@@ -1,6 +1,7 @@
 import { z } from "zod";
 import { roleSchema } from "../schemas/role.schema";
 import { apiClient } from "../api/client";
+import { ListWarehouseRolesQuerySchema } from "./list-warehouse-roles.api";
 
 export const listRolesQueryFilterSchema = z.object({
   ids: z.array(z.string()).optional(),
@@ -17,6 +18,8 @@ export const listRolesQuerySchema = z.object({
 export const listRolesResponseSchema = z.object({
   items: z.array(roleSchema),
   rowCount: z.number(),
+  pageCount: z.number(),
+  page: z.number(),
 });
 export type ListRolesResponseSchema = z.infer<typeof listRolesResponseSchema>;
 
@@ -27,7 +30,12 @@ export type ListRolesErrorResponseSchema = z.infer<
   typeof listRolesErrorResponseSchema
 >;
 
-export async function listRolesApi(): Promise<ListRolesResponseSchema> {
-  const response = await apiClient.get<ListRolesResponseSchema>("/roles");
+export async function listRolesApi(
+  query: ListWarehouseRolesQuerySchema,
+): Promise<ListRolesResponseSchema> {
+  const response = await apiClient.get<ListRolesResponseSchema>(
+    "/roles",
+    query,
+  );
   return response.data;
 }

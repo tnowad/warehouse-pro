@@ -208,6 +208,9 @@ export function OrderTable() {
 
   return (
     <div>
+      <Button asChild>
+        <Link href="/orders/create">Create Order</Link>
+      </Button>
       <div className="flex items-center py-4 gap-2">
         <Input
           value={globalFilter ?? ""}

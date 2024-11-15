@@ -17,5 +17,7 @@ export async function GET(request: NextRequest) {
   return Response.json({
     items,
     rowCount: allItems.length,
+    pageCount: Math.ceil(allItems.length / pageSize),
+    page,
   } satisfies ListRolesResponseSchema);
 }
