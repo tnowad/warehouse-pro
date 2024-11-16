@@ -26,16 +26,39 @@ import {
 } from "@/components/ui/alert-dialog";
 import { createGetRoleDetailsQueryOptions } from "@/hooks/queries/get-role-details.query";
 import { useQuery } from "@tanstack/react-query";
+import { Badge } from "@/components/ui/badge";
+
+import {
+  HoverCard,
+  HoverCardContent,
+  HoverCardTrigger,
+} from "@/components/ui/hover-card";
+import { useDeleteRoleMutation } from "@/hooks/mutations/delete-role.mutation";
+import { useToast } from "@/hooks/use-toast";
+import Link from "next/link";
 
 type RoleDetailProps = {
   roleId: string;
 };
 
 export function RoleDetails({ roleId }: RoleDetailProps) {
+  const { toast } = useToast();
   const router = useRouter();
   const roleDetailsQuery = useQuery(
     createGetRoleDetailsQueryOptions({ id: roleId }),
   );
+
+  const deleteRoleMutation = useDeleteRoleMutation({ roleId });
+  const onDelete = () =>
+    deleteRoleMutation.mutate(undefined, {
+      onSuccess(data) {
+        toast({
+          title: "Role deleted successfully",
+          description: data.message,
+        });
+        router.push("/roles");
+      },
+    });
 
   const role = roleDetailsQuery.data;
 
@@ -84,10 +107,6 @@ export function RoleDetails({ roleId }: RoleDetailProps) {
             </div>
 
             <div>
-              <div>Permissions</div>
-            </div>
-
-            <div>
               <div>Created At</div>
               <div>{role.createdAt}</div>
             </div>
@@ -95,6 +114,22 @@ export function RoleDetails({ roleId }: RoleDetailProps) {
             <div>
               <div>Updated At</div>
               <div>{role.updatedAt}</div>
+            </div>
+
+            <div className="col-span-full">
+              <div>Permissions</div>
+              <div className="inline-flex gap-1 flex-wrap">
+                {role.permissions.map((permission) => (
+                  <HoverCard key={permission.id}>
+                    <HoverCardTrigger asChild>
+                      <Badge variant={"outline"}>{permission.name}</Badge>
+                    </HoverCardTrigger>
+                    <HoverCardContent>
+                      {permission.description}
+                    </HoverCardContent>
+                  </HoverCard>
+                ))}
+              </div>
             </div>
           </div>
         </div>
@@ -118,27 +153,13 @@ export function RoleDetails({ roleId }: RoleDetailProps) {
             </AlertDialogHeader>
             <AlertDialogFooter>
               <AlertDialogCancel>Cancel</AlertDialogCancel>
-              <AlertDialogAction
-                onClick={() => {
-                  roleSoftDeleteMutation.mutate();
-                }}
-              >
-                Delete
-              </AlertDialogAction>
+              <AlertDialogAction onClick={onDelete}>Delete</AlertDialogAction>
             </AlertDialogFooter>
           </AlertDialogContent>
         </AlertDialog>
 
-        <Button size={"sm"} variant={"ghost"}>
-          Deactivate
-        </Button>
-        <Button
-          size={"sm"}
-          onClick={() => {
-            router.push(`/roles/${role.id}/edit`);
-          }}
-        >
-          Edit
+        <Button size={"sm"} asChild>
+          <Link href={`/roles/${role.id}/edit`}>Edit</Link>
         </Button>
       </CardFooter>
     </Card>
