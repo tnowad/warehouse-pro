@@ -1,6 +1,7 @@
 package com.warehousepro.controller;
 
 import com.warehousepro.dto.request.order.CreateOrderRequest;
+import com.warehousepro.dto.request.order.UpdateOrderRequest;
 import com.warehousepro.dto.response.order.OrderResponse;
 import com.warehousepro.entity.Order;
 import com.warehousepro.mapstruct.OrderMapper;
@@ -27,8 +28,23 @@ public class OrderController {
   }
 
   @GetMapping
-  public ResponseEntity<List<Order>> getALl(){
+  public ResponseEntity<List<OrderResponse>> getALl(){
     return ResponseEntity.ok(orderService.getAll());
+  }
+
+  @PutMapping("/order-cancel/{id}")
+  public ResponseEntity<OrderResponse> cancel(@PathVariable("id") String id)  {
+    return ResponseEntity.ok(orderService.cancel(id));
+  }
+
+  @PutMapping("/update-order/{id}")
+  public ResponseEntity<OrderResponse> update(@PathVariable("id") String id , @RequestBody UpdateOrderRequest request){
+    return ResponseEntity.ok(orderService.update(id , request));
+  }
+
+  @GetMapping("/view-order/{id}")
+  public ResponseEntity<OrderResponse> getById(@PathVariable("id") String id){
+    return ResponseEntity.ok(orderService.getById(id));
   }
 
 
