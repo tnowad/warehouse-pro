@@ -1,6 +1,7 @@
 package com.warehousepro.service;
 
 import com.warehousepro.dto.request.order.CreateOrderItemRequest;
+import com.warehousepro.dto.response.order.OrderItemReponse;
 import com.warehousepro.entity.OrderItem;
 import com.warehousepro.mapstruct.OrderItemMapper;
 import com.warehousepro.repository.OrderItemRepository;
@@ -31,4 +32,10 @@ public class OrderItemService {
   public List<OrderItem> getAll(){
     return repository.findAll();
   }
+
+  public OrderItemReponse getById(String id){
+    OrderItem orderItem =  repository.findById(id).orElseThrow(() -> new RuntimeException("order item id không tồn tại"));
+    return mapper.toOrderItemReponse(orderItem);
+  }
+
 }

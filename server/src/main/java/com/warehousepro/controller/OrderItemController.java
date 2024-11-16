@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/order_items")
+@RequestMapping("/order-items")
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class OrderItemController {
@@ -30,4 +30,10 @@ public class OrderItemController {
   public ResponseEntity<List<OrderItem>> getAll(){
     return ResponseEntity.ok(service.getAll());
   }
+
+  @GetMapping("/view-order-item/{id}")
+  public ResponseEntity<OrderItemReponse> getById(@PathVariable String id){
+    return ResponseEntity.ok(service.getById(id));
+  }
+
 }
