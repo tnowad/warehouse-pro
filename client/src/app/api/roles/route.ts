@@ -1,5 +1,9 @@
+import {
+  createRoleBodySchema,
+  CreateRoleResponseSchema,
+} from "@/lib/apis/create-role.api";
 import { ListRolesResponseSchema } from "@/lib/apis/list-roles.api";
-import { roles } from "@/mocks";
+import { roleFaker, roles } from "@/mocks";
 import { NextRequest } from "next/server";
 
 export async function GET(request: NextRequest) {
@@ -20,4 +24,11 @@ export async function GET(request: NextRequest) {
     pageCount: Math.ceil(allItems.length / pageSize),
     page,
   } satisfies ListRolesResponseSchema);
+}
+
+export async function POST(request: NextRequest) {
+  const body = createRoleBodySchema.parse(await request.json());
+  return Response.json({
+    ...roleFaker(),
+  } satisfies CreateRoleResponseSchema);
 }

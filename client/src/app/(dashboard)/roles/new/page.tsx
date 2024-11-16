@@ -10,7 +10,7 @@ import {
   CardFooter,
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { useForm } from "react-hook-form";
+import { useFieldArray, useForm } from "react-hook-form";
 import {
   Form,
   FormControl,
@@ -31,11 +31,27 @@ import {
   CreateRoleBodySchema,
 } from "@/lib/apis/create-role.api";
 import { useCreateRoleMutation } from "@/hooks/mutations/create-role.mutation";
+import { useQuery } from "@tanstack/react-query";
+import { createListPermissionsQueryOptions } from "@/hooks/queries/list-permissions.query";
+import { Checkbox } from "@/components/ui/checkbox";
+import {
+  HoverCard,
+  HoverCardContent,
+  HoverCardTrigger,
+} from "@/components/ui/hover-card";
+import { InfoIcon } from "lucide-react";
+
+const PERMISSIONS_MAX_COUNT = 999;
 
 export default function Page() {
   const router = useRouter();
   const { toast } = useToast();
   const createRoleMutation = useCreateRoleMutation();
+  const listPermissionsQuery = useQuery(
+    createListPermissionsQueryOptions({
+      pageSize: PERMISSIONS_MAX_COUNT,
+    }),
+  );
 
   const createRoleForm = useForm<CreateRoleBodySchema>({
     resolver: zodResolver(createRoleBodySchema),
@@ -48,12 +64,12 @@ export default function Page() {
 
   const onSubmit = createRoleForm.handleSubmit((values) => {
     createRoleMutation.mutate(values, {
-      onSuccess: () => {
+      onSuccess: (data) => {
         toast({
           title: "Role created successfully",
           description: "The new role has been created.",
         });
-        router.push("/roles");
+        router.push(`/roles/${data.id}`);
       },
       onError: (error) => {
         toast({
@@ -76,9 +92,9 @@ export default function Page() {
           Fill out the form below to create a new role.
         </CardDescription>
       </CardHeader>
-      <CardContent className="space-y-4">
+      <CardContent>
         <Form {...createRoleForm}>
-          <form onSubmit={onSubmit}>
+          <form onSubmit={onSubmit} className="space-y-4">
             <FormField
               control={createRoleForm.control}
               name="name"
@@ -119,33 +135,39 @@ export default function Page() {
                 <FormItem>
                   <FormLabel>Permissions</FormLabel>
                   <FormControl>
-                    <div className="space-y-2">
-                      {["View", "Edit", "Delete", "Manage"].map(
-                        (permission) => (
-                          <div
-                            key={permission}
-                            className="flex items-center space-x-2"
-                          >
-                            <input
-                              type="checkbox"
-                              value={permission}
-                              checked={field.value?.includes(permission)}
-                              onChange={(e) => {
-                                const newPermissions = e.target.checked
-                                  ? [...(field.value ?? []), permission]
-                                  : field.value?.filter(
-                                      (p) => p !== permission,
-                                    );
-                                field.onChange(newPermissions);
-                              }}
-                              id={`permission-${permission}`}
-                            />
-                            <label htmlFor={`permission-${permission}`}>
-                              {permission}
-                            </label>
-                          </div>
-                        ),
-                      )}
+                    <div className="space-y-1 grid lg:grid-cols-2">
+                      {listPermissionsQuery.data?.items.map((permission) => (
+                        <div
+                          key={permission.id}
+                          className="flex items-center space-x-2"
+                        >
+                          <Checkbox
+                            value={permission.id}
+                            checked={field.value?.includes(permission.id)}
+                            onCheckedChange={(checked) => {
+                              const newPermissions = checked
+                                ? [...(field.value ?? []), permission.id]
+                                : field.value?.filter(
+                                    (p) => p !== permission.id,
+                                  );
+                              field.onChange(newPermissions);
+                            }}
+                            id={`permission-${permission.id}`}
+                          />
+
+                          <label htmlFor={`permission-${permission.id}`}>
+                            {permission.name}
+                          </label>
+                          <HoverCard>
+                            <HoverCardTrigger>
+                              <InfoIcon className="size-4" />
+                            </HoverCardTrigger>
+                            <HoverCardContent>
+                              {permission.description}
+                            </HoverCardContent>
+                          </HoverCard>
+                        </div>
+                      ))}
                     </div>
                   </FormControl>
                   <FormMessage />

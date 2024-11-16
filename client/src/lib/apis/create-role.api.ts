@@ -2,7 +2,6 @@ import { z } from "zod";
 import { apiClient } from "../api/client";
 import { validationErrorResponseSchema } from "../api/schemas/validation-error-response-schema";
 import { roleSchema } from "../schemas/role.schema";
-import { permissionSchema } from "../schemas/permission.schema";
 
 export const createRoleBodySchema = roleSchema
   .omit({ id: true })
@@ -15,9 +14,7 @@ export const createRoleBodySchema = roleSchema
   });
 export type CreateRoleBodySchema = z.infer<typeof createRoleBodySchema>;
 
-export const createRoleResponseSchema = roleSchema.extend({
-  permissions: z.array(permissionSchema),
-});
+export const createRoleResponseSchema = roleSchema;
 
 export type CreateRoleResponseSchema = z.infer<typeof createRoleResponseSchema>;
 
