@@ -27,6 +27,14 @@ import Link from "next/link";
 import { DataTableColumnHeader } from "@/components/ui/data-table-column-header";
 import { UserSchema } from "@/lib/schemas/user.schema";
 
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { useReactTable } from "@tanstack/react-table";
 import { useQuery } from "@tanstack/react-query";
 import { createListUsersQueryOptions } from "@/hooks/queries/list-users.query";
@@ -191,35 +199,45 @@ export function UserTable() {
   });
 
   return (
-    <div>
-      <div className="flex items-center py-4 gap-2">
-        <Input
-          value={globalFilter ?? ""}
-          onChange={(event) =>
-            table.setGlobalFilter(String(event.target.value))
-          }
-          placeholder="Search..."
-          className="max-w-sm"
-        />
-        <Button
-          variant="outline"
-          className="ml-auto"
-          size={"sm"}
-          onClick={() => {
-            table.resetGlobalFilter();
-            table.resetColumnFilters();
-          }}
-        >
-          Clear Filter
-        </Button>
-        <DataTableViewOptions table={table} />
-      </div>
-      <div className="rounded-md border">
-        <DataTable table={table} status={status} error={error} />
-      </div>
-      <div className="mt-4">
-        <DataTablePagination table={table} />
-      </div>
-    </div>
+    <Card>
+      <CardHeader>
+        <CardTitle>
+          Users
+          <Button asChild>
+            <Link href="/users/new">Add User</Link>
+          </Button>
+        </CardTitle>
+      </CardHeader>
+      <CardContent>
+        <div className="flex items-center py-4 gap-2">
+          <Input
+            value={globalFilter ?? ""}
+            onChange={(event) =>
+              table.setGlobalFilter(String(event.target.value))
+            }
+            placeholder="Search..."
+            className="max-w-sm"
+          />
+          <Button
+            variant="outline"
+            className="ml-auto"
+            size={"sm"}
+            onClick={() => {
+              table.resetGlobalFilter();
+              table.resetColumnFilters();
+            }}
+          >
+            Clear Filter
+          </Button>
+          <DataTableViewOptions table={table} />
+        </div>
+        <div className="rounded-md border">
+          <DataTable table={table} status={status} error={error} />
+        </div>
+        <div className="mt-4">
+          <DataTablePagination table={table} />
+        </div>
+      </CardContent>
+    </Card>
   );
 }

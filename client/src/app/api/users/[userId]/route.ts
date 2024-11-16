@@ -1,23 +1,14 @@
 import { GetUserDetailsResponseSchema } from "@/lib/apis/get-user-details.api";
-import { roles, users } from "@/mocks";
+import { roles, userFaker, users } from "@/mocks";
 import { NextRequest } from "next/server";
 
 type Params = {
   userId: string;
 };
 
-export async function GET(
-  request: NextRequest,
-  { params }: { params: Params },
-) {
-  const { userId } = params;
-  const user = users.find((user) => user.id === userId);
-  if (!user) {
-    return Response.json({ message: "User not found" }, { status: 404 });
-  }
-
+export async function GET(_: NextRequest, { params }: { params: Params }) {
   return Response.json({
-    ...user,
+    ...userFaker(),
     roles: roles,
   } satisfies GetUserDetailsResponseSchema);
 }
