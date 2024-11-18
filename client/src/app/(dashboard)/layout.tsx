@@ -22,7 +22,7 @@ export default function DashboardLayout({
 
   return (
     <PermissionGuard
-      permissions={data.permissions}
+      permissions={data.items}
       requiredPermissions={"DASHBOARD_VIEW"}
       fallback={<div>Unauthorized</div>}
     >

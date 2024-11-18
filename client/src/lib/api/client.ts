@@ -94,7 +94,7 @@ async function getAccessToken(): Promise<string | null> {
     isRefreshing = true;
     refreshPromise = refreshTokenApi({ refreshToken })
       .then((response) => {
-        const newAccessToken = response.accessToken;
+        const { accessToken: newAccessToken } = response;
         setCookie(COOKIE_KEY_ACCESS_TOKEN, newAccessToken);
         return newAccessToken;
       })

@@ -4,7 +4,7 @@ import { unauthorizedErrorResponseSchema } from "../api/schemas/unauthorized-err
 import { permissionNameSchema } from "../schemas/permission.schema";
 
 export const getCurrentUserPermissionsResponseSchema = z.object({
-  permissions: z.array(permissionNameSchema),
+  items: z.array(permissionNameSchema),
 });
 export type GetCurrentUserPermissionsResponseSchema = z.infer<
   typeof getCurrentUserPermissionsResponseSchema

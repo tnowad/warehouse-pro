@@ -2,7 +2,7 @@ spring:
   jpa:
     hibernate:
       ddl-auto: ${JPA_HIBERNATE_DDL_AUTO:update}
-    show-sql: ${JPA_SHOW_SQL:true}
+    show-sql: true
 
 jwt:
   access:
@@ -11,3 +11,11 @@ jwt:
   refresh:
     secret: ${JWT_REFRESH_SECRET:your-refresh-secret}
     expiration: ${JWT_REFRESH_EXPIRATION:86400000}
+
+logging:
+  level:
+    org:
+      hibernate:
+        SQL: DEBUG
+      springframework:
+        security: DEBUG

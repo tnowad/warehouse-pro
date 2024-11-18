@@ -1,28 +1,25 @@
 package com.warehousepro.service;
 
-import lombok.AccessLevel;
-import lombok.RequiredArgsConstructor;
-import lombok.experimental.FieldDefaults;
-import lombok.extern.slf4j.Slf4j;
-import java.io.UnsupportedEncodingException;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.stereotype.Service;
 import com.warehousepro.dto.request.auth.LoginRequest;
 import com.warehousepro.dto.response.auth.LoginResponse;
 import com.warehousepro.dto.response.auth.RefreshTokenResponse;
 import com.warehousepro.dto.response.auth.TokensResponse;
 import com.warehousepro.exception.EmailNotFoundException;
 import com.warehousepro.exception.IncorrectPasswordException;
-import com.warehousepro.exception.TokenGenerationException;
-import com.warehousepro.exception.UserNotFoundException;
 import com.warehousepro.mapstruct.UserMapper;
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.stereotype.Service;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class AuthenticationService {
-  private final JwtService jwtService;
+  TokenService tokenService;
   private final UserService userService;
   private final BCryptPasswordEncoder passwordEncoder;
   UserMapper userMapper;
@@ -42,17 +39,13 @@ public class AuthenticationService {
       String refreshToken;
       String accessToken;
 
-      try {
-        refreshToken = jwtService.generateRefreshToken(user.getId());
-        accessToken = jwtService.generateAccessToken(user.getId());
-      } catch (UnsupportedEncodingException e) {
-        log.error("Unsupported encoding during token generation for user ID {}: {}", user.getId(),
-            e.getMessage());
-        throw new TokenGenerationException("Error generating token. Please try again later.", e);
-      }
+      refreshToken = tokenService.generateRefreshToken(user.getId());
+      accessToken = tokenService.generateAccessToken(user.getId());
 
-      return LoginResponse.builder().user(userMapper.toUserResponse(user))
-          .tokens(new TokensResponse(accessToken, refreshToken)).build();
+      return LoginResponse.builder()
+          .user(userMapper.toUserResponse(user))
+          .tokens(new TokensResponse(accessToken, refreshToken))
+          .build();
     } catch (EmailNotFoundException | IncorrectPasswordException e) {
       log.warn("Error while logging in: {}", e.getMessage());
       throw e;
@@ -60,32 +53,16 @@ public class AuthenticationService {
   }
 
   public RefreshTokenResponse refreshToken(String refreshToken) {
-    try {
-      var userId = jwtService.extractRefreshUserId(refreshToken);
-      if (userId == null) {
-        throw new TokenGenerationException("Invalid refresh token");
-      }
-      var user = userService.getUserById(userId);
-      if (user == null) {
-        throw new UserNotFoundException("User not found");
-      }
+    var decodedJWT = tokenService.decodeAccessToken(refreshToken);
+    log.info("Decoded JWT: {}", decodedJWT);
 
-      String accessToken;
-
-      try {
-        accessToken = jwtService.generateAccessToken(user.getId());
-      } catch (UnsupportedEncodingException e) {
-        log.error("Unsupported encoding during token generation for user ID {}: {}", user.getId(),
-            e.getMessage());
-        throw new TokenGenerationException("Error generating token. Please try again later.", e);
-      }
-      return RefreshTokenResponse.builder().accessToken(accessToken).build();
-    } catch (UserNotFoundException e) {
-      log.warn("Error while refreshing token: {}", e.getMessage());
-      throw e;
-    } catch (TokenGenerationException e) {
-      log.error("Error while refreshing token: {}", e.getMessage());
-      throw e;
+    if (decodedJWT == null) {
+      throw new IllegalArgumentException("Invalid token");
     }
+
+    var userId = decodedJWT.getSubject();
+    var newAccessToken = tokenService.generateAccessToken(userId);
+
+    return RefreshTokenResponse.builder().accessToken(newAccessToken).build();
   }
 }
