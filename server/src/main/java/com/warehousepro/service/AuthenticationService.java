@@ -7,11 +7,14 @@ import com.warehousepro.dto.response.auth.TokensResponse;
 import com.warehousepro.exception.EmailNotFoundException;
 import com.warehousepro.exception.IncorrectPasswordException;
 import com.warehousepro.mapstruct.UserMapper;
+import java.util.List;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
 
 @Slf4j
@@ -20,8 +23,10 @@ import org.springframework.stereotype.Service;
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class AuthenticationService {
   TokenService tokenService;
-  private final UserService userService;
-  private final BCryptPasswordEncoder passwordEncoder;
+  UserService userService;
+  RoleService roleService;
+  PermissionService permissionService;
+  BCryptPasswordEncoder passwordEncoder;
   UserMapper userMapper;
 
   public LoginResponse login(LoginRequest request) {
@@ -64,5 +69,18 @@ public class AuthenticationService {
     var newAccessToken = tokenService.generateAccessToken(userId);
 
     return RefreshTokenResponse.builder().accessToken(newAccessToken).build();
+  }
+
+  public List<String> getCurrentUserPermissionNames() {
+
+    if (SecurityContextHolder.getContext().getAuthentication().getPrincipal() instanceof String) {
+      return List.of("AUTH_LOGIN");
+    }
+    Jwt jwt = (Jwt) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+    String userId = jwt.getSubject();
+    var roles = roleService.getUserRoles(userId);
+    var permissionNames = permissionService.getPermissionNamesByRoles(roles);
+    return permissionNames;
   }
 }

@@ -19,12 +19,21 @@ import {
   SidebarRail,
 } from "@/components/ui/sidebar";
 import Link from "next/link";
-import { useSuspenseQuery } from "@tanstack/react-query";
-import { getCurrentUserPermissionsQueryOptions } from "@/hooks/queries/get-current-user-permissions.query";
 import { PermissionGuard } from "@/app/_components/permission-guard";
 import { Fragment } from "react";
+import { PermissionName } from "@/lib/schemas/permission.schema";
 
-const mainNav = [
+const mainNav: {
+  title: string;
+  url: string;
+  permission: PermissionName;
+  icon: string;
+  items?: {
+    title: string;
+    url: string;
+    permission: PermissionName;
+  }[];
+}[] = [
   {
     title: "Dashboard",
     url: "/dashboard",
@@ -229,10 +238,6 @@ const mainNav = [
 ];
 
 export function AppSidebar() {
-  const { data, isError } = useSuspenseQuery(
-    getCurrentUserPermissionsQueryOptions,
-  );
-
   return (
     <>
       <Sidebar>
@@ -260,10 +265,7 @@ export function AppSidebar() {
                 <Fragment key={item.title}>
                   {item.items?.length ? (
                     <PermissionGuard
-                      permissions={data.permissions}
-                      requiredPermissions={item.items.map(
-                        (item) => item.permission,
-                      )}
+                      required={item.items.map((item) => item.permission)}
                       operator="OR"
                     >
                       <Collapsible
@@ -282,8 +284,7 @@ export function AppSidebar() {
                             <SidebarMenuSub>
                               {item.items.map((item) => (
                                 <PermissionGuard
-                                  permissions={data.permissions}
-                                  requiredPermissions={item.permission}
+                                  required={[item.permission]}
                                   key={item.title}
                                 >
                                   <SidebarMenuSubItem>

@@ -1,6 +1,9 @@
 "use client";
 import { Toaster } from "@/components/ui/toaster";
-import { QueryClientProvider } from "@tanstack/react-query";
+import {
+  QueryClientProvider,
+  QueryErrorResetBoundary,
+} from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { getQueryClient } from "./get-query-client";
 
@@ -9,9 +12,11 @@ export function Providers({ children }: { children: React.ReactNode }) {
 
   return (
     <QueryClientProvider client={queryClient}>
-      {children}
-      <Toaster />
-      <ReactQueryDevtools />
+      <QueryErrorResetBoundary>
+        {children}
+        <Toaster />
+        <ReactQueryDevtools />
+      </QueryErrorResetBoundary>
     </QueryClientProvider>
   );
 }

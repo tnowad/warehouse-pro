@@ -2,15 +2,12 @@ package com.warehousepro.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import java.util.Date;
+import java.util.Set;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
-
-import java.time.LocalDate;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
 
 @Entity
 @Data
@@ -23,31 +20,24 @@ public class Role {
   @Id
   @Column(name = "name")
   String name;
+
   @Column(name = "description")
   String description;
 
-  @CreationTimestamp
-  Date createdAt;
+  @CreationTimestamp Date createdAt;
 
-  @UpdateTimestamp
-  Date updatedAt;
+  @UpdateTimestamp Date updatedAt;
 
-  @ManyToMany(mappedBy = "roles", fetch = FetchType.LAZY , cascade = {
-    CascadeType.PERSIST,
-    CascadeType.MERGE
-  })
-  Set<Permission> permissions = new HashSet<>();
+  @ManyToMany(
+      mappedBy = "roles",
+      fetch = FetchType.LAZY,
+      cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+  Set<Permission> permissions;
 
-  @ManyToMany(mappedBy = "roles", fetch = FetchType.LAZY , cascade = {
-    CascadeType.PERSIST,
-    CascadeType.MERGE
-  })
+  @ManyToMany(
+      mappedBy = "roles",
+      fetch = FetchType.LAZY,
+      cascade = {CascadeType.PERSIST, CascadeType.MERGE})
   @JsonIgnore
-  Set<User> users = new HashSet<>();
-
-  @OneToMany(cascade = CascadeType.ALL , fetch = FetchType.LAZY,
-    mappedBy = "role",
-    orphanRemoval = true
-  )
-  Set<RoleAssignment> assignments;
+  Set<User> users;
 }
