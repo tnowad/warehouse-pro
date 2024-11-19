@@ -1,11 +1,10 @@
 package com.warehousepro.entity;
 
 import jakarta.persistence.*;
+import java.time.LocalDate;
+import java.util.Set;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
-import java.time.LocalDate;
-import java.util.HashSet;
-import java.util.Set;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -15,7 +14,9 @@ import org.hibernate.annotations.UpdateTimestamp;
 @AllArgsConstructor
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
-@Table(name = "users", uniqueConstraints = {@UniqueConstraint(columnNames = "email")})
+@Table(
+    name = "users",
+    uniqueConstraints = {@UniqueConstraint(columnNames = "email")})
 public class User {
 
   @Id
@@ -39,32 +40,32 @@ public class User {
   @UpdateTimestamp
   LocalDate updatedAt;
 
-  @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+  @ManyToMany(
+      fetch = FetchType.LAZY,
+      cascade = {CascadeType.PERSIST, CascadeType.MERGE})
   @JoinTable(
-    name = "user_roles",
-    joinColumns = @JoinColumn(name = "user_id"),
-    inverseJoinColumns = @JoinColumn(name = "role_id")
-  )
-  Set<Role> roles = new HashSet<>();
+      name = "user_roles",
+      joinColumns = @JoinColumn(name = "user_id"),
+      inverseJoinColumns = @JoinColumn(name = "role_id"))
+  Set<Role> roles;
 
-  @OneToMany(cascade = CascadeType.ALL , fetch = FetchType.LAZY,
-    mappedBy = "user",
-    orphanRemoval = true
-  )
-  Set<AuditLog> auditLogs = new HashSet<>();
+  @OneToMany(
+      cascade = CascadeType.ALL,
+      fetch = FetchType.LAZY,
+      mappedBy = "user",
+      orphanRemoval = true)
+  Set<AuditLog> auditLogs;
 
-  public void addRole(Role role){
+  public void addRole(Role role) {
     this.roles.add(role);
   }
 
-  public void removeRole(String name){
-    Role role = this.roles.stream().filter(role1 -> role1.getName() == name).findFirst().orElse(null);
-    if(role == null){
+  public void removeRole(String name) {
+    Role role =
+        this.roles.stream().filter(role1 -> role1.getName() == name).findFirst().orElse(null);
+    if (role == null) {
       this.roles.remove(role);
       role.getUsers().remove(this);
     }
   }
-
-
-
 }

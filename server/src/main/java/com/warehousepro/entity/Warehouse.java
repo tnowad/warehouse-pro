@@ -1,12 +1,11 @@
 package com.warehousepro.entity;
 
 import jakarta.persistence.*;
-import lombok.*;
-import lombok.experimental.FieldDefaults;
 import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
-
+import lombok.*;
+import lombok.experimental.FieldDefaults;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -40,27 +39,24 @@ public class Warehouse {
   @UpdateTimestamp
   LocalDate updatedAt;
 
-  @OneToMany(cascade = CascadeType.ALL , fetch = FetchType.LAZY,
-    mappedBy = "warehouse",
-    orphanRemoval = true
-  )
+  @OneToMany(
+      cascade = CascadeType.ALL,
+      fetch = FetchType.LAZY,
+      mappedBy = "warehouse",
+      orphanRemoval = true)
   Set<Inventory> inventories = new HashSet<>();
 
-  @OneToMany(cascade = CascadeType.ALL , fetch = FetchType.LAZY,
-    mappedBy = "warehouse",
-    orphanRemoval = true
-  )
+  @OneToMany(
+      cascade = CascadeType.ALL,
+      fetch = FetchType.LAZY,
+      mappedBy = "warehouse",
+      orphanRemoval = true)
   Set<ProcurementItem> procurementItems = new HashSet<>();
 
-  @OneToMany(cascade = CascadeType.ALL , fetch = FetchType.LAZY,
-    mappedBy = "warehouse",
-    orphanRemoval = true
-  )
+  @OneToMany(
+      cascade = CascadeType.ALL,
+      fetch = FetchType.LAZY,
+      mappedBy = "warehouse",
+      orphanRemoval = true)
   Set<ShipmentItem> shipmentItems;
-
-  @OneToMany(cascade = CascadeType.ALL , fetch = FetchType.LAZY,
-    mappedBy = "warehouse",
-    orphanRemoval = true
-  )
-  Set<RoleAssignment> roleAssignments;
 }

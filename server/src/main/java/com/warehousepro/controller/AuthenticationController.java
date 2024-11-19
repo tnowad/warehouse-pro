@@ -15,7 +15,6 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
-import java.util.List;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -87,16 +86,11 @@ public class AuthenticationController {
   }
 
   @GetMapping("/current-user/permissions")
-  public ResponseEntity<GetCurrentUserPermissionResponse> currentUserPermissions(
-      @RequestHeader(required = false, name = "Authorization") String token) {
-    System.out.println("Token: " + token);
-    if (token == null) {
-      throw new RuntimeException("Unauthorized");
-    }
+  public ResponseEntity<GetCurrentUserPermissionResponse> currentUserPermissions() {
+
+    var permissionNames = authenticationService.getCurrentUserPermissionNames();
 
     return ResponseEntity.ok(
-        GetCurrentUserPermissionResponse.builder()
-            .items(List.of("DASHBOARD_VIEW", "WRITE", "DELETE"))
-            .build());
+        GetCurrentUserPermissionResponse.builder().items(permissionNames).build());
   }
 }

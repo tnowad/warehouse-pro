@@ -1,6 +1,7 @@
 package com.warehousepro.repository;
 
 import com.warehousepro.entity.Role;
+import java.util.List;
 import java.util.Set;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -14,4 +15,6 @@ public interface RoleRepository extends JpaRepository<Role, String> {
   Set<String> findRoleIdsByUserId(String userId);
 
   Role findByName(String id);
+  @Query("SELECT r FROM Role r JOIN r.users u WHERE u.id = :userId")
+  List<Role> findByUserId(String userId);
 }

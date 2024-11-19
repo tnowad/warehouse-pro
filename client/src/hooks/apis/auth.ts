@@ -37,6 +37,9 @@ export function useLoginMutation() {
       queryClient.invalidateQueries({
         queryKey: ["current-user"],
       });
+      queryClient.invalidateQueries({
+        queryKey: ["current-user-permissions"],
+      });
     },
     throwOnError: (error) => isAxiosError(error),
   });

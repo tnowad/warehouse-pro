@@ -28,6 +28,7 @@ import { useRouter } from "next/navigation";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { mapFieldErrorToFormError } from "@/lib/utils";
 import { loginBodySchema, LoginBodySchema } from "@/lib/apis/login.api";
+import { PermissionGuard } from "@/app/_components/permission-guard";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -65,70 +66,85 @@ export default function LoginPage() {
   });
 
   return (
-    <Card className="mx-auto w-full max-w-md space-y-6">
-      <CardHeader>
-        <CardTitle>Login</CardTitle>
-        <CardDescription>
-          Enter your email and password to log in or use one of the options
-          below.
-        </CardDescription>
-      </CardHeader>
-      <CardContent className="space-y-4">
-        <Form {...loginForm}>
-          <form onSubmit={onSubmit}>
-            <FormField
-              control={loginForm.control}
-              name="email"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Email</FormLabel>
-                  <FormControl>
-                    <Input placeholder="example@infinity.net" {...field} />
-                  </FormControl>
-                  <FormDescription>
-                    Enter the email address associated with your account.
-                  </FormDescription>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={loginForm.control}
-              name="password"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Password</FormLabel>
-                  <FormControl>
-                    <Input type="password" placeholder="Password" {...field} />
-                  </FormControl>
-                  <FormDescription>
-                    Your password must be at least 8 characters.
-                  </FormDescription>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <Button
-              className="w-full mt-4"
-              type="submit"
-              disabled={loginMutation.isPending}
-            >
-              Login
-            </Button>
-          </form>
-        </Form>
-      </CardContent>
-      <CardFooter className="flex justify-between">
-        <Link href="/forgot-password" className="text-sm hover:text-primary">
-          Forgot Password?
-        </Link>
-        <p className="text-sm">
-          {"Don't have an account? "}
-          <Link href="/sign-up" className="hover:text-primary">
-            Sign Up
+    <PermissionGuard
+      required={["USER_LOGIN"]}
+      handlers={{
+        unauthorized: () => (
+          <Card className="mx-auto w-full max-w-md space-y-6">
+            <CardHeader>
+              <CardTitle>Unauthorized</CardTitle>
+              <CardDescription>
+                Login is disabled for your account. Please contact your
+                administrator.
+              </CardDescription>
+            </CardHeader>
+          </Card>
+        ),
+      }}
+    >
+      <Card className="mx-auto w-full max-w-md space-y-6">
+        <CardHeader>
+          <CardTitle>Login</CardTitle>
+          <CardDescription>
+            Enter your email and password to log in or use one of the options
+            below.
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <Form {...loginForm}>
+            <form onSubmit={onSubmit}>
+              <FormField
+                control={loginForm.control}
+                name="email"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Email</FormLabel>
+                    <FormControl>
+                      <Input placeholder="example@infinity.net" {...field} />
+                    </FormControl>
+                    <FormDescription>
+                      Enter the email address associated with your account.
+                    </FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={loginForm.control}
+                name="password"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Password</FormLabel>
+                    <FormControl>
+                      <Input
+                        type="password"
+                        placeholder="Password"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormDescription>
+                      Your password must be at least 8 characters.
+                    </FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <Button
+                className="w-full mt-4"
+                type="submit"
+                disabled={loginMutation.isPending}
+              >
+                Login
+              </Button>
+            </form>
+          </Form>
+        </CardContent>
+        <CardFooter className="flex justify-between">
+          <Link href="/forgot-password" className="text-sm hover:text-primary">
+            Forgot Password?
           </Link>
-        </p>
-      </CardFooter>
-    </Card>
+        </CardFooter>
+      </Card>
+    </PermissionGuard>
   );
 }
