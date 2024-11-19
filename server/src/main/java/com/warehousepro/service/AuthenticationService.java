@@ -4,6 +4,7 @@ import com.warehousepro.dto.request.auth.LoginRequest;
 import com.warehousepro.dto.response.auth.LoginResponse;
 import com.warehousepro.dto.response.auth.RefreshTokenResponse;
 import com.warehousepro.dto.response.auth.TokensResponse;
+import com.warehousepro.entity.User;
 import com.warehousepro.exception.EmailNotFoundException;
 import com.warehousepro.exception.IncorrectPasswordException;
 import com.warehousepro.mapstruct.UserMapper;
@@ -45,7 +46,7 @@ public class AuthenticationService {
       String accessToken;
 
       refreshToken = tokenService.generateRefreshToken(user.getId());
-      accessToken = tokenService.generateAccessToken(user.getId());
+      accessToken = tokenService.generateAccessToken(user);
 
       return LoginResponse.builder()
           .user(userMapper.toUserResponse(user))
@@ -66,7 +67,8 @@ public class AuthenticationService {
     }
 
     var userId = decodedJWT.getSubject();
-    var newAccessToken = tokenService.generateAccessToken(userId);
+    User user = userService.getUserById(userId) ;
+    var newAccessToken = tokenService.generateAccessToken(user);
 
     return RefreshTokenResponse.builder().accessToken(newAccessToken).build();
   }

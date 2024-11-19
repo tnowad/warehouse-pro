@@ -3,6 +3,11 @@ spring:
     hibernate:
       ddl-auto: ${JPA_HIBERNATE_DDL_AUTO:update}
     show-sql: true
+  datasource:
+    url: "jdbc:postgresql://localhost:5432/mydatabase"
+    username: "myuser"
+    password: "secret"
+    driver-class-name: "org.postgresql.Driver"
 
 jwt:
   access:

@@ -15,6 +15,9 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.util.Map;
@@ -31,8 +34,11 @@ public class WarehouseService {
 
   WareHouseSpecification wareHouseSpecification;
 
+  @PreAuthorize("hasRole('ROLE_Admin')")
   public Page<Warehouse> filterWarehouses(int limit, int offset, Map<String, String> filterBy,
       String sortBy, String orderBy) {
+    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+    System.out.println(authentication.getAuthorities());
 
     Integer capacity = null;
     Integer managerId = null;
