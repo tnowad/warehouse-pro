@@ -4,6 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "dev": "concurrently \"npm run client:dev\" \"npm run server:dev\"",
+    "client:dev": "cd client && pnpm dev",
+    "server:dev": "cd server && mvn spring-boot:run",
     "client:lint": "cd client && pnpm lint",
     "server:lint": "cd server && mvn checkstyle:check",
     "lint": "pnpm client:lint && pnpm server:lint",
@@ -13,5 +16,8 @@
   },
   "keywords": [],
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "devDependencies": {
+    "concurrently": "^9.1.0"
+  }
 }

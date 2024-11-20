@@ -53,18 +53,8 @@ const mainNav: {
       },
       {
         title: "Create User",
-        url: "/users/create",
+        url: "/users/new",
         permission: "USER_CREATE",
-      },
-      {
-        title: "Update User",
-        url: "/users/update",
-        permission: "USER_UPDATE",
-      },
-      {
-        title: "Delete User",
-        url: "/users/delete",
-        permission: "USER_DELETE",
       },
     ],
   },
@@ -81,28 +71,8 @@ const mainNav: {
       },
       {
         title: "Create Role",
-        url: "/roles/create",
+        url: "/roles/new",
         permission: "ROLE_CREATE",
-      },
-      {
-        title: "Update Role",
-        url: "/roles/update",
-        permission: "ROLE_UPDATE",
-      },
-      {
-        title: "Delete Role",
-        url: "/roles/delete",
-        permission: "ROLE_DELETE",
-      },
-      {
-        title: "Assign Permissions",
-        url: "/roles/permissions",
-        permission: "PERMISSION_ASSIGN",
-      },
-      {
-        title: "Revoke Permissions",
-        url: "/roles/permissions/revoke",
-        permission: "PERMISSION_REVOKE",
       },
     ],
   },
@@ -119,28 +89,8 @@ const mainNav: {
       },
       {
         title: "Create Warehouse",
-        url: "/warehouses/create",
+        url: "/warehouses/new",
         permission: "WAREHOUSE_CREATE",
-      },
-      {
-        title: "Update Warehouse",
-        url: "/warehouses/update",
-        permission: "WAREHOUSE_UPDATE",
-      },
-      {
-        title: "Delete Warehouse",
-        url: "/warehouses/delete",
-        permission: "WAREHOUSE_DELETE",
-      },
-      {
-        title: "Warehouse Inventory Distribution",
-        url: "/warehouses/distribute",
-        permission: "WAREHOUSE_INVENTORY_DISTRIBUTE",
-      },
-      {
-        title: "Space Optimization",
-        url: "/warehouses/optimize",
-        permission: "WAREHOUSE_SPACE_OPTIMIZE",
       },
     ],
   },
@@ -157,18 +107,8 @@ const mainNav: {
       },
       {
         title: "Create Product",
-        url: "/inventory/create",
+        url: "/inventory/new",
         permission: "INVENTORY_PRODUCT_CREATE",
-      },
-      {
-        title: "Update Product",
-        url: "/inventory/update",
-        permission: "INVENTORY_PRODUCT_UPDATE",
-      },
-      {
-        title: "Delete Product",
-        url: "/inventory/delete",
-        permission: "INVENTORY_PRODUCT_DELETE",
       },
       {
         title: "Low Stock Alerts",
@@ -190,18 +130,8 @@ const mainNav: {
       },
       {
         title: "Create Order",
-        url: "/orders/create",
+        url: "/orders/new",
         permission: "ORDER_CREATE",
-      },
-      {
-        title: "Update Order",
-        url: "/orders/update",
-        permission: "ORDER_UPDATE",
-      },
-      {
-        title: "Delete Order",
-        url: "/orders/delete",
-        permission: "ORDER_DELETE",
       },
       {
         title: "Track Orders",
@@ -228,18 +158,8 @@ const mainNav: {
       },
       {
         title: "Create Supplier",
-        url: "/procurement/suppliers/create",
+        url: "/procurement/suppliers/new",
         permission: "PROCUREMENT_SUPPLIER_CREATE",
-      },
-      {
-        title: "Update Supplier",
-        url: "/procurement/suppliers/update",
-        permission: "PROCUREMENT_SUPPLIER_UPDATE",
-      },
-      {
-        title: "Delete Supplier",
-        url: "/procurement/suppliers/delete",
-        permission: "PROCUREMENT_SUPPLIER_DELETE",
       },
       {
         title: "Purchase Orders",
@@ -248,18 +168,8 @@ const mainNav: {
       },
       {
         title: "Create Purchase Order",
-        url: "/procurement/purchase-orders/create",
+        url: "/procurement/purchase-orders/new",
         permission: "PROCUREMENT_ORDER_CREATE",
-      },
-      {
-        title: "Update Purchase Order",
-        url: "/procurement/purchase-orders/update",
-        permission: "PROCUREMENT_ORDER_UPDATE",
-      },
-      {
-        title: "Delete Purchase Order",
-        url: "/procurement/purchase-orders/delete",
-        permission: "PROCUREMENT_ORDER_DELETE",
       },
     ],
   },
@@ -276,18 +186,8 @@ const mainNav: {
       },
       {
         title: "Create Shipment",
-        url: "/shipments/create",
+        url: "/shipments/new",
         permission: "SHIPMENT_CREATE",
-      },
-      {
-        title: "Update Shipment",
-        url: "/shipments/update",
-        permission: "SHIPMENT_UPDATE",
-      },
-      {
-        title: "Delete Shipment",
-        url: "/shipments/delete",
-        permission: "SHIPMENT_DELETE",
       },
       {
         title: "Track Shipment",
@@ -309,18 +209,8 @@ const mainNav: {
       },
       {
         title: "Create Return",
-        url: "/returns/create",
+        url: "/returns/new",
         permission: "RETURN_CREATE",
-      },
-      {
-        title: "Update Return",
-        url: "/returns/update",
-        permission: "RETURN_UPDATE",
-      },
-      {
-        title: "Delete Return",
-        url: "/returns/delete",
-        permission: "RETURN_DELETE",
       },
     ],
   },
@@ -346,77 +236,75 @@ const mainNav: {
 
 export function AppSidebar() {
   return (
-    <>
-      <Sidebar>
-        <SidebarHeader>
+    <Sidebar>
+      <SidebarHeader>
+        <SidebarMenu>
+          <SidebarMenuItem>
+            <SidebarMenuButton size="lg" asChild>
+              <Link href="/">
+                <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
+                  <GalleryVerticalEnd className="size-4" />
+                </div>
+                <div className="flex flex-col gap-0.5 leading-none">
+                  <span className="font-semibold">Warehouse Pro</span>
+                  <span className="">v0.0.1</span>
+                </div>
+              </Link>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+        </SidebarMenu>
+      </SidebarHeader>
+      <SidebarContent>
+        <SidebarGroup>
           <SidebarMenu>
-            <SidebarMenuItem>
-              <SidebarMenuButton size="lg" asChild>
-                <Link href="/">
-                  <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
-                    <GalleryVerticalEnd className="size-4" />
-                  </div>
-                  <div className="flex flex-col gap-0.5 leading-none">
-                    <span className="font-semibold">Warehouse Pro</span>
-                    <span className="">v0.0.1</span>
-                  </div>
-                </Link>
-              </SidebarMenuButton>
-            </SidebarMenuItem>
-          </SidebarMenu>
-        </SidebarHeader>
-        <SidebarContent>
-          <SidebarGroup>
-            <SidebarMenu>
-              {mainNav.map((item, index) => (
-                <Fragment key={item.title}>
-                  {item.items?.length ? (
-                    <PermissionGuard
-                      required={item.items.map((item) => item.permission)}
-                      operator="OR"
+            {mainNav.map((item, index) => (
+              <Fragment key={item.title}>
+                {item.items?.length ? (
+                  <PermissionGuard
+                    required={item.items.map((item) => item.permission)}
+                    operator="OR"
+                  >
+                    <Collapsible
+                      defaultOpen={index === 1}
+                      className="group/collapsible"
                     >
-                      <Collapsible
-                        defaultOpen={index === 1}
-                        className="group/collapsible"
-                      >
-                        <SidebarMenuItem>
-                          <CollapsibleTrigger asChild>
-                            <SidebarMenuButton>
-                              {item.title}{" "}
-                              <Plus className="ml-auto group-data-[state=open]/collapsible:hidden" />
-                              <Minus className="ml-auto group-data-[state=closed]/collapsible:hidden" />
-                            </SidebarMenuButton>
-                          </CollapsibleTrigger>
-                          <CollapsibleContent>
-                            <SidebarMenuSub>
-                              {item.items.map((item) => (
-                                <PermissionGuard
-                                  required={[item.permission]}
-                                  key={item.title}
-                                >
-                                  <SidebarMenuSubItem>
-                                    <SidebarMenuSubButton
-                                      asChild
-                                      isActive={false}
-                                    >
-                                      <Link href={item.url}>{item.title}</Link>
-                                    </SidebarMenuSubButton>
-                                  </SidebarMenuSubItem>
-                                </PermissionGuard>
-                              ))}
-                            </SidebarMenuSub>
-                          </CollapsibleContent>
-                        </SidebarMenuItem>
-                      </Collapsible>
-                    </PermissionGuard>
-                  ) : null}
-                </Fragment>
-              ))}
-            </SidebarMenu>
-          </SidebarGroup>
-        </SidebarContent>
-        <SidebarRail />
-      </Sidebar>
-    </>
+                      <SidebarMenuItem>
+                        <CollapsibleTrigger asChild>
+                          <SidebarMenuButton>
+                            {item.title}{" "}
+                            <Plus className="ml-auto group-data-[state=open]/collapsible:hidden" />
+                            <Minus className="ml-auto group-data-[state=closed]/collapsible:hidden" />
+                          </SidebarMenuButton>
+                        </CollapsibleTrigger>
+                        <CollapsibleContent>
+                          <SidebarMenuSub>
+                            {item.items.map((item) => (
+                              <PermissionGuard
+                                required={[item.permission]}
+                                key={item.title}
+                              >
+                                <SidebarMenuSubItem>
+                                  <SidebarMenuSubButton
+                                    asChild
+                                    isActive={false}
+                                  >
+                                    <Link href={item.url}>{item.title}</Link>
+                                  </SidebarMenuSubButton>
+                                </SidebarMenuSubItem>
+                              </PermissionGuard>
+                            ))}
+                          </SidebarMenuSub>
+                        </CollapsibleContent>
+                      </SidebarMenuItem>
+                    </Collapsible>
+                  </PermissionGuard>
+                ) : null}
+              </Fragment>
+            ))}
+          </SidebarMenu>
+        </SidebarGroup>
+      </SidebarContent>
+      <SidebarRail />
+    </Sidebar>
   );
 }
