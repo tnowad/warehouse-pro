@@ -5,13 +5,12 @@ import com.warehousepro.dto.response.supplierproduct.SupplierProductResponse;
 import com.warehousepro.entity.SupplierProduct;
 import com.warehousepro.mapstruct.SupplierProductMapper;
 import com.warehousepro.service.SupplierProductService;
+import java.util.List;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/supplier-products")
@@ -22,13 +21,13 @@ public class SupplierProductController {
   SupplierProductMapper mapper;
 
   @PostMapping
-  public ResponseEntity<SupplierProductResponse> create(@RequestBody CreateSupplierProductRequest request){
+  public ResponseEntity<SupplierProductResponse> create(
+      @RequestBody CreateSupplierProductRequest request) {
     return ResponseEntity.ok(mapper.toSupplierProductResponse(service.create(request)));
   }
 
   @GetMapping
-  public ResponseEntity<List<SupplierProduct>> getAll(){
+  public ResponseEntity<List<SupplierProduct>> getAll() {
     return ResponseEntity.ok(service.getAll());
   }
-
 }

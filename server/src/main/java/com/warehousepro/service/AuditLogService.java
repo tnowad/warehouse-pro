@@ -5,14 +5,12 @@ import com.warehousepro.entity.AuditLog;
 import com.warehousepro.mapstruct.AuditLogMapper;
 import com.warehousepro.repository.AuditLogRepository;
 import jakarta.transaction.Transactional;
+import java.util.List;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
-import java.util.Set;
 
 @Slf4j
 @Service
@@ -23,14 +21,13 @@ public class AuditLogService {
   AuditLogMapper auditLogMapper;
 
   @Transactional
-  public AuditLog create(CreateAuditLogRequest request){
-    AuditLog auditLog =  auditLogMapper.toAuditLog(request);
+  public AuditLog create(CreateAuditLogRequest request) {
+    AuditLog auditLog = auditLogMapper.toAuditLog(request);
     auditLogRepository.save(auditLog);
     return auditLog;
   }
 
-  public List<AuditLog> getAll(){
+  public List<AuditLog> getAll() {
     return auditLogRepository.findAll();
   }
-
 }

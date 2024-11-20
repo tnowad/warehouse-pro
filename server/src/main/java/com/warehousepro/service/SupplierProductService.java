@@ -5,13 +5,12 @@ import com.warehousepro.entity.SupplierProduct;
 import com.warehousepro.mapstruct.SupplierProductMapper;
 import com.warehousepro.repository.SupplierProductRepository;
 import jakarta.transaction.Transactional;
+import java.util.List;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Slf4j
 @Service
@@ -22,13 +21,13 @@ public class SupplierProductService {
   SupplierProductMapper mapper;
 
   @Transactional
-  public SupplierProduct create(CreateSupplierProductRequest request){
+  public SupplierProduct create(CreateSupplierProductRequest request) {
     SupplierProduct supplierProduct = mapper.toSupplierProduct(request);
     repository.save(supplierProduct);
     return supplierProduct;
   }
 
-  public List<SupplierProduct> getAll(){
+  public List<SupplierProduct> getAll() {
     return repository.findAll();
   }
 }

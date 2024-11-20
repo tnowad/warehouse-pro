@@ -1,13 +1,12 @@
 package com.warehousepro.entity;
 
 import jakarta.persistence.*;
+import java.util.Date;
+import java.util.Set;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
-
-import java.util.Date;
-import java.util.Set;
 
 @Entity
 @Data
@@ -30,22 +29,21 @@ public class Supplier {
   @Column(name = "address")
   String address;
 
-  @CreationTimestamp
-  Date createdAt;
+  @CreationTimestamp Date createdAt;
 
-  @UpdateTimestamp
-  Date updatedAt;
+  @UpdateTimestamp Date updatedAt;
 
-  @OneToMany(cascade = CascadeType.ALL , fetch = FetchType.LAZY,
-    mappedBy = "supplier",
-    orphanRemoval = true
-  )
+  @OneToMany(
+      cascade = CascadeType.ALL,
+      fetch = FetchType.LAZY,
+      mappedBy = "supplier",
+      orphanRemoval = true)
   Set<Procurement> procurements;
 
-  @OneToMany(cascade = CascadeType.ALL , fetch = FetchType.LAZY,
-    mappedBy = "supplier",
-    orphanRemoval = true
-  )
+  @OneToMany(
+      cascade = CascadeType.ALL,
+      fetch = FetchType.LAZY,
+      mappedBy = "supplier",
+      orphanRemoval = true)
   Set<SupplierProduct> supplierProducts;
-
 }

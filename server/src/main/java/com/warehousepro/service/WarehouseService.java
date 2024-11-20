@@ -6,6 +6,8 @@ import com.warehousepro.entity.Warehouse;
 import com.warehousepro.mapstruct.WareHouseMapper;
 import com.warehousepro.repository.WareHouseRepository;
 import com.warehousepro.specification.WareHouseSpecification;
+import java.time.LocalDate;
+import java.util.Map;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -19,8 +21,6 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
-import java.time.LocalDate;
-import java.util.Map;
 
 @Slf4j
 @Service
@@ -34,9 +34,8 @@ public class WarehouseService {
 
   WareHouseSpecification wareHouseSpecification;
 
-  @PreAuthorize("hasRole('ROLE_Admin')")
-  public Page<Warehouse> filterWarehouses(int limit, int offset, Map<String, String> filterBy,
-      String sortBy, String orderBy) {
+  public Page<Warehouse> filterWarehouses(
+      int limit, int offset, Map<String, String> filterBy, String sortBy, String orderBy) {
     Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
     System.out.println(authentication.getAuthorities());
 
@@ -67,8 +66,9 @@ public class WarehouseService {
 
     Pageable pageable;
     if (sortBy != null) {
-      Sort sort = Sort
-          .by(orderBy.equalsIgnoreCase("asc") ? Sort.Direction.ASC : Sort.Direction.DESC, sortBy);
+      Sort sort =
+          Sort.by(
+              orderBy.equalsIgnoreCase("asc") ? Sort.Direction.ASC : Sort.Direction.DESC, sortBy);
       pageable = PageRequest.of(offset / limit, limit, sort);
     } else {
       pageable = PageRequest.of(offset / limit, limit);

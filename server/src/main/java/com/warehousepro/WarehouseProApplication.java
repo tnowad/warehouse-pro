@@ -9,5 +9,4 @@ public class WarehouseProApplication {
   public static void main(String[] args) {
     SpringApplication.run(WarehouseProApplication.class, args);
   }
-
 }

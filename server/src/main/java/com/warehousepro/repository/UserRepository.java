@@ -1,11 +1,10 @@
 package com.warehousepro.repository;
 
 import com.warehousepro.entity.User;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;
-
 import java.util.List;
 import java.util.Optional;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
 @Repository
 public interface UserRepository extends JpaRepository<User, String> {
@@ -16,5 +15,4 @@ public interface UserRepository extends JpaRepository<User, String> {
   List<User> findUsersByRoles_Name(String id);
 
   Optional<User> findByName(String user);
-
 }

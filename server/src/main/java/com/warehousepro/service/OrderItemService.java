@@ -6,13 +6,12 @@ import com.warehousepro.entity.OrderItem;
 import com.warehousepro.mapstruct.OrderItemMapper;
 import com.warehousepro.repository.OrderItemRepository;
 import jakarta.transaction.Transactional;
+import java.util.List;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Slf4j
 @Service
@@ -23,19 +22,21 @@ public class OrderItemService {
   OrderItemRepository repository;
 
   @Transactional
-  public OrderItem create(CreateOrderItemRequest request){
+  public OrderItem create(CreateOrderItemRequest request) {
     OrderItem orderItem = mapper.toOrderItem(request);
     repository.save(orderItem);
     return orderItem;
   }
 
-  public List<OrderItem> getAll(){
+  public List<OrderItem> getAll() {
     return repository.findAll();
   }
 
-  public OrderItemReponse getById(String id){
-    OrderItem orderItem =  repository.findById(id).orElseThrow(() -> new RuntimeException("order item id không tồn tại"));
+  public OrderItemReponse getById(String id) {
+    OrderItem orderItem =
+        repository
+            .findById(id)
+            .orElseThrow(() -> new RuntimeException("order item id không tồn tại"));
     return mapper.toOrderItemReponse(orderItem);
   }
-
 }

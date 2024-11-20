@@ -67,7 +67,7 @@ export default function LoginPage() {
 
   return (
     <PermissionGuard
-      required={["USER_LOGIN"]}
+      required={["AUTH_LOGIN"]}
       handlers={{
         unauthorized: () => (
           <Card className="mx-auto w-full max-w-md space-y-6">

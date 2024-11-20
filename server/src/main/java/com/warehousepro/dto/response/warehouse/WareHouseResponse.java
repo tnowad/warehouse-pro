@@ -1,15 +1,15 @@
 package com.warehousepro.dto.response.warehouse;
 
+import java.time.LocalDate;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
-import java.time.LocalDate;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Builder
-public class WareHouseResponseDto {
+public class WareHouseResponse {
   String id;
   String name;
   String location;

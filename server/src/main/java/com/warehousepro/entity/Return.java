@@ -1,11 +1,9 @@
 package com.warehousepro.entity;
 
-
 import jakarta.persistence.*;
+import java.util.Date;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
-
-import java.util.Date;
 
 @Entity
 @AllArgsConstructor
@@ -30,5 +28,4 @@ public class Return {
   @ManyToOne
   @JoinColumn(name = "order_item_id")
   OrderItem orderItem;
-
 }

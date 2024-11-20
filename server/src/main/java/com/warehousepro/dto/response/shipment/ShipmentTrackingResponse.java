@@ -1,10 +1,8 @@
 package com.warehousepro.dto.response.shipment;
 
-
+import java.util.Date;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
-
-import java.util.Date;
 
 @Data
 @NoArgsConstructor

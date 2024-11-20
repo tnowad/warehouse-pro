@@ -8,5 +8,6 @@ import org.mapstruct.Mapper;
 @Mapper(componentModel = "spring")
 public interface ShipmentTrackingMapper {
   ShipmentTracking toShipmentTracking(CreateShipmentTrackingRequest request);
+
   ShipmentTrackingResponse toShipmentTrackingResponse(ShipmentTracking shipmentTracking);
 }

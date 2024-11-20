@@ -5,13 +5,12 @@ import com.warehousepro.entity.ShipmentTracking;
 import com.warehousepro.mapstruct.ShipmentTrackingMapper;
 import com.warehousepro.repository.ShipmentTrackingRepository;
 import jakarta.transaction.Transactional;
+import java.util.List;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Slf4j
 @Service
@@ -22,14 +21,13 @@ public class ShipmentTrackingService {
   ShipmentTrackingMapper mapper;
 
   @Transactional
-  public ShipmentTracking create(CreateShipmentTrackingRequest request){
+  public ShipmentTracking create(CreateShipmentTrackingRequest request) {
     ShipmentTracking shipmentTracking = mapper.toShipmentTracking(request);
     repository.save(shipmentTracking);
     return shipmentTracking;
   }
 
-  public List<ShipmentTracking> getAll(){
+  public List<ShipmentTracking> getAll() {
     return repository.findAll();
   }
-
 }

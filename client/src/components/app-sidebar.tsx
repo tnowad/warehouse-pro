@@ -37,201 +37,198 @@ const mainNav: {
   {
     title: "Dashboard",
     url: "/dashboard",
-    permission: "DASHBOARD_VIEW",
+    permission: "AUDIT_LOG_VIEW",
     icon: "dashboard",
+  },
+  {
+    title: "Users",
+    url: "/users",
+    permission: "USER_LIST",
+    icon: "users",
+    items: [
+      {
+        title: "Users",
+        url: "/users",
+        permission: "USER_LIST",
+      },
+      {
+        title: "Create User",
+        url: "/users/new",
+        permission: "USER_CREATE",
+      },
+    ],
+  },
+  {
+    title: "Roles & Permissions",
+    url: "/roles",
+    permission: "ROLE_LIST",
+    icon: "roles",
+    items: [
+      {
+        title: "Roles",
+        url: "/roles",
+        permission: "ROLE_LIST",
+      },
+      {
+        title: "Create Role",
+        url: "/roles/new",
+        permission: "ROLE_CREATE",
+      },
+    ],
   },
   {
     title: "Warehouses",
     url: "/warehouses",
-    permission: "WAREHOUSE_LIST_VIEW",
+    permission: "WAREHOUSE_LIST",
     icon: "warehouse",
     items: [
       {
         title: "Warehouses",
         url: "/warehouses",
-        permission: "WAREHOUSE_LIST_VIEW",
+        permission: "WAREHOUSE_LIST",
       },
       {
-        title: "Add Warehouse",
-        url: "/warehouses/add",
+        title: "Create Warehouse",
+        url: "/warehouses/new",
         permission: "WAREHOUSE_CREATE",
-      },
-      {
-        title: "Overview",
-        url: "/warehouses/overview",
-        permission: "WAREHOUSE_DETAILS_VIEW",
-      },
-    ],
-  },
-  {
-    title: "Users",
-    url: "/users",
-    permission: "USER_DETAILS_VIEW",
-    icon: "users",
-    items: [
-      { title: "Users", url: "/users", permission: "USER_DETAILS_VIEW" },
-      { title: "Roles", url: "/roles", permission: "ROLE_VIEW" },
-      {
-        title: "Permissions",
-        url: "/permissions",
-        permission: "PERMISSION_VIEW",
-      },
-    ],
-  },
-  {
-    title: "Orders",
-    url: "/orders",
-    permission: "ORDER_LIST_VIEW",
-    icon: "orders",
-    items: [
-      { title: "Orders", url: "/orders", permission: "ORDER_LIST_VIEW" },
-      {
-        title: "Pending Orders",
-        url: "/orders/pending",
-        permission: "ORDER_DETAILS_VIEW",
-      },
-      {
-        title: "Completed Orders",
-        url: "/orders/completed",
-        permission: "ORDER_DETAILS_VIEW",
-      },
-    ],
-  },
-  {
-    title: "Products",
-    url: "/products",
-    permission: "PRODUCT_LIST_VIEW",
-    icon: "products",
-    items: [
-      {
-        title: "Products",
-        url: "/products",
-        permission: "PRODUCT_LIST_VIEW",
-      },
-      {
-        title: "Add Product",
-        url: "/products/add",
-        permission: "PRODUCT_CREATE",
-      },
-      {
-        title: "Categories",
-        url: "/products/categories",
-        permission: "PRODUCT_DETAILS_VIEW",
       },
     ],
   },
   {
     title: "Inventory",
     url: "/inventory",
-    permission: "INVENTORY_STATUS_VIEW",
+    permission: "INVENTORY_PRODUCT_LIST",
     icon: "inventory",
     items: [
       {
-        title: "Stock Levels",
-        url: "/inventory/stock-levels",
-        permission: "INVENTORY_STATUS_VIEW",
+        title: "Inventory Overview",
+        url: "/inventory",
+        permission: "INVENTORY_PRODUCT_LIST",
       },
       {
-        title: "Reorder List",
-        url: "/inventory/reorder-list",
-        permission: "PRODUCT_REORDER",
+        title: "Create Product",
+        url: "/inventory/new",
+        permission: "INVENTORY_PRODUCT_CREATE",
       },
       {
-        title: "Inventory Reports",
-        url: "/inventory/reports",
-        permission: "INVENTORY_STATUS_VIEW",
+        title: "Low Stock Alerts",
+        url: "/inventory/alerts",
+        permission: "INVENTORY_LOW_STOCK_ALERT",
       },
     ],
   },
   {
-    title: "Shipments",
-    url: "/shipments",
-    permission: "SHIPMENT_LIST_VIEW",
-    icon: "shipments",
+    title: "Orders",
+    url: "/orders",
+    permission: "ORDER_LIST",
+    icon: "orders",
     items: [
       {
-        title: "Shipments",
-        url: "/shipments",
-        permission: "SHIPMENT_LIST_VIEW",
+        title: "Orders",
+        url: "/orders",
+        permission: "ORDER_LIST",
       },
       {
-        title: "Tracking",
-        url: "/shipments/tracking",
-        permission: "SHIPMENT_TRACK",
+        title: "Create Order",
+        url: "/orders/new",
+        permission: "ORDER_CREATE",
       },
       {
-        title: "Pending Shipments",
-        url: "/shipments/pending",
-        permission: "SHIPMENT_DETAILS_VIEW",
+        title: "Track Orders",
+        url: "/orders/status",
+        permission: "ORDER_STATUS_TRACK",
+      },
+      {
+        title: "Assign Shipment",
+        url: "/orders/assign-shipment",
+        permission: "ORDER_ASSIGN_SHIPMENT",
       },
     ],
   },
   {
     title: "Procurement",
     url: "/procurement",
-    permission: "PROCUREMENT_LIST_VIEW",
+    permission: "PROCUREMENT_ORDER_LIST",
     icon: "procurement",
     items: [
       {
-        title: "Purchase Orders",
-        url: "/procurement/purchase-orders",
-        permission: "PROCUREMENT_CREATE",
-      },
-      {
         title: "Suppliers",
         url: "/procurement/suppliers",
-        permission: "SUPPLIER_LIST_VIEW",
+        permission: "PROCUREMENT_SUPPLIER_LIST",
       },
       {
-        title: "Contracts",
-        url: "/procurement/contracts",
-        permission: "SUPPLIER_DETAILS_VIEW",
-      },
-    ],
-  },
-  {
-    title: "Reports",
-    url: "/reports",
-    permission: "DASHBOARD_VIEW",
-    icon: "reports",
-    items: [
-      {
-        title: "Sales Reports",
-        url: "/reports/sales",
-        permission: "DASHBOARD_VIEW",
+        title: "Create Supplier",
+        url: "/procurement/suppliers/new",
+        permission: "PROCUREMENT_SUPPLIER_CREATE",
       },
       {
-        title: "Inventory Reports",
-        url: "/reports/inventory",
-        permission: "INVENTORY_STATUS_VIEW",
+        title: "Purchase Orders",
+        url: "/procurement/purchase-orders",
+        permission: "PROCUREMENT_ORDER_LIST",
       },
       {
-        title: "User Activity",
-        url: "/reports/user-activity",
-        permission: "USER_DETAILS_VIEW",
+        title: "Create Purchase Order",
+        url: "/procurement/purchase-orders/new",
+        permission: "PROCUREMENT_ORDER_CREATE",
       },
     ],
   },
   {
-    title: "Settings",
-    url: "/settings",
-    permission: "SETTINGS_VIEW",
-    icon: "settings",
+    title: "Shipments",
+    url: "/shipments",
+    permission: "SHIPMENT_LIST",
+    icon: "shipments",
     items: [
       {
-        title: "User Management",
-        url: "/settings/user-management",
-        permission: "USER_DETAILS_VIEW",
+        title: "Shipments",
+        url: "/shipments",
+        permission: "SHIPMENT_LIST",
       },
       {
-        title: "Roles & Permissions",
-        url: "/settings/roles-permissions",
-        permission: "ROLE_VIEW",
+        title: "Create Shipment",
+        url: "/shipments/new",
+        permission: "SHIPMENT_CREATE",
       },
       {
-        title: "Preferences",
-        url: "/settings/preferences",
-        permission: "SETTINGS_VIEW",
+        title: "Track Shipment",
+        url: "/shipments/tracking",
+        permission: "SHIPMENT_TRACKING_VIEW",
+      },
+    ],
+  },
+  {
+    title: "Returns",
+    url: "/returns",
+    permission: "RETURN_LIST",
+    icon: "returns",
+    items: [
+      {
+        title: "Returns",
+        url: "/returns",
+        permission: "RETURN_LIST",
+      },
+      {
+        title: "Create Return",
+        url: "/returns/new",
+        permission: "RETURN_CREATE",
+      },
+    ],
+  },
+  {
+    title: "Audit Logs",
+    url: "/audit-logs",
+    permission: "AUDIT_LOG_VIEW",
+    icon: "logs",
+    items: [
+      {
+        title: "View Logs",
+        url: "/audit-logs",
+        permission: "AUDIT_LOG_VIEW",
+      },
+      {
+        title: "Export Logs",
+        url: "/audit-logs/export",
+        permission: "AUDIT_LOG_EXPORT",
       },
     ],
   },
@@ -239,77 +236,75 @@ const mainNav: {
 
 export function AppSidebar() {
   return (
-    <>
-      <Sidebar>
-        <SidebarHeader>
+    <Sidebar>
+      <SidebarHeader>
+        <SidebarMenu>
+          <SidebarMenuItem>
+            <SidebarMenuButton size="lg" asChild>
+              <Link href="/">
+                <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
+                  <GalleryVerticalEnd className="size-4" />
+                </div>
+                <div className="flex flex-col gap-0.5 leading-none">
+                  <span className="font-semibold">Warehouse Pro</span>
+                  <span className="">v0.0.1</span>
+                </div>
+              </Link>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+        </SidebarMenu>
+      </SidebarHeader>
+      <SidebarContent>
+        <SidebarGroup>
           <SidebarMenu>
-            <SidebarMenuItem>
-              <SidebarMenuButton size="lg" asChild>
-                <Link href="/">
-                  <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
-                    <GalleryVerticalEnd className="size-4" />
-                  </div>
-                  <div className="flex flex-col gap-0.5 leading-none">
-                    <span className="font-semibold">Warehouse Pro</span>
-                    <span className="">v0.0.1</span>
-                  </div>
-                </Link>
-              </SidebarMenuButton>
-            </SidebarMenuItem>
-          </SidebarMenu>
-        </SidebarHeader>
-        <SidebarContent>
-          <SidebarGroup>
-            <SidebarMenu>
-              {mainNav.map((item, index) => (
-                <Fragment key={item.title}>
-                  {item.items?.length ? (
-                    <PermissionGuard
-                      required={item.items.map((item) => item.permission)}
-                      operator="OR"
+            {mainNav.map((item, index) => (
+              <Fragment key={item.title}>
+                {item.items?.length ? (
+                  <PermissionGuard
+                    required={item.items.map((item) => item.permission)}
+                    operator="OR"
+                  >
+                    <Collapsible
+                      defaultOpen={index === 1}
+                      className="group/collapsible"
                     >
-                      <Collapsible
-                        defaultOpen={index === 1}
-                        className="group/collapsible"
-                      >
-                        <SidebarMenuItem>
-                          <CollapsibleTrigger asChild>
-                            <SidebarMenuButton>
-                              {item.title}{" "}
-                              <Plus className="ml-auto group-data-[state=open]/collapsible:hidden" />
-                              <Minus className="ml-auto group-data-[state=closed]/collapsible:hidden" />
-                            </SidebarMenuButton>
-                          </CollapsibleTrigger>
-                          <CollapsibleContent>
-                            <SidebarMenuSub>
-                              {item.items.map((item) => (
-                                <PermissionGuard
-                                  required={[item.permission]}
-                                  key={item.title}
-                                >
-                                  <SidebarMenuSubItem>
-                                    <SidebarMenuSubButton
-                                      asChild
-                                      isActive={false}
-                                    >
-                                      <Link href={item.url}>{item.title}</Link>
-                                    </SidebarMenuSubButton>
-                                  </SidebarMenuSubItem>
-                                </PermissionGuard>
-                              ))}
-                            </SidebarMenuSub>
-                          </CollapsibleContent>
-                        </SidebarMenuItem>
-                      </Collapsible>
-                    </PermissionGuard>
-                  ) : null}
-                </Fragment>
-              ))}
-            </SidebarMenu>
-          </SidebarGroup>
-        </SidebarContent>
-        <SidebarRail />
-      </Sidebar>
-    </>
+                      <SidebarMenuItem>
+                        <CollapsibleTrigger asChild>
+                          <SidebarMenuButton>
+                            {item.title}{" "}
+                            <Plus className="ml-auto group-data-[state=open]/collapsible:hidden" />
+                            <Minus className="ml-auto group-data-[state=closed]/collapsible:hidden" />
+                          </SidebarMenuButton>
+                        </CollapsibleTrigger>
+                        <CollapsibleContent>
+                          <SidebarMenuSub>
+                            {item.items.map((item) => (
+                              <PermissionGuard
+                                required={[item.permission]}
+                                key={item.title}
+                              >
+                                <SidebarMenuSubItem>
+                                  <SidebarMenuSubButton
+                                    asChild
+                                    isActive={false}
+                                  >
+                                    <Link href={item.url}>{item.title}</Link>
+                                  </SidebarMenuSubButton>
+                                </SidebarMenuSubItem>
+                              </PermissionGuard>
+                            ))}
+                          </SidebarMenuSub>
+                        </CollapsibleContent>
+                      </SidebarMenuItem>
+                    </Collapsible>
+                  </PermissionGuard>
+                ) : null}
+              </Fragment>
+            ))}
+          </SidebarMenu>
+        </SidebarGroup>
+      </SidebarContent>
+      <SidebarRail />
+    </Sidebar>
   );
 }

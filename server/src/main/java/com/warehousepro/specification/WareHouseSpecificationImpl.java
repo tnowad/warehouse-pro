@@ -1,9 +1,9 @@
 package com.warehousepro.specification;
 
 import com.warehousepro.entity.Warehouse;
+import java.time.LocalDate;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Component;
-import java.time.LocalDate;
 
 @Component
 public class WareHouseSpecificationImpl implements WareHouseSpecification {
@@ -13,8 +13,8 @@ public class WareHouseSpecificationImpl implements WareHouseSpecification {
       if (name == null || name.isEmpty()) {
         return criteriaBuilder.conjunction();
       }
-      return criteriaBuilder.like(criteriaBuilder.lower(root.get("warehouseName")),
-          "%" + name.toLowerCase() + "%");
+      return criteriaBuilder.like(
+          criteriaBuilder.lower(root.get("warehouseName")), "%" + name.toLowerCase() + "%");
     };
   }
 
@@ -24,8 +24,8 @@ public class WareHouseSpecificationImpl implements WareHouseSpecification {
       if (location == null || location.isEmpty()) {
         return criteriaBuilder.conjunction();
       }
-      return criteriaBuilder.like(criteriaBuilder.lower(root.get("location")),
-          "%" + location.toLowerCase() + "%");
+      return criteriaBuilder.like(
+          criteriaBuilder.lower(root.get("location")), "%" + location.toLowerCase() + "%");
     };
   }
 
@@ -68,5 +68,4 @@ public class WareHouseSpecificationImpl implements WareHouseSpecification {
       return criteriaBuilder.equal(root.get("updatedAt"), updatedAt);
     };
   }
-
 }

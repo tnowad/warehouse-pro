@@ -8,5 +8,6 @@ import org.mapstruct.Mapper;
 @Mapper(componentModel = "spring")
 public interface OrderMapper {
   Order toOrder(CreateOrderRequest request);
+
   OrderResponse toOrderResponse(Order order);
 }

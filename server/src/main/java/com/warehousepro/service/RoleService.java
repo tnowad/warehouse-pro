@@ -43,7 +43,7 @@ public class RoleService {
 
   @Transactional
   public RoleRespone update(String id , UpdateRoleRequest request){
-    Role role = roleRepository.findById(id).orElseThrow(() -> new RuntimeException("Không tồn tại role"));
+    Role role = roleRepository.findByName(id);
 
     if (role.getDescription() != null){
       role.setDescription(request.getDescription());

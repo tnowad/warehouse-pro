@@ -1,8 +1,8 @@
 package com.warehousepro.dto.response;
 
+import java.util.Map;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
-import java.util.Map;
 
 @Data
 @NoArgsConstructor

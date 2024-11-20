@@ -1,12 +1,11 @@
 package com.warehousepro.entity;
 
 import jakarta.persistence.*;
+import java.util.Date;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.hibernate.validator.constraints.UUID;
-
-import java.util.Date;
 
 @Entity
 @Data
@@ -39,5 +38,4 @@ public class AuditLog {
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "user_id")
   User user;
-
 }

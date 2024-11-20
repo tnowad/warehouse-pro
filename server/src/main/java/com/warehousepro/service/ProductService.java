@@ -1,6 +1,5 @@
 package com.warehousepro.service;
 
-
 import com.warehousepro.dto.request.product.CreateProductRequest;
 import com.warehousepro.entity.Product;
 import com.warehousepro.mapstruct.InventoryMapper;
@@ -8,6 +7,7 @@ import com.warehousepro.mapstruct.ProductMapper;
 import com.warehousepro.repository.ProductRepository;
 import com.warehousepro.specification.ProductSpecification;
 import jakarta.transaction.Transactional;
+import java.util.Map;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -17,9 +17,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
-
-import java.util.Map;
-
 
 @Slf4j
 @Service
@@ -37,7 +34,6 @@ public class ProductService {
     productRepository.save(product);
     return product;
   }
-
 
   public Page<Product> findByCriteria(Map<String, String> searchCriteria, Pageable pageable) {
     Specification<Product> spec = Specification.where(null);
@@ -62,9 +58,7 @@ public class ProductService {
   }
 
   @Transactional
-  public void delete(String id){
+  public void delete(String id) {
     productRepository.deleteById(id);
   }
-
-
 }

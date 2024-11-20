@@ -2,6 +2,7 @@ package com.warehousepro.service;
 
 import com.warehousepro.dto.request.permission.CreatePermisionRequest;
 import com.warehousepro.entity.Permission;
+import com.warehousepro.entity.PermissionName;
 import com.warehousepro.entity.Role;
 import com.warehousepro.mapstruct.PermissonMapper;
 import com.warehousepro.repository.PermissionRepository;
@@ -41,18 +42,7 @@ public class PermissionService {
     return permissionRepository.save(permission);
   }
 
-  public List<String> getPermissionNamesByRoles(List<Role> roles) {
-    return List.of(
-        "DASHBOARD_VIEW",
-        "SETTINGS_VIEW",
-        "USER_ROLE_ASSIGN",
-        "USER_DELETE",
-        "USER_LOGIN",
-        "USER_REGISTER",
-        "USER_DETAILS_VIEW",
-        "USER_ROLES_VIEW",
-        "USER_UPDATE",
-        "USER_CURRENT_PERMISSIONS_VIEW",
-        "USER_CURRENT_ROLES_VIEW");
+  public List<PermissionName> getPermissionNamesByRoleIds(List<String> roleIds) {
+    return permissionRepository.getPermissionNamesByRoleIds(roleIds);
   }
 }

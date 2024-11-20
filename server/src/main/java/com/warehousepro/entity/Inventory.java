@@ -1,13 +1,10 @@
 package com.warehousepro.entity;
 
-
 import jakarta.persistence.*;
+import java.util.Date;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 import org.hibernate.annotations.UpdateTimestamp;
-
-
-import java.util.Date;
 
 @Entity
 @Data
@@ -41,5 +38,4 @@ public class Inventory {
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "warehouse_id")
   Warehouse warehouse;
-
 }

@@ -1,5 +1,6 @@
 package com.warehousepro.dto.response.permission;
 
+import com.warehousepro.entity.PermissionName;
 import java.util.List;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -14,5 +15,5 @@ import lombok.experimental.FieldDefaults;
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class GetCurrentUserPermissionResponse {
-  List<String> items;
+  List<PermissionName> items;
 }

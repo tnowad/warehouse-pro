@@ -24,7 +24,6 @@ public class SupplierProduct {
   @Column(name = "availability_status")
   String availabilityStatus;
 
-
   @ManyToOne
   @JoinColumn(name = "supplier_id")
   Supplier supplier;
@@ -32,5 +31,4 @@ public class SupplierProduct {
   @ManyToOne
   @JoinColumn(name = "product_id")
   Product product;
-
 }
