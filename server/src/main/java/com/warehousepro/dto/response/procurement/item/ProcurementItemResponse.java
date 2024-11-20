@@ -2,7 +2,7 @@ package com.warehousepro.dto.response.procurement.item;
 
 import com.warehousepro.dto.response.procurement.ProcurementReponse;
 import com.warehousepro.dto.response.product.ProductResponse;
-import com.warehousepro.dto.response.warehouse.WareHouseResponseDto;
+import com.warehousepro.dto.response.warehouse.WareHouseResponse;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
@@ -15,7 +15,7 @@ public class ProcurementItemResponse {
   String id;
   Integer quantity;
   Double price;
-  WareHouseResponseDto warehouse;
+  WareHouseResponse warehouse;
   ProductResponse product;
   ProcurementReponse procurement;
 }
