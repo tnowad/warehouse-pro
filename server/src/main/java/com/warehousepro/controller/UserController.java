@@ -1,6 +1,7 @@
 package com.warehousepro.controller;
 
 import com.warehousepro.dto.request.auth.CreateUserRequest;
+import com.warehousepro.dto.request.auth.UpdateUserRequest;
 import com.warehousepro.dto.response.auth.UserResponse;
 import com.warehousepro.entity.Permission;
 import com.warehousepro.entity.Role;
@@ -54,6 +55,8 @@ public class UserController {
     return UserResponse.builder().id(user.getId()).email(user.getEmail())
         .createdAt(user.getCreatedAt()).updatedAt(user.getUpdatedAt()).build();
   }
+
+
 
   @GetMapping
   List<UserResponse> getUsers() {

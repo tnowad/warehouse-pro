@@ -1,7 +1,9 @@
 package com.warehousepro.entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import java.time.LocalDate;
+import java.util.HashSet;
 import java.util.Set;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -47,7 +49,7 @@ public class User {
       name = "user_roles",
       joinColumns = @JoinColumn(name = "user_id"),
       inverseJoinColumns = @JoinColumn(name = "role_id"))
-  Set<Role> roles;
+  Set<Role> roles = new HashSet<>();
 
   @OneToMany(
       cascade = CascadeType.ALL,
@@ -57,8 +59,12 @@ public class User {
   Set<AuditLog> auditLogs;
 
   public void addRole(Role role) {
+    if (this.roles == null) {
+      this.roles = new HashSet<>();
+    }
     this.roles.add(role);
   }
+
 
   public void removeRole(String name) {
     Role role =
