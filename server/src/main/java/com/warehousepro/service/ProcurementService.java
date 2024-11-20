@@ -20,10 +20,9 @@ public class ProcurementService {
   ProcurementMapper procurementMapper;
 
   @Transactional
-  public Procurement create(CreateProcurementRequest request){
+  public Procurement create(CreateProcurementRequest request) {
     Procurement procurement = procurementMapper.toProcurement(request);
     procurementRepository.save(procurement);
     return procurement;
   }
-
 }

@@ -2,7 +2,7 @@ package com.warehousepro.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.Set;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -18,26 +18,33 @@ import org.hibernate.annotations.UpdateTimestamp;
 public class Role {
 
   @Id
+  @GeneratedValue(strategy = GenerationType.UUID)
+  String id;
+
   @Column(name = "name")
   String name;
 
   @Column(name = "description")
   String description;
 
-  @CreationTimestamp Date createdAt;
+  @CreationTimestamp LocalDateTime createdAt;
 
-  @UpdateTimestamp Date updatedAt;
+  @UpdateTimestamp LocalDateTime updatedAt;
 
-  @ManyToMany(
-      mappedBy = "roles",
-      fetch = FetchType.LAZY,
-      cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+  @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+  @JoinTable(
+      name = "role_permissions",
+      joinColumns = @JoinColumn(name = "role_id"),
+      inverseJoinColumns = @JoinColumn(name = "permission_id"))
   Set<Permission> permissions;
 
   @ManyToMany(
-      mappedBy = "roles",
       fetch = FetchType.LAZY,
       cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+  @JoinTable(
+      name = "role_users",
+      joinColumns = @JoinColumn(name = "role_id"),
+      inverseJoinColumns = @JoinColumn(name = "user_id"))
   @JsonIgnore
   Set<User> users;
 }

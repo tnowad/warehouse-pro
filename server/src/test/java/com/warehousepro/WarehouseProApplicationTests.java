@@ -10,5 +10,4 @@ class WarehouseProApplicationTests {
 
   @Test
   void contextLoads() {}
-
 }

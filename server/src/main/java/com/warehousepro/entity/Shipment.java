@@ -1,11 +1,10 @@
 package com.warehousepro.entity;
 
 import jakarta.persistence.*;
-import lombok.*;
-import lombok.experimental.FieldDefaults;
-
 import java.util.Date;
 import java.util.Set;
+import lombok.*;
+import lombok.experimental.FieldDefaults;
 
 @Entity
 @Data
@@ -40,15 +39,17 @@ public class Shipment {
   @JoinColumn(name = "order_id")
   Order order;
 
-  @OneToMany(cascade = CascadeType.ALL , fetch = FetchType.LAZY,
-    mappedBy = "shipment",
-    orphanRemoval = true
-  )
+  @OneToMany(
+      cascade = CascadeType.ALL,
+      fetch = FetchType.LAZY,
+      mappedBy = "shipment",
+      orphanRemoval = true)
   Set<ShipmentTracking> shipmentTracking;
 
-  @OneToMany(cascade = CascadeType.ALL , fetch = FetchType.LAZY,
-    mappedBy = "shipment",
-    orphanRemoval = true
-  )
+  @OneToMany(
+      cascade = CascadeType.ALL,
+      fetch = FetchType.LAZY,
+      mappedBy = "shipment",
+      orphanRemoval = true)
   Set<ShipmentItem> shipmentItems;
 }

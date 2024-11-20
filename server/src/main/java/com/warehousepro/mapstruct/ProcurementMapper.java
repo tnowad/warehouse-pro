@@ -8,5 +8,6 @@ import org.mapstruct.Mapper;
 @Mapper(componentModel = "spring")
 public interface ProcurementMapper {
   Procurement toProcurement(CreateProcurementRequest request);
+
   ProcurementReponse toProcurementReponse(Procurement procurement);
 }

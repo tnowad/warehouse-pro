@@ -8,5 +8,6 @@ import org.mapstruct.Mapper;
 @Mapper(componentModel = "spring")
 public interface ReturnMapper {
   Return toReturn(CreateReturnRequest request);
+
   ReturnResponse toReturnResponse(Return returns);
 }

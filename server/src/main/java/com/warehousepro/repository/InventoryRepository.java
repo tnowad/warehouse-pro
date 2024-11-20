@@ -10,11 +10,9 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface InventoryRepository extends
-  JpaRepository<Inventory, String> , JpaSpecificationExecutor<Inventory> {
+public interface InventoryRepository
+    extends JpaRepository<Inventory, String>, JpaSpecificationExecutor<Inventory> {
 
   @Query("select invent from Inventory invent where invent.product.id = :product_id")
-  Page<Inventory> getListByProductId(@Param("product_id") String id , Pageable pageable);
-
-
+  Page<Inventory> getListByProductId(@Param("product_id") String id, Pageable pageable);
 }

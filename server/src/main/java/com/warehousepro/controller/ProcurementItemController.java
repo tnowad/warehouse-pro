@@ -24,10 +24,8 @@ public class ProcurementItemController {
   ProcurementItemMapper mapper;
 
   @PostMapping
-  public ResponseEntity<ProcurementItemResponse> create(@RequestBody CreateProcurementItemRequest request){
+  public ResponseEntity<ProcurementItemResponse> create(
+      @RequestBody CreateProcurementItemRequest request) {
     return ResponseEntity.ok(mapper.toProcurementItemResponse(service.create(request)));
   }
-
-
-
 }

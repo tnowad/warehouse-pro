@@ -1,14 +1,12 @@
 package com.warehousepro.entity;
 
 import jakarta.persistence.*;
+import java.time.LocalDateTime;
+import java.util.Set;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
-
-import java.time.LocalDate;
-import java.util.HashSet;
-import java.util.Set;
 
 @Entity
 @Data
@@ -19,30 +17,30 @@ import java.util.Set;
 public class Permission {
 
   @Id
+  @GeneratedValue(strategy = GenerationType.UUID)
+  String id;
+
   @Column(name = "name")
-  String name;
+  @Enumerated(EnumType.STRING)
+  PermissionName name;
 
   @Column(name = "description")
   String description;
 
-  @CreationTimestamp
-  LocalDate createdAt;
-  @UpdateTimestamp
-  LocalDate updatedAt;
+  @CreationTimestamp LocalDateTime createdAt;
 
-  @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+  @UpdateTimestamp LocalDateTime updatedAt;
+
+  @ManyToMany(
+      fetch = FetchType.LAZY,
+      cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE})
   @JoinTable(
-    name = "role_permissions",
-    joinColumns = @JoinColumn(name = "permission_name"),
-    inverseJoinColumns = @JoinColumn(name = "role_name")
-  )
-  private Set<Role> roles = new HashSet<>();
+      name = "role_permissions",
+      joinColumns = @JoinColumn(name = "permission_id"),
+      inverseJoinColumns = @JoinColumn(name = "role_id"))
+  private Set<Role> roles;
 
-  public void addRole(Role role){
+  public void addRole(Role role) {
     this.roles.add(role);
   }
-
-
-
-
 }

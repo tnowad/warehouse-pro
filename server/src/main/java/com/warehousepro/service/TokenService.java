@@ -4,14 +4,13 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.warehousepro.dto.response.auth.TokensResponse;
-import java.util.Date;
-import java.util.Set;
-import java.util.StringJoiner;
-
 import com.warehousepro.entity.Role;
 import com.warehousepro.entity.User;
 import com.warehousepro.repository.RoleRepository;
 import com.warehousepro.repository.UserRepository;
+import java.util.Date;
+import java.util.Set;
+import java.util.StringJoiner;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -35,12 +34,11 @@ public class TokenService {
     Date now = new Date();
     Date expirationTime = new Date(now.getTime() + accessExpiration);
 
-
     return JWT.create()
         .withSubject(user.getId())
         .withIssuedAt(now)
         .withExpiresAt(expirationTime)
-      .withClaim("scope" , buildScope(user))
+        .withClaim("scope", buildScope(user))
         .sign(Algorithm.HMAC256(accessSecret));
   }
 
@@ -49,14 +47,13 @@ public class TokenService {
     Set<Role> roles = roleRepository.findRolesByUsersId(user.getId());
     log.info(roles.toString());
     if (!CollectionUtils.isEmpty(roles))
-      roles.forEach(role -> {
-          stringJoiner.add("ROLE_" + role.getName());
-      });
+      roles.forEach(
+          role -> {
+            stringJoiner.add("ROLE_" + role.getName());
+          });
 
     return stringJoiner.toString();
-
   }
-
 
   public String generateRefreshToken(String userId) {
     Date now = new Date();

@@ -1,10 +1,9 @@
 package com.warehousepro.dto.response.procurement;
 
 import com.warehousepro.dto.response.supplier.SupplierResponse;
+import java.util.Date;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
-
-import java.util.Date;
 
 @Data
 @NoArgsConstructor

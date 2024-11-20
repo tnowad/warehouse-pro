@@ -5,13 +5,12 @@ import com.warehousepro.dto.response.supplier.SupplierResponse;
 import com.warehousepro.entity.Supplier;
 import com.warehousepro.mapstruct.SupplierMapper;
 import com.warehousepro.service.SupplierService;
+import java.util.List;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/suppliers")
@@ -23,13 +22,12 @@ public class SupplierController {
   SupplierMapper supplierMapper;
 
   @PostMapping
-  public ResponseEntity<SupplierResponse> create(@RequestBody CreateSupplierRequest request){
+  public ResponseEntity<SupplierResponse> create(@RequestBody CreateSupplierRequest request) {
     return ResponseEntity.ok(supplierMapper.toSupplierResponse(supplierService.create(request)));
   }
 
   @GetMapping
-  public ResponseEntity<List<Supplier>> getALl(){
+  public ResponseEntity<List<Supplier>> getALl() {
     return ResponseEntity.ok(supplierService.getAll());
   }
-
 }

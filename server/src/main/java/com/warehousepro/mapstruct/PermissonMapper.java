@@ -8,5 +8,6 @@ import org.mapstruct.Mapper;
 @Mapper(componentModel = "spring")
 public interface PermissonMapper {
   Permission toPermission(CreatePermisionRequest request);
+
   PermissionResponse toPermissionResponse(Permission permission);
 }

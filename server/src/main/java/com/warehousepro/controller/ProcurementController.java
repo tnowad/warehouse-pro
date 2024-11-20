@@ -1,6 +1,5 @@
 package com.warehousepro.controller;
 
-
 import com.warehousepro.dto.request.procurement.CreateProcurementRequest;
 import com.warehousepro.dto.response.procurement.ProcurementReponse;
 import com.warehousepro.mapstruct.ProcurementMapper;
@@ -25,9 +24,8 @@ public class ProcurementController {
   ProcurementMapper procurementMapper;
 
   @PostMapping
-  public ResponseEntity<ProcurementReponse> create(@RequestBody CreateProcurementRequest request){
-    return ResponseEntity.ok(procurementMapper.toProcurementReponse(procurementService.create(request)));
+  public ResponseEntity<ProcurementReponse> create(@RequestBody CreateProcurementRequest request) {
+    return ResponseEntity.ok(
+        procurementMapper.toProcurementReponse(procurementService.create(request)));
   }
-
-
 }
