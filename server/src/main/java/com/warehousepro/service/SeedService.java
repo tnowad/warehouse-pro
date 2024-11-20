@@ -50,6 +50,13 @@ public class SeedService {
     Map<PermissionName, Permission> permissions = new HashMap<>();
 
     permissions.put(
+        PermissionName.AUTH_LOGIN,
+        Permission.builder()
+            .name(PermissionName.AUTH_LOGIN)
+            .description("Login to the system")
+            .build());
+
+    permissions.put(
         PermissionName.USER_CREATE,
         Permission.builder()
             .name(PermissionName.USER_CREATE)

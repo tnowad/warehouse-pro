@@ -2,6 +2,7 @@ package com.warehousepro.entity;
 
 public enum PermissionName {
   AUTH_LOGIN,
+  AUTH_LOGGED_IN,
 
   USER_CREATE,
   USER_UPDATE,

@@ -84,12 +84,16 @@ public class AuthenticationService {
     String userId = jwt.getSubject();
     log.info("User ID: {}", userId);
     var user = userService.getUserById(userId);
+    if (user == null) {
+      return List.of(PermissionName.AUTH_LOGIN);
+    }
     var roles = user.getRoles();
     log.info("Roles: {}", roles);
     var permissionNames =
         permissionService.getPermissionNamesByRoleIds(
             roles.stream().map(role -> role.getId()).toList());
     log.info("Permissions: {}", permissionNames);
+    permissionNames.add(PermissionName.AUTH_LOGGED_IN);
     return permissionNames;
   }
 }
