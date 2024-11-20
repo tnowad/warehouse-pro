@@ -4,6 +4,7 @@ import com.warehousepro.dto.request.auth.LoginRequest;
 import com.warehousepro.dto.response.auth.LoginResponse;
 import com.warehousepro.dto.response.auth.RefreshTokenResponse;
 import com.warehousepro.dto.response.auth.TokensResponse;
+import com.warehousepro.entity.PermissionName;
 import com.warehousepro.entity.User;
 import com.warehousepro.exception.EmailNotFoundException;
 import com.warehousepro.exception.IncorrectPasswordException;
@@ -67,22 +68,32 @@ public class AuthenticationService {
     }
 
     var userId = decodedJWT.getSubject();
-    User user = userService.getUserById(userId) ;
+    User user = userService.getUserById(userId);
     var newAccessToken = tokenService.generateAccessToken(user);
 
     return RefreshTokenResponse.builder().accessToken(newAccessToken).build();
   }
 
-  public List<String> getCurrentUserPermissionNames() {
+  public List<PermissionName> getCurrentUserPermissionNames() {
 
     if (SecurityContextHolder.getContext().getAuthentication().getPrincipal() instanceof String) {
-      return List.of("AUTH_LOGIN");
+      return List.of(PermissionName.AUTH_LOGIN);
     }
     Jwt jwt = (Jwt) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
     String userId = jwt.getSubject();
-    var roles = roleService.getUserRoles(userId);
-    var permissionNames = permissionService.getPermissionNamesByRoles(roles);
+    log.info("User ID: {}", userId);
+    var user = userService.getUserById(userId);
+    if (user == null) {
+      return List.of(PermissionName.AUTH_LOGIN);
+    }
+    var roles = user.getRoles();
+    log.info("Roles: {}", roles);
+    var permissionNames =
+        permissionService.getPermissionNamesByRoleIds(
+            roles.stream().map(role -> role.getId()).toList());
+    log.info("Permissions: {}", permissionNames);
+    permissionNames.add(PermissionName.AUTH_LOGGED_IN);
     return permissionNames;
   }
 }

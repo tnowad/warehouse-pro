@@ -1,13 +1,12 @@
 package com.warehousepro.entity;
 
 import jakarta.persistence.*;
+import java.util.Date;
+import java.util.Set;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
-
-import java.util.Date;
-import java.util.Set;
 
 @Entity
 @Data
@@ -33,21 +32,21 @@ public class Order {
   @Column(name = "shipping_address")
   String shippingAddress;
 
-  @CreationTimestamp
-  Date createdAt;
+  @CreationTimestamp Date createdAt;
 
-  @UpdateTimestamp
-  Date updatedAt;
+  @UpdateTimestamp Date updatedAt;
 
-  @OneToMany(cascade = CascadeType.ALL , fetch = FetchType.LAZY,
-    mappedBy = "order",
-    orphanRemoval = true
-  )
+  @OneToMany(
+      cascade = CascadeType.ALL,
+      fetch = FetchType.LAZY,
+      mappedBy = "order",
+      orphanRemoval = true)
   Set<Shipment> shipments;
 
-  @OneToMany(cascade = CascadeType.ALL , fetch = FetchType.LAZY,
-    mappedBy = "order",
-    orphanRemoval = true
-  )
+  @OneToMany(
+      cascade = CascadeType.ALL,
+      fetch = FetchType.LAZY,
+      mappedBy = "order",
+      orphanRemoval = true)
   Set<OrderItem> orderItems;
 }

@@ -6,6 +6,7 @@ import com.warehousepro.entity.Product;
 import com.warehousepro.mapstruct.InventoryMapper;
 import com.warehousepro.mapstruct.ProductMapper;
 import com.warehousepro.service.ProductService;
+import java.util.Map;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -14,8 +15,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.Map;
 
 @Slf4j
 @RestController
@@ -29,22 +28,23 @@ public class ProductController {
   InventoryMapper inventoryMapper;
 
   @PostMapping
-  public  ResponseEntity<ProductResponse> create(@RequestBody CreateProductRequest request){
-    ProductResponse productResponse = productMapper.toProductResponse(productService.createProduct(request));
+  public ResponseEntity<ProductResponse> create(@RequestBody CreateProductRequest request) {
+    ProductResponse productResponse =
+        productMapper.toProductResponse(productService.createProduct(request));
 
     return ResponseEntity.ok(productResponse);
   }
 
-
   @GetMapping
-  public ResponseEntity<Page<ProductResponse>>  findProductByCriteria(@RequestParam Map<String, String> searchCriteria, Pageable pageable){
-    Page<Product> inventoryPage = productService.findByCriteria(searchCriteria,pageable);
+  public ResponseEntity<Page<ProductResponse>> findProductByCriteria(
+      @RequestParam Map<String, String> searchCriteria, Pageable pageable) {
+    Page<Product> inventoryPage = productService.findByCriteria(searchCriteria, pageable);
     Page<ProductResponse> result = inventoryPage.map(productMapper::toProductResponse);
     return ResponseEntity.ok(result);
   }
 
   @DeleteMapping("/{id}")
-  public ResponseEntity<String> delete(@PathVariable("id") String id){
+  public ResponseEntity<String> delete(@PathVariable("id") String id) {
     productService.delete(id);
     return ResponseEntity.ok("Xóa thành công");
   }

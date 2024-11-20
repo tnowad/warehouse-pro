@@ -42,10 +42,10 @@ public class RoleService {
   }
 
   @Transactional
-  public RoleRespone update(String id , UpdateRoleRequest request){
+  public RoleRespone update(String id, UpdateRoleRequest request) {
     Role role = roleRepository.findByName(id);
 
-    if (role.getDescription() != null){
+    if (role.getDescription() != null) {
       role.setDescription(request.getDescription());
     }
 
@@ -54,9 +54,6 @@ public class RoleService {
     roleRepository.save(role);
     return roleMapper.toRoleRespone(role);
   }
-
-
-
 
   public List<Role> getUserRoles(String userId) {
     List<Role> roles = roleRepository.findByUserId(userId);

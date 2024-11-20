@@ -8,12 +8,10 @@ import org.mapstruct.Mapping;
 
 @Mapper(componentModel = "spring")
 public interface InventoryMapper {
-  @Mapping(
-    target ="product" , ignore =true
-  )
+  @Mapping(target = "product", ignore = true)
   Inventory toInventory(CreateInventoryRequest inventoryRequest);
+
   InventoryResponse toInventoryResponse(Inventory inventory);
+
   InventoryResponse toInventoryResponse(CreateInventoryRequest inventoryRequest);
-
-
 }

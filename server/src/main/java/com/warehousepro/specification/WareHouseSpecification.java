@@ -1,9 +1,8 @@
 package com.warehousepro.specification;
 
 import com.warehousepro.entity.Warehouse;
-import org.springframework.context.annotation.Bean;
-import org.springframework.data.jpa.domain.Specification;
 import java.time.LocalDate;
+import org.springframework.data.jpa.domain.Specification;
 
 public interface WareHouseSpecification {
   public Specification<Warehouse> hasName(String name);

@@ -22,14 +22,15 @@ public class PermissionController {
   PermissonMapper permissonMapper;
 
   @PostMapping
-  public ResponseEntity<PermissionResponse> create(@RequestBody CreatePermisionRequest request){
-    PermissionResponse permissionResponse = permissonMapper.toPermissionResponse(permissionService.create(request));
+  public ResponseEntity<PermissionResponse> create(@RequestBody CreatePermisionRequest request) {
+    PermissionResponse permissionResponse =
+        permissonMapper.toPermissionResponse(permissionService.create(request));
     return ResponseEntity.ok(permissionResponse);
   }
 
   @PutMapping("/assignRoleToPermission/{per_id}/{role_id}")
   public ResponseEntity<Permission> assignRoleToPermission(
-    @PathVariable("per_id") String perId, @PathVariable("role_id") String role_id){
+      @PathVariable("per_id") String perId, @PathVariable("role_id") String role_id) {
     Permission permission = permissionService.assignRoleToPermission(perId, role_id);
     return ResponseEntity.ok(permission);
   }

@@ -1,6 +1,5 @@
 package com.warehousepro.dto.response.procurement.item;
 
-
 import com.warehousepro.dto.response.procurement.ProcurementReponse;
 import com.warehousepro.dto.response.product.ProductResponse;
 import com.warehousepro.dto.response.warehouse.WareHouseResponseDto;

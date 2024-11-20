@@ -9,14 +9,14 @@ import com.warehousepro.dto.response.SortField;
 import com.warehousepro.dto.response.warehouse.*;
 import com.warehousepro.mapstruct.WareHouseMapper;
 import com.warehousepro.service.WarehouseService;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 @RestController
 @RequiredArgsConstructor
@@ -30,13 +30,20 @@ public class WarehouseController {
 
   @GetMapping
   public PaginatedResponse<WareHouseResponseDto> getAllWarehouse(
-      @RequestParam(defaultValue = "25") int limit, @RequestParam(defaultValue = "1") int offset,
-      @RequestParam(required = false) String sortBy, @RequestParam(required = false) String orderBy,
+      @RequestParam(defaultValue = "25") int limit,
+      @RequestParam(defaultValue = "1") int offset,
+      @RequestParam(required = false) String sortBy,
+      @RequestParam(required = false) String orderBy,
       @RequestParam(required = false) Map<String, String> filtersBy) {
-    Map<String, String> filteredMap = filtersBy.entrySet().stream()
-        .filter(entry -> !entry.getKey().equals("limit") && !entry.getKey().equals("offset")
-            && !entry.getKey().equals("sortBy") && !entry.getKey().equals("orderBy"))
-        .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+    Map<String, String> filteredMap =
+        filtersBy.entrySet().stream()
+            .filter(
+                entry ->
+                    !entry.getKey().equals("limit")
+                        && !entry.getKey().equals("offset")
+                        && !entry.getKey().equals("sortBy")
+                        && !entry.getKey().equals("orderBy"))
+            .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 
     var page = warehouseService.filterWarehouses(limit, offset, filtersBy, sortBy, orderBy);
 
@@ -44,11 +51,22 @@ public class WarehouseController {
         page.stream().map(warehouseMapper::toWarehouseResponse).toList();
     int totalCount = (int) page.getTotalElements();
     int totalPageCount = (int) Math.ceil((double) totalCount / limit);
-    Pagination pagination = new Pagination(offset, limit, Math.max(offset - limit, 0),
-        Math.min(offset + limit, totalCount), offset / limit + 1, totalPageCount, totalCount);
+    Pagination pagination =
+        new Pagination(
+            offset,
+            limit,
+            Math.max(offset - limit, 0),
+            Math.min(offset + limit, totalCount),
+            offset / limit + 1,
+            totalPageCount,
+            totalCount);
 
-    Metadata metadata = Metadata.builder().pagination(pagination)
-        .sortedBy(new SortField(sortBy, orderBy)).filterBy(filteredMap).build();
+    Metadata metadata =
+        Metadata.builder()
+            .pagination(pagination)
+            .sortedBy(new SortField(sortBy, orderBy))
+            .filterBy(filteredMap)
+            .build();
 
     return new PaginatedResponse<>(items, metadata);
   }
@@ -65,10 +83,10 @@ public class WarehouseController {
   }
 
   @PutMapping("/{id}")
-  public WareHouseResponseDto updateWarehouse(@PathVariable("id") String id,
-      @RequestBody UpdateWarehouseRequestDto warehouseRequest) {
-    return warehouseMapper
-        .toWarehouseResponse(warehouseService.updateWareHouse(id, warehouseRequest));
+  public WareHouseResponseDto updateWarehouse(
+      @PathVariable("id") String id, @RequestBody UpdateWarehouseRequestDto warehouseRequest) {
+    return warehouseMapper.toWarehouseResponse(
+        warehouseService.updateWareHouse(id, warehouseRequest));
   }
 
   @DeleteMapping("/{id}")

@@ -1,10 +1,9 @@
 package com.warehousepro.dto.response.auditlog;
 
 import com.warehousepro.entity.User;
+import java.util.Date;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
-
-import java.util.Date;
 
 @Data
 @NoArgsConstructor

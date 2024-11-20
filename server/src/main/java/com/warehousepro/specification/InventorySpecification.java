@@ -4,14 +4,13 @@ import com.warehousepro.entity.Inventory;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Component;
 
-
 @Component
 public class InventorySpecification {
 
-
   public Specification<Inventory> containStatus(String providedStatus) {
-    return (root, query, criteriaBuilder) -> criteriaBuilder
-      .like(criteriaBuilder.lower(root.get("status")), "%" + providedStatus.toLowerCase() + "%");
+    return (root, query, criteriaBuilder) ->
+        criteriaBuilder.like(
+            criteriaBuilder.lower(root.get("status")), "%" + providedStatus.toLowerCase() + "%");
   }
 
   public Specification<Inventory> onUpdatedAt(String lastUpdatedAt) {
@@ -24,18 +23,17 @@ public class InventorySpecification {
   }
 
   public Specification<Inventory> hasMinimumStockLevel(String providedMinimumStockLevel) {
-    return (root, query, criteriaBuilder) -> criteriaBuilder
-      .equal(root.get("minimumStockLevel") , providedMinimumStockLevel);
+    return (root, query, criteriaBuilder) ->
+        criteriaBuilder.equal(root.get("minimumStockLevel"), providedMinimumStockLevel);
   }
 
   public Specification<Inventory> hasQuantity(String providedQuantity) {
-    return (root, query, criteriaBuilder) -> criteriaBuilder.equal(root.get("quantity"),
-      providedQuantity);
+    return (root, query, criteriaBuilder) ->
+        criteriaBuilder.equal(root.get("quantity"), providedQuantity);
   }
 
-  public Specification<Inventory> hasProduct(String provideProduct){
-    return (root, query, criteriaBuilder) -> criteriaBuilder.equal(root.get("product"), provideProduct);
+  public Specification<Inventory> hasProduct(String provideProduct) {
+    return (root, query, criteriaBuilder) ->
+        criteriaBuilder.equal(root.get("product"), provideProduct);
   }
-
-
 }

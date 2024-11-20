@@ -1,8 +1,8 @@
 package com.warehousepro.dto.response.auth;
 
+import java.time.LocalDate;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
-import java.time.LocalDate;
 
 @Data
 @NoArgsConstructor

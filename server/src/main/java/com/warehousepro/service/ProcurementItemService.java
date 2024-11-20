@@ -29,13 +29,13 @@ public class ProcurementItemService {
   ProcurementRepository procurementRepository;
 
   @Transactional
-  public ProcurementItem create(CreateProcurementItemRequest request){
+  public ProcurementItem create(CreateProcurementItemRequest request) {
     ProcurementItem procurementItem = mapper.toProcurementItem(request);
 
     Product product = productRepository.findById(procurementItem.getProduct().getId());
     Warehouse warehouse = wareHouseRepository.getById(procurementItem.getWarehouse().getId());
-    Procurement procurement = procurementRepository.getById(procurementItem.getProcurement().getId());
-
+    Procurement procurement =
+        procurementRepository.getById(procurementItem.getProcurement().getId());
 
     procurementItem.setProduct(product);
     procurementItem.setWarehouse(warehouse);

@@ -10,8 +10,6 @@ import org.mapstruct.Mapping;
 public interface ProductMapper {
   @Mapping(target = "id", ignore = true)
   Product toProduct(CreateProductRequest request);
+
   ProductResponse toProductResponse(Product product);
-
-
-
 }

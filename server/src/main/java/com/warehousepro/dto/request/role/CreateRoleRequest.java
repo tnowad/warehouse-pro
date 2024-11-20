@@ -1,9 +1,7 @@
 package com.warehousepro.dto.request.role;
 
-
 import lombok.*;
 import lombok.experimental.FieldDefaults;
-
 
 @Data
 @NoArgsConstructor

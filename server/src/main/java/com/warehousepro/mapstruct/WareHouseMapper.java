@@ -13,6 +13,6 @@ public interface WareHouseMapper {
 
   WareHouseResponseDto toWarehouseResponse(Warehouse warehouse);
 
-  void updateWarehouse(@MappingTarget Warehouse warehouse,
-      UpdateWarehouseRequestDto wareHouseRequestDto);
+  void updateWarehouse(
+      @MappingTarget Warehouse warehouse, UpdateWarehouseRequestDto wareHouseRequestDto);
 }
