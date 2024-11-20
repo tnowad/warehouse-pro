@@ -3,6 +3,7 @@ package com.warehousepro.entity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Set;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -32,12 +33,12 @@ public class Role {
       mappedBy = "roles",
       fetch = FetchType.LAZY,
       cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-  Set<Permission> permissions;
+  Set<Permission> permissions = new HashSet<>();
 
   @ManyToMany(
       mappedBy = "roles",
       fetch = FetchType.LAZY,
       cascade = {CascadeType.PERSIST, CascadeType.MERGE})
   @JsonIgnore
-  Set<User> users;
+  Set<User> users = new HashSet<>();
 }

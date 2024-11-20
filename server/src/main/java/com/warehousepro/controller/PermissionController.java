@@ -11,6 +11,8 @@ import lombok.experimental.FieldDefaults;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/permissions")
 @RequiredArgsConstructor
@@ -30,5 +32,15 @@ public class PermissionController {
     @PathVariable("per_id") String perId, @PathVariable("role_id") String role_id){
     Permission permission = permissionService.assignRoleToPermission(perId, role_id);
     return ResponseEntity.ok(permission);
+  }
+
+  @GetMapping("/general")
+  public ResponseEntity<List<String>> general(){
+    return ResponseEntity.ok(permissionService.general());
+  }
+
+  @GetMapping("/user-management")
+  public ResponseEntity<List<String>> userManagement(){
+    return ResponseEntity.ok(permissionService.userManagement());
   }
 }

@@ -12,6 +12,7 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 @Slf4j
@@ -40,11 +41,35 @@ public class PermissionService {
     permission.addRole(role);
     return permissionRepository.save(permission);
   }
+  @PreAuthorize("hasAnyAuthority('DASHBOARD_VIEW' , 'SETTING_VIEW')")
+ public List<String> general(){
+    return List.of(
+      "DASHBOARD_VIEW",
+      "SETTINGS_VIEW");
+ }
+
+ @PreAuthorize("hasAnyAuthority( 'USER_ROLE_ASSIGN' , 'USER_DELETE'," +
+   " 'USER_REGISTER', 'USER_DETAILS_VIEW', 'USER_ROLES_VIEW' ," +
+   " 'USER_UPDATE', 'USER_CURRENT_PERMISSIONS_VIEW' , 'USER_CURRENT_ROLES_VIEW')")
+ public List<String> userManagement(){
+     return List.of(
+       "USER_ROLE_ASSIGN",
+       "USER_DELETE",
+       "USER_LOGIN",
+       "USER_REGISTER",
+       "USER_DETAILS_VIEW",
+       "USER_ROLES_VIEW",
+       "USER_UPDATE",
+       "USER_CURRENT_PERMISSIONS_VIEW",
+       "USER_CURRENT_ROLES_VIEW"
+     );
+ }
+
+
+
 
   public List<String> getPermissionNamesByRoles(List<Role> roles) {
     return List.of(
-        "DASHBOARD_VIEW",
-        "SETTINGS_VIEW",
         "USER_ROLE_ASSIGN",
         "USER_DELETE",
         "USER_LOGIN",
