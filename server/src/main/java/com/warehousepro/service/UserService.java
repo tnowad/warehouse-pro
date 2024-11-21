@@ -1,11 +1,14 @@
 package com.warehousepro.service;
 
 import com.warehousepro.dto.request.auth.CreateUserRequest;
+import com.warehousepro.dto.response.ItemResponse;
 import com.warehousepro.dto.response.auth.UserResponse;
+import com.warehousepro.dto.response.role.RoleRespone;
 import com.warehousepro.entity.Permission;
 import com.warehousepro.entity.Role;
 import com.warehousepro.entity.User;
 import com.warehousepro.exception.ValidationException;
+import com.warehousepro.mapstruct.RoleMapper;
 import com.warehousepro.mapstruct.UserMapper;
 import com.warehousepro.repository.PermissionRepository;
 import com.warehousepro.repository.RoleRepository;
@@ -13,6 +16,8 @@ import com.warehousepro.repository.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import java.util.*;
+import java.util.stream.Collectors;
+
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -29,6 +34,7 @@ public class UserService {
   final PasswordEncoder passwordEncoder;
   RoleRepository roleRepository;
   PermissionRepository permissionRepository;
+  private final RoleMapper roleMapper;
 
   @Transactional
   public UserResponse createUser(CreateUserRequest request) {
@@ -53,9 +59,31 @@ public class UserService {
     return userMapper.toUserResponse(user);
   }
 
-  public List<UserResponse> getUsers() {
-    return userRepository.findAll().stream().map(userMapper::toUserResponse).toList();
+  public ItemResponse<UserResponse> getUsers(String query, int page, int pageSize) {
+    List<User> allUser = userRepository.searchRoles(query);
+
+    int totalItems = allUser.size();
+    int startIndex = Math.max(0, (page - 1) * pageSize);
+    int endIndex = Math.min(startIndex + pageSize, totalItems);
+    List<User> paginatedRoles = allUser.subList(startIndex, endIndex);
+
+    List<UserResponse> userResponses = paginatedRoles.stream().map(userMapper::toUserResponse).collect(Collectors.toList());
+
+    userResponses.forEach(userResponse -> userResponse.setRoleRespones(
+      viewUserRoles(userResponse.getId()).stream().map(roleMapper::toRoleRespone).collect(Collectors.toSet())));
+
+    int pageCount = (int) Math.ceil((double) totalItems / pageSize);
+
+    return ItemResponse.<UserResponse>builder()
+      .items(userResponses)
+      .rowCount(totalItems)
+      .page(page)
+      .pageCount(pageCount)
+      .build();
+
   }
+
+
 
   public User getUserByEmail(String email) {
     return userRepository.findByEmail(email).orElse(null);

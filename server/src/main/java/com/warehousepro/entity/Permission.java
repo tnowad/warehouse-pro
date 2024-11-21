@@ -1,5 +1,7 @@
 package com.warehousepro.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 import java.util.Set;
@@ -38,6 +40,7 @@ public class Permission {
       name = "role_permissions",
       joinColumns = @JoinColumn(name = "permission_id"),
       inverseJoinColumns = @JoinColumn(name = "role_id"))
+  @JsonBackReference
   private Set<Role> roles;
 
   public void addRole(Role role) {

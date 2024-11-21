@@ -1,6 +1,7 @@
 package com.warehousepro.controller;
 
 import com.warehousepro.dto.request.auth.CreateUserRequest;
+import com.warehousepro.dto.response.ItemResponse;
 import com.warehousepro.dto.response.auth.UserResponse;
 import com.warehousepro.entity.Permission;
 import com.warehousepro.entity.Role;
@@ -13,7 +14,6 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import java.util.List;
 import java.util.Set;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -77,8 +77,10 @@ public class UserController {
   }
 
   @GetMapping
-  List<UserResponse> getUsers() {
-    return userService.getUsers();
+  public ResponseEntity<ItemResponse<UserResponse>> getAll(@RequestParam(defaultValue = "") String query,
+                                                          @RequestParam(defaultValue = "1") int page,
+                                                          @RequestParam(defaultValue = "10") int pageSize){
+    return ResponseEntity.ok(userService.getUsers(query, page, pageSize));
   }
 
   @DeleteMapping("/{id}")
