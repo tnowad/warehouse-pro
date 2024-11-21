@@ -34,7 +34,6 @@ public class WarehouseService {
 
   WareHouseSpecification wareHouseSpecification;
 
-  @PreAuthorize("hasRole('ROLE_Admin')")
   public Page<Warehouse> filterWarehouses(
       int limit, int offset, Map<String, String> filterBy, String sortBy, String orderBy) {
     Authentication authentication = SecurityContextHolder.getContext().getAuthentication();

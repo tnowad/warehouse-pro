@@ -9,7 +9,7 @@ import lombok.experimental.FieldDefaults;
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Builder
-public class WareHouseResponseDto {
+public class WareHouseResponse {
   String id;
   String name;
   String location;

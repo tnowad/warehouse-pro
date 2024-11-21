@@ -1,7 +1,7 @@
 package com.warehousepro.dto.response.inventory;
 
 import com.warehousepro.dto.response.product.ProductResponse;
-import com.warehousepro.dto.response.warehouse.WareHouseResponseDto;
+import com.warehousepro.dto.response.warehouse.WareHouseResponse;
 import java.util.Date;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -20,5 +20,5 @@ public class InventoryResponse {
   Integer minimumStockLevel;
   String status;
   ProductResponse product;
-  WareHouseResponseDto warehouse;
+  WareHouseResponse warehouse;
 }

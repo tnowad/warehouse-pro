@@ -199,7 +199,7 @@ export function UserTable() {
   });
 
   return (
-    <Card>
+    <Card className="min-w-full max-w-full w-full">
       <CardHeader>
         <CardTitle>
           Users
@@ -231,7 +231,7 @@ export function UserTable() {
           </Button>
           <DataTableViewOptions table={table} />
         </div>
-        <div className="rounded-md border">
+        <div className="rounded-md border min-w-full max-w-full w-full">
           <DataTable table={table} status={status} error={error} />
         </div>
         <div className="mt-4">
