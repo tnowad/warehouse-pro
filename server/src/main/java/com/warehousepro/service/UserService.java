@@ -21,9 +21,11 @@ import java.util.stream.Collectors;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+@Slf4j
 @Service
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @RequiredArgsConstructor
@@ -111,6 +113,9 @@ public class UserService {
   }
 
   public Set<Role> viewUserRoles(String userid) {
+    // nó không lấy ra được role từ userid
+    log.info(roleRepository.findRoleIdsByUserId(userid).toString() +"xincahao");
+
     return roleRepository.findRolesByUsersId(userid);
   }
 
