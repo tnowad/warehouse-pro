@@ -10,8 +10,8 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class ListWarehousesResponse {
-    List<WareHouseResponse> items;
-    Integer page;
-    Integer pageSize;
+public class ListWarehouseResponse {
+  List<WareHouseResponse> items;
+  Integer page;
+  Integer pageSize;
 }

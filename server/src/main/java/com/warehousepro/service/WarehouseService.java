@@ -1,13 +1,17 @@
 package com.warehousepro.service;
 
 import com.warehousepro.dto.request.warehouse.CreateWareHouseRequest;
+import com.warehousepro.dto.request.warehouse.ListWarehouseRequest;
 import com.warehousepro.dto.request.warehouse.UpdateWarehouseRequestDto;
+import com.warehousepro.dto.response.ItemResponse;
+import com.warehousepro.dto.response.warehouse.WareHouseResponse;
 import com.warehousepro.entity.Warehouse;
 import com.warehousepro.mapstruct.WareHouseMapper;
 import com.warehousepro.repository.WareHouseRepository;
 import com.warehousepro.specification.WareHouseSpecification;
 import java.time.LocalDate;
 import java.util.Map;
+import java.util.stream.Collectors;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -17,7 +21,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -95,5 +98,24 @@ public class WarehouseService {
 
   public void deleteWareHouse(String id) {
     warehouseRepository.deleteById(id);
+  }
+
+  public ItemResponse<WareHouseResponse> getAllWarehouses(ListWarehouseRequest filterRequest) {
+    var spec = wareHouseSpecification.getFilterSpecification(filterRequest);
+    var pageRequest = PageRequest.of(filterRequest.getPage(), filterRequest.getPageSize());
+    var totalItems = warehouseRepository.count(spec);
+    var warehouses = warehouseRepository.findAll(spec, pageRequest);
+    var page = filterRequest.getPage();
+    var pageCount = (int) Math.ceil((double) totalItems / filterRequest.getPageSize());
+
+    return ItemResponse.<WareHouseResponse>builder()
+        .items(
+            warehouses.stream()
+                .map(warehouseMapper::toWarehouseResponse)
+                .collect(Collectors.toList()))
+        .rowCount(Integer.valueOf(totalItems + ""))
+        .page(page)
+        .pageCount(pageCount)
+        .build();
   }
 }

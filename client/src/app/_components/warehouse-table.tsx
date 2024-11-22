@@ -227,6 +227,7 @@ export function WarehouseTable() {
           className="ml-auto"
           size={"sm"}
           onClick={() => {
+            table.resetSorting();
             table.resetGlobalFilter();
             table.resetColumnFilters();
           }}
