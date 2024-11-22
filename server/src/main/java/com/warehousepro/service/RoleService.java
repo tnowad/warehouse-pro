@@ -3,6 +3,10 @@ package com.warehousepro.service;
 // import com.warehousepro.dto.request.auth.RoleRequest;
 import com.warehousepro.dto.request.role.CreateRoleRequest;
 import com.warehousepro.dto.request.role.UpdateRoleRequest;
+import com.warehousepro.dto.response.ItemResponse;
+import com.warehousepro.dto.response.Metadata;
+import com.warehousepro.dto.response.PaginatedResponse;
+import com.warehousepro.dto.response.auth.RoleResponse;
 import com.warehousepro.dto.response.role.RoleRespone;
 import com.warehousepro.entity.Role;
 // import com.warehousepro.entity.User;
@@ -11,6 +15,8 @@ import com.warehousepro.repository.RoleRepository;
 import com.warehousepro.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import java.util.List;
+import java.util.stream.Collectors;
+
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -39,6 +45,28 @@ public class RoleService {
     Role role = roleMapper.toRole(request);
     roleRepository.save(role);
     return role;
+  }
+
+  public ItemResponse<RoleRespone> getAll(String query, int page, int pageSize) {
+    List<Role> allRoles = roleRepository.searchRoles(query);
+
+    int totalItems = allRoles.size();
+    int startIndex = Math.max(0, (page - 1) * pageSize);
+    int endIndex = Math.min(startIndex + pageSize, totalItems);
+    List<Role> paginatedRoles = allRoles.subList(startIndex, endIndex);
+
+    List<RoleRespone> roleResponses = paginatedRoles.stream().map(roleMapper::toRoleRespone).collect(Collectors.toList());
+
+    int pageCount = (int) Math.ceil((double) totalItems / pageSize);
+
+    return ItemResponse.<RoleRespone>builder()
+      .items(roleResponses)
+      .rowCount(totalItems)
+      .page(page)
+      .pageCount(pageCount)
+      .build();
+
+
   }
 
   @Transactional

@@ -1,19 +1,25 @@
 package com.warehousepro.controller;
 
 import com.warehousepro.dto.request.warehouse.CreateWareHouseRequest;
+import com.warehousepro.dto.request.warehouse.ListWarehouseRequest;
 import com.warehousepro.dto.request.warehouse.UpdateWarehouseRequestDto;
-import com.warehousepro.dto.response.Pagination;
-import com.warehousepro.dto.response.warehouse.*;
+import com.warehousepro.dto.response.ItemResponse;
+import com.warehousepro.dto.response.warehouse.WareHouseResponse;
 import com.warehousepro.mapstruct.WareHouseMapper;
 import com.warehousepro.service.WarehouseService;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
@@ -26,44 +32,9 @@ public class WarehouseController {
   WareHouseMapper warehouseMapper;
 
   @GetMapping
-  public ResponseEntity<ListWarehousesResponse> getAllWarehouse(
-      @RequestParam(defaultValue = "25") int limit,
-      @RequestParam(defaultValue = "1") int offset,
-      @RequestParam(required = false) String sortBy,
-      @RequestParam(required = false) String orderBy,
-      @RequestParam(required = false) Map<String, String> filtersBy) {
-    Map<String, String> filteredMap =
-        filtersBy.entrySet().stream()
-            .filter(
-                entry ->
-                    !entry.getKey().equals("limit")
-                        && !entry.getKey().equals("offset")
-                        && !entry.getKey().equals("sortBy")
-                        && !entry.getKey().equals("orderBy"))
-            .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
-
-    var page = warehouseService.filterWarehouses(limit, offset, filtersBy, sortBy, orderBy);
-
-    List<WareHouseResponse> items =
-        page.stream().map(warehouseMapper::toWarehouseResponse).toList();
-    int totalCount = (int) page.getTotalElements();
-    int totalPageCount = (int) Math.ceil((double) totalCount / limit);
-    Pagination pagination =
-        new Pagination(
-            offset,
-            limit,
-            Math.max(offset - limit, 0),
-            Math.min(offset + limit, totalCount),
-            offset / limit + 1,
-            totalPageCount,
-            totalCount);
-
-    return ResponseEntity.ok(
-        ListWarehousesResponse.builder()
-            .items(items)
-            .page(pagination.getOffset())
-            .pageSize(pagination.getLimit())
-            .build());
+  public ResponseEntity<ItemResponse<WareHouseResponse>> getAllWarehouse(
+      @ModelAttribute ListWarehouseRequest filterRequest) {
+    return ResponseEntity.ok(warehouseService.getAllWarehouses(filterRequest));
   }
 
   @GetMapping("/{id}")

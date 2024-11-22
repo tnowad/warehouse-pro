@@ -201,12 +201,7 @@ export function UserTable() {
   return (
     <Card className="min-w-full max-w-full w-full">
       <CardHeader>
-        <CardTitle>
-          Users
-          <Button asChild>
-            <Link href="/users/new">Add User</Link>
-          </Button>
-        </CardTitle>
+        <CardTitle>Users</CardTitle>
       </CardHeader>
       <CardContent>
         <div className="flex items-center py-4 gap-2">
