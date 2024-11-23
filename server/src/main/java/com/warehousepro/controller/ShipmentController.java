@@ -1,6 +1,8 @@
 package com.warehousepro.controller;
 
 import com.warehousepro.dto.request.shipment.CreateShipmentRequest;
+import com.warehousepro.dto.request.shipment.ListShipmentRequest;
+import com.warehousepro.dto.response.ItemResponse;
 import com.warehousepro.dto.response.shipment.ShipmentResponse;
 import com.warehousepro.entity.Shipment;
 import com.warehousepro.mapstruct.ShipmentMapper;
@@ -26,7 +28,7 @@ public class ShipmentController {
   }
 
   @GetMapping
-  public ResponseEntity<List<Shipment>> getAll() {
-    return ResponseEntity.ok(shipmentService.getAll());
+  public ResponseEntity<ItemResponse<ShipmentResponse>> getAll(@ModelAttribute ListShipmentRequest listShipmentRequest) {
+    return ResponseEntity.ok(shipmentService.getAll(listShipmentRequest));
   }
 }

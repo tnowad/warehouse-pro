@@ -1,21 +1,24 @@
 package com.warehousepro.dto.request.shipment;
 
-import com.warehousepro.entity.Orders;
-import java.util.Date;
-import lombok.*;
+import lombok.AccessLevel;
+import lombok.Data;
 import lombok.experimental.FieldDefaults;
 
+import java.util.Date;
+import java.util.List;
+
 @Data
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class CreateShipmentRequest {
+public class ListShipmentRequest {
+  int page = 0;
+  int pageSize = 10;
+  String sort;
+  String query;
+  List<String> ids;
   Date shipmentDate;
   String status;
   String trackingNumber;
   String shippingMethod;
   Date deliveryEstimate;
   String carrier;
-  Orders order;
 }

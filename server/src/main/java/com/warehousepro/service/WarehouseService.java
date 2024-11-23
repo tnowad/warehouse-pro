@@ -102,7 +102,7 @@ public class WarehouseService {
 
   public ItemResponse<WareHouseResponse> getAllWarehouses(ListWarehouseRequest filterRequest) {
     var spec = wareHouseSpecification.getFilterSpecification(filterRequest);
-    var pageRequest = PageRequest.of(filterRequest.getPage(), filterRequest.getPageSize());
+    var pageRequest = PageRequest.of(filterRequest.getPage() - 1, filterRequest.getPageSize());
     var totalItems = warehouseRepository.count(spec);
     var warehouses = warehouseRepository.findAll(spec, pageRequest);
     var page = filterRequest.getPage();

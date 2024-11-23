@@ -1,6 +1,8 @@
 package com.warehousepro.controller;
 
 import com.warehousepro.dto.request.supplier.CreateSupplierRequest;
+import com.warehousepro.dto.request.supplier.ListSupplierRequest;
+import com.warehousepro.dto.response.ItemResponse;
 import com.warehousepro.dto.response.supplier.SupplierResponse;
 import com.warehousepro.entity.Supplier;
 import com.warehousepro.mapstruct.SupplierMapper;
@@ -27,7 +29,7 @@ public class SupplierController {
   }
 
   @GetMapping
-  public ResponseEntity<List<Supplier>> getALl() {
-    return ResponseEntity.ok(supplierService.getAll());
+  public ResponseEntity<ItemResponse<SupplierResponse>> getALl(@ModelAttribute ListSupplierRequest listSupplierRequest) {
+    return ResponseEntity.ok(supplierService.getAll(listSupplierRequest));
   }
 }

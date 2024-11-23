@@ -1,6 +1,7 @@
 package com.warehousepro.controller;
 
 import com.warehousepro.dto.request.role.CreateRoleRequest;
+import com.warehousepro.dto.request.role.ListRoleRequest;
 import com.warehousepro.dto.request.role.UpdateRoleRequest;
 import com.warehousepro.dto.response.ItemResponse;
 import com.warehousepro.dto.response.role.RoleRespone;
@@ -35,10 +36,8 @@ public class RoleController {
   }
 
   @GetMapping
-  public ResponseEntity<ItemResponse<RoleRespone>> getAll(@RequestParam(defaultValue = "") String query,
-                                             @RequestParam(defaultValue = "1") int page,
-                                             @RequestParam(defaultValue = "10") int pageSize){
-    return ResponseEntity.ok(roleService.getAll(query, page, pageSize));
+  public ResponseEntity<ItemResponse<RoleRespone>> getAll(@ModelAttribute ListRoleRequest listRoleRequest){
+    return ResponseEntity.ok(roleService.getAll(listRoleRequest));
   }
 
 }

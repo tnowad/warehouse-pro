@@ -1,6 +1,7 @@
 package com.warehousepro.controller;
 
 import com.warehousepro.dto.request.auth.CreateUserRequest;
+import com.warehousepro.dto.request.user.ListUserRequest;
 import com.warehousepro.dto.response.ItemResponse;
 import com.warehousepro.dto.response.auth.UserResponse;
 import com.warehousepro.entity.Permission;
@@ -77,10 +78,8 @@ public class UserController {
   }
 
   @GetMapping
-  public ResponseEntity<ItemResponse<UserResponse>> getAll(@RequestParam(defaultValue = "") String query,
-                                                          @RequestParam(defaultValue = "1") int page,
-                                                          @RequestParam(defaultValue = "10") int pageSize){
-    return ResponseEntity.ok(userService.getUsers(query, page, pageSize));
+  public ResponseEntity<ItemResponse<UserResponse>> getAll(@ModelAttribute ListUserRequest listUserRequest){
+    return ResponseEntity.ok(userService.getUsers(listUserRequest));
   }
 
   @DeleteMapping("/{id}")

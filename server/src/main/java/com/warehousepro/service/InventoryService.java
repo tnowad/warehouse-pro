@@ -1,6 +1,10 @@
 package com.warehousepro.service;
 
 import com.warehousepro.dto.request.inventory.CreateInventoryRequest;
+import com.warehousepro.dto.request.inventory.ListInventoryRequest;
+import com.warehousepro.dto.response.ItemResponse;
+import com.warehousepro.dto.response.inventory.InventoryResponse;
+import com.warehousepro.dto.response.order.OrderResponse;
 import com.warehousepro.entity.Inventory;
 import com.warehousepro.entity.Product;
 import com.warehousepro.entity.Warehouse;
@@ -11,10 +15,13 @@ import com.warehousepro.repository.WareHouseRepository;
 import com.warehousepro.specification.InventorySpecification;
 import jakarta.persistence.EntityNotFoundException;
 import java.util.Map;
+import java.util.stream.Collectors;
+
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
@@ -43,33 +50,21 @@ public class InventoryService {
     return inventory;
   }
 
-  public Page<Inventory> findByCriteria(Map<String, String> searchCriteria, Pageable pageable) {
-    Specification<Inventory> spec = Specification.where(null);
+  public ItemResponse<InventoryResponse> getInventorys(ListInventoryRequest filterRequest) {
+    var spec = specification.getFilterSpecification(filterRequest);
+    var pageRequest = PageRequest.of(filterRequest.getPage() - 1, filterRequest.getPageSize());
+    var totalItems = inventoryRepository.count(spec);
+    var inventories = inventoryRepository.findAll(spec, pageRequest);
+    var page = filterRequest.getPage();
+    var pageCount = (int) Math.ceil((double) totalItems / filterRequest.getPageSize());
 
-    if (StringUtils.hasLength(searchCriteria.get("status"))) {
-      spec = spec.and(specification.containStatus(searchCriteria.get("status")));
-    }
-
-    if (StringUtils.hasLength(searchCriteria.get("quantity"))) {
-      spec = spec.and(specification.hasQuantity(searchCriteria.get("quantity")));
-    }
-
-    if (StringUtils.hasLength(searchCriteria.get("minimumStockLevel"))) {
-      spec = spec.and(specification.hasMinimumStockLevel(searchCriteria.get("minimumStockLevel")));
-    }
-
-    if (StringUtils.hasLength(searchCriteria.get("lastUpDate"))) {
-      spec = spec.and(specification.onUpdatedAt(searchCriteria.get("lastUpDate")));
-    }
-
-    if (StringUtils.hasLength(searchCriteria.get("product"))) {
-      spec = spec.and(specification.hasProduct(searchCriteria.get("product")));
-    }
-
-    return inventoryRepository.findAll(spec, pageable);
-  }
-
-  public Page<Inventory> findAllByProductId(String id, Pageable pageable) {
-    return inventoryRepository.getListByProductId(id, pageable);
+    return ItemResponse.<InventoryResponse>builder()
+      .items(
+        inventories.stream().map(inventoryMapper::toInventoryResponse)
+          .collect(Collectors.toList()))
+      .rowCount(Integer.valueOf(totalItems + ""))
+      .page(page)
+      .pageCount(pageCount)
+      .build();
   }
 }
