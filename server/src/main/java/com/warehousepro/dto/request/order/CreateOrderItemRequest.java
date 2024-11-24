@@ -1,6 +1,6 @@
 package com.warehousepro.dto.request.order;
 
-import com.warehousepro.entity.Order;
+import com.warehousepro.entity.Orders;
 import com.warehousepro.entity.Product;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -17,6 +17,6 @@ public class CreateOrderItemRequest {
   Double price;
   Double totalPrice;
   Double discount;
-  Order order;
+  Orders order;
   Product product;
 }

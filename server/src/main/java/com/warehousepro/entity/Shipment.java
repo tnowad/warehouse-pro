@@ -37,7 +37,7 @@ public class Shipment {
 
   @ManyToOne
   @JoinColumn(name = "order_id")
-  Order order;
+  Orders order;
 
   @OneToMany(
       cascade = CascadeType.ALL,

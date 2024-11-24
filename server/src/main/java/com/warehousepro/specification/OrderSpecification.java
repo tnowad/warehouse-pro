@@ -1,7 +1,8 @@
 package com.warehousepro.specification;
 
-import com.warehousepro.dto.request.inventory.ListInventoryRequest;
-import com.warehousepro.entity.Inventory;
+import org.springframework.stereotype.Component;
+import com.warehousepro.dto.request.order.ListOrderRequest;
+import com.warehousepro.entity.Orders;
 import jakarta.persistence.criteria.Order;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Component;
@@ -9,75 +10,59 @@ import org.springframework.util.StringUtils;
 import jakarta.persistence.criteria.Predicate;
 import java.util.ArrayList;
 import java.util.List;
-
 @Component
-public class InventorySpecification {
-
-  // Filter by quantity
-  public Specification<Inventory> hasQuantity(Integer quantity) {
-    return (root, query, criteriaBuilder) ->
-      quantity != null ?
-        criteriaBuilder.equal(root.get("quantity"), quantity) :
-        criteriaBuilder.conjunction();
-  }
-
-  // Filter by minimumStockLevel
-  public Specification<Inventory> hasMinimumStockLevel(Integer minimumStockLevel) {
-    return (root, query, criteriaBuilder) ->
-      minimumStockLevel != null ?
-        criteriaBuilder.equal(root.get("minimumStockLevel"), minimumStockLevel) :
-        criteriaBuilder.conjunction();
-  }
-
-  // Filter by status
-  public Specification<Inventory> hasStatus(String status) {
+public class OrderSpecification {
+  public Specification<Orders> hasStatus(String status) {
     return (root, query, criteriaBuilder) ->
       StringUtils.hasText(status) ?
         criteriaBuilder.equal(root.get("status"), status) :
         criteriaBuilder.conjunction();
   }
 
-  // Filter by createdAt
-  public Specification<Inventory> hasCreatedAt(String createdAt) {
+  // Filter by totalAmount
+  public Specification<Orders> hasTotalAmount(Double totalAmount) {
     return (root, query, criteriaBuilder) ->
-      StringUtils.hasText(createdAt) ?
-        criteriaBuilder.equal(root.get("createdAt"), createdAt) :
+      totalAmount != null ?
+        criteriaBuilder.equal(root.get("totalAmount"), totalAmount) :
         criteriaBuilder.conjunction();
   }
 
-  // Filter by updatedAt
-  public Specification<Inventory> hasUpdatedAt(String updatedAt) {
+  // Filter by paymentStatus
+  public Specification<Orders> hasPaymentStatus(String paymentStatus) {
     return (root, query, criteriaBuilder) ->
-      StringUtils.hasText(updatedAt) ?
-        criteriaBuilder.equal(root.get("updatedAt"), updatedAt) :
+      StringUtils.hasText(paymentStatus) ?
+        criteriaBuilder.equal(root.get("paymentStatus"), paymentStatus) :
+        criteriaBuilder.conjunction();
+  }
+
+  // Filter by shippingAddress
+  public Specification<Orders> hasShippingAddress(String shippingAddress) {
+    return (root, query, criteriaBuilder) ->
+      StringUtils.hasText(shippingAddress) ?
+        criteriaBuilder.like(criteriaBuilder.lower(root.get("shippingAddress")), "%" + shippingAddress.toLowerCase() + "%") :
         criteriaBuilder.conjunction();
   }
 
   // Combine all filters into one Specification
-  public Specification<Inventory> getFilterSpecification(ListInventoryRequest filterRequest) {
+  public Specification<Orders> getFilterSpecification(ListOrderRequest filterRequest) {
     return (root, query, criteriaBuilder) -> {
       List<Predicate> predicates = new ArrayList<>();
 
       // Apply filters based on the request fields
-      if (filterRequest.getQuantity() != null) {
-        predicates.add(hasQuantity(filterRequest.getQuantity()).toPredicate(root, query, criteriaBuilder));
-      }
-
-      if (filterRequest.getMinimumStockLevel() != null) {
-        predicates.add(hasMinimumStockLevel(filterRequest.getMinimumStockLevel()).toPredicate(root, query, criteriaBuilder));
-      }
-
       if (StringUtils.hasText(filterRequest.getStatus())) {
         predicates.add(hasStatus(filterRequest.getStatus()).toPredicate(root, query, criteriaBuilder));
       }
 
-      // Apply filters for createdAt and updatedAt if they are provided
-      if (StringUtils.hasText(filterRequest.getCreatedAt())) {
-        predicates.add(hasCreatedAt(filterRequest.getCreatedAt()).toPredicate(root, query, criteriaBuilder));
+      if (filterRequest.getTotalAmount() != null) {
+        predicates.add(hasTotalAmount(filterRequest.getTotalAmount()).toPredicate(root, query, criteriaBuilder));
       }
 
-      if (StringUtils.hasText(filterRequest.getUpdatedAt())) {
-        predicates.add(hasUpdatedAt(filterRequest.getUpdatedAt()).toPredicate(root, query, criteriaBuilder));
+      if (StringUtils.hasText(filterRequest.getPaymentStatus())) {
+        predicates.add(hasPaymentStatus(filterRequest.getPaymentStatus()).toPredicate(root, query, criteriaBuilder));
+      }
+
+      if (StringUtils.hasText(filterRequest.getShippingAddress())) {
+        predicates.add(hasShippingAddress(filterRequest.getShippingAddress()).toPredicate(root, query, criteriaBuilder));
       }
 
       // Handle sorting if needed
@@ -90,11 +75,10 @@ public class InventorySpecification {
           String sortField = sortFieldAndDirection[0];
 
           switch (sortField) {
-            case "quantity":
-            case "minimumStockLevel":
             case "status":
-            case "createdAt":
-            case "updatedAt":
+            case "paymentStatus":
+            case "totalAmount":
+            case "shippingAddress":
               // Default to ascending if not specified
               org.springframework.data.domain.Sort.Direction sortDirection =
                 (sortFieldAndDirection.length > 1 && "desc".equalsIgnoreCase(sortFieldAndDirection[1])) ?

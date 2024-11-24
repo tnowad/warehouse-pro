@@ -1,9 +1,11 @@
 package com.warehousepro.service;
 
 import com.warehousepro.dto.request.auth.CreateUserRequest;
+import com.warehousepro.dto.request.user.ListUserRequest;
 import com.warehousepro.dto.response.ItemResponse;
 import com.warehousepro.dto.response.auth.UserResponse;
 import com.warehousepro.dto.response.role.RoleRespone;
+import com.warehousepro.dto.response.warehouse.WareHouseResponse;
 import com.warehousepro.entity.Permission;
 import com.warehousepro.entity.Role;
 import com.warehousepro.entity.User;
@@ -13,6 +15,7 @@ import com.warehousepro.mapstruct.UserMapper;
 import com.warehousepro.repository.PermissionRepository;
 import com.warehousepro.repository.RoleRepository;
 import com.warehousepro.repository.UserRepository;
+import com.warehousepro.specification.UserSpecification;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import java.util.*;
@@ -22,6 +25,7 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -37,6 +41,7 @@ public class UserService {
   RoleRepository roleRepository;
   PermissionRepository permissionRepository;
   private final RoleMapper roleMapper;
+  UserSpecification userSpecification;
 
   @Transactional
   public UserResponse createUser(CreateUserRequest request) {
@@ -61,28 +66,23 @@ public class UserService {
     return userMapper.toUserResponse(user);
   }
 
-  public ItemResponse<UserResponse> getUsers(String query, int page, int pageSize) {
-    List<User> allUser = userRepository.searchRoles(query);
-
-    int totalItems = allUser.size();
-    int startIndex = Math.max(0, (page - 1) * pageSize);
-    int endIndex = Math.min(startIndex + pageSize, totalItems);
-    List<User> paginatedRoles = allUser.subList(startIndex, endIndex);
-
-    List<UserResponse> userResponses = paginatedRoles.stream().map(userMapper::toUserResponse).collect(Collectors.toList());
-
-    userResponses.forEach(userResponse -> userResponse.setRoleRespones(
-      viewUserRoles(userResponse.getId()).stream().map(roleMapper::toRoleRespone).collect(Collectors.toSet())));
-
-    int pageCount = (int) Math.ceil((double) totalItems / pageSize);
+  public ItemResponse<UserResponse> getUsers(ListUserRequest filterRequest) {
+    var spec = userSpecification.getFilterSpecification(filterRequest);
+    var pageRequest = PageRequest.of(filterRequest.getPage() - 1, filterRequest.getPageSize());
+    var totalItems = userRepository.count(spec);
+    var users = userRepository.findAll(spec, pageRequest);
+    var page = filterRequest.getPage();
+    var pageCount = (int) Math.ceil((double) totalItems / filterRequest.getPageSize());
 
     return ItemResponse.<UserResponse>builder()
-      .items(userResponses)
-      .rowCount(totalItems)
+      .items(
+        users.stream()
+          .map(userMapper::toUserResponse)
+          .collect(Collectors.toList()))
+      .rowCount(Integer.valueOf(totalItems + ""))
       .page(page)
       .pageCount(pageCount)
       .build();
-
   }
 
 

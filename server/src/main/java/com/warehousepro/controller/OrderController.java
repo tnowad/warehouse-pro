@@ -1,7 +1,9 @@
 package com.warehousepro.controller;
 
 import com.warehousepro.dto.request.order.CreateOrderRequest;
+import com.warehousepro.dto.request.order.ListOrderRequest;
 import com.warehousepro.dto.request.order.UpdateOrderRequest;
+import com.warehousepro.dto.response.ItemResponse;
 import com.warehousepro.dto.response.order.OrderResponse;
 import com.warehousepro.mapstruct.OrderMapper;
 import com.warehousepro.service.OrderService;
@@ -25,9 +27,9 @@ public class OrderController {
     return ResponseEntity.ok(orderMapper.toOrderResponse(orderService.create(request)));
   }
 
-  @GetMapping
-  public ResponseEntity<List<OrderResponse>> getALl() {
-    return ResponseEntity.ok(orderService.getAll());
+  @GetMapping()
+  public ResponseEntity<ItemResponse<OrderResponse>> getALl(@ModelAttribute ListOrderRequest listOrderRequest) {
+    return ResponseEntity.ok(orderService.getAll(listOrderRequest));
   }
 
   @PutMapping("/order-cancel/{id}")

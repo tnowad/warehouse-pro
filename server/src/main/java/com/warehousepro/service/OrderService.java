@@ -1,39 +1,45 @@
 package com.warehousepro.service;
 
 import com.warehousepro.dto.request.order.CreateOrderRequest;
+import com.warehousepro.dto.request.order.ListOrderRequest;
 import com.warehousepro.dto.request.order.UpdateOrderRequest;
+import com.warehousepro.dto.response.ItemResponse;
 import com.warehousepro.dto.response.order.OrderResponse;
-import com.warehousepro.entity.Order;
+import com.warehousepro.dto.response.role.RoleRespone;
+import com.warehousepro.entity.Orders;
 import com.warehousepro.enums.OrderStatus;
 import com.warehousepro.mapstruct.OrderMapper;
-import com.warehousepro.repository.OrderRepository;
+import com.warehousepro.repository.OrdersRepository;
+import com.warehousepro.specification.OrderSpecification;
 import jakarta.transaction.Transactional;
-import java.util.List;
-import java.util.stream.Collectors;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @RequiredArgsConstructor
 public class OrderService {
-  OrderRepository orderRepository;
+  OrdersRepository orderRepository;
   OrderMapper orderMapper;
+  OrderSpecification orderSpecification;
 
   @Transactional
-  public Order create(CreateOrderRequest request) {
-    Order order = orderMapper.toOrder(request);
+  public Orders create(CreateOrderRequest request) {
+    Orders order = orderMapper.toOrder(request);
     orderRepository.save(order);
     return order;
   }
 
   @Transactional
   public OrderResponse cancel(String id) {
-    Order order =
+    Orders order =
         orderRepository
             .findById(id)
             .orElseThrow(() -> new RuntimeException("Không tìm thấy order"));
@@ -44,14 +50,27 @@ public class OrderService {
     return orderMapper.toOrderResponse(order);
   }
 
-  public List<OrderResponse> getAll() {
-    return orderRepository.findAll().stream()
-        .map(orderMapper::toOrderResponse)
-        .collect(Collectors.toList());
+  public ItemResponse<OrderResponse> getAll(ListOrderRequest filterRequest) {
+    var spec = orderSpecification.getFilterSpecification(filterRequest);
+    var pageRequest = PageRequest.of(filterRequest.getPage() - 1, filterRequest.getPageSize());
+    var totalItems = orderRepository.count(spec);
+    var roles = orderRepository.findAll(spec, pageRequest);
+    var page = filterRequest.getPage();
+    var pageCount = (int) Math.ceil((double) totalItems / filterRequest.getPageSize());
+
+    return ItemResponse.<OrderResponse>builder()
+      .items(
+        roles.stream().map(orderMapper::toOrderResponse)
+          .collect(Collectors.toList()))
+      .rowCount(Integer.valueOf(totalItems + ""))
+      .page(page)
+      .pageCount(pageCount)
+      .build();
+
   }
 
   public OrderResponse getById(String id) {
-    Order order =
+    Orders order =
         orderRepository
             .findById(id)
             .orElseThrow(() -> new RuntimeException("Không tìm thấy order"));
@@ -60,7 +79,7 @@ public class OrderService {
 
   @Transactional
   public OrderResponse update(String id, UpdateOrderRequest request) {
-    Order order =
+    Orders order =
         orderRepository
             .findById(id)
             .orElseThrow(() -> new RuntimeException("Không tìm thấy order"));

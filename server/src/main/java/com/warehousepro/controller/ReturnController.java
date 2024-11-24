@@ -1,6 +1,8 @@
 package com.warehousepro.controller;
 
 import com.warehousepro.dto.request.returns.CreateReturnRequest;
+import com.warehousepro.dto.request.returns.ListReturnRequest;
+import com.warehousepro.dto.response.ItemResponse;
 import com.warehousepro.dto.response.returns.ReturnResponse;
 import com.warehousepro.entity.Return;
 import com.warehousepro.mapstruct.ReturnMapper;
@@ -28,7 +30,7 @@ public class ReturnController {
   }
 
   @GetMapping
-  public ResponseEntity<List<Return>> getAll() {
-    return ResponseEntity.ok(returnService.getAll());
+  public ResponseEntity<ItemResponse<ReturnResponse>> getAll(@ModelAttribute ListReturnRequest request) {
+    return ResponseEntity.ok(returnService.getAll(request));
   }
 }
