@@ -3,6 +3,7 @@ package com.warehousepro.dto.response.role;
 import java.util.Date;
 import java.util.Set;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.warehousepro.dto.response.auth.PermissionResponse;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -12,6 +13,7 @@ import lombok.experimental.FieldDefaults;
 @AllArgsConstructor
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class RoleRespone {
   String id;
   String name;
