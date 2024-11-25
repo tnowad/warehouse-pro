@@ -29,6 +29,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { useRouter } from "next/navigation";
 import { useToast } from "@/hooks/use-toast";
+import { createGetUserRolesQueryOptions } from "@/hooks/queries/get-user-roles.query";
 
 type UserDetailsCardProps = {
   userId: string;
@@ -39,6 +40,9 @@ export function UserDetailsCard({ userId }: UserDetailsCardProps) {
   const { toast } = useToast();
   const getUserDetailsQuery = useQuery(
     createGetUserDetailsQueryOptions({ userId }),
+  );
+  const getUserRolesQuery = useQuery(
+    createGetUserRolesQueryOptions({ userId }),
   );
 
   const deleteUserMutation = useDeleteUserMutation({ userId });
@@ -112,11 +116,21 @@ export function UserDetailsCard({ userId }: UserDetailsCardProps) {
           <div>
             <div>Roles:</div>
             <div className="flex gap-2 flex-wrap">
-              {data?.roles.map((role) => (
-                <Link href={`/roles/${role.id}`} key={role.id}>
-                  <Badge variant="outline">{role.name}</Badge>
-                </Link>
-              ))}
+              {getUserRolesQuery.isLoading ? (
+                <Skeleton className="h-6 w-1/4" />
+              ) : getUserRolesQuery.error ? (
+                <Alert variant="destructive">
+                  <AlertTitle>Error</AlertTitle>
+                  <AlertDescription>
+                    There was an issue fetching the user roles. Please try again
+                    later.
+                  </AlertDescription>
+                </Alert>
+              ) : (
+                data?.roles.map((role) => (
+                  <Badge key={role.id}>{role.name}</Badge>
+                ))
+              )}
             </div>
           </div>
         </div>

@@ -1,14 +1,28 @@
 package com.warehousepro.service;
 
+import com.warehousepro.entity.Inventory;
 import com.warehousepro.entity.Permission;
 import com.warehousepro.entity.PermissionName;
 import com.warehousepro.entity.Product;
 import com.warehousepro.entity.Role;
+import com.warehousepro.entity.Shipment;
+import com.warehousepro.entity.ShipmentItem;
 import com.warehousepro.entity.User;
 import com.warehousepro.entity.Warehouse;
+import com.warehousepro.repository.InventoryRepository;
+import com.warehousepro.repository.OrderItemRepository;
+import com.warehousepro.repository.OrderRepository;
 import com.warehousepro.repository.PermissionRepository;
+import com.warehousepro.repository.ProcurementItemRepository;
+import com.warehousepro.repository.ProcurementRepository;
 import com.warehousepro.repository.ProductRepository;
+import com.warehousepro.repository.ReturnRepository;
 import com.warehousepro.repository.RoleRepository;
+import com.warehousepro.repository.ShipmentItemRepository;
+import com.warehousepro.repository.ShipmentRepository;
+import com.warehousepro.repository.ShipmentTrackingRepository;
+import com.warehousepro.repository.SupplierProductRepository;
+import com.warehousepro.repository.SupplierRepository;
 import com.warehousepro.repository.UserRepository;
 import com.warehousepro.repository.WareHouseRepository;
 import java.util.ArrayList;
@@ -16,7 +30,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import net.datafaker.Faker;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -25,19 +42,42 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @AllArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @Slf4j
 public class SeedService {
 
-  final UserRepository userRepository;
-  final RoleRepository roleRepository;
-  final WareHouseRepository wareHouseRepository;
-  final PermissionRepository permissionRepository;
-  final BCryptPasswordEncoder passwordEncoder;
-  final ProductRepository productRepository;
-  final Faker faker = new Faker();
+  UserRepository userRepository;
+  InventoryRepository inventoryRepository;
+  OrderRepository orderRepository;
+  OrderItemRepository orderItemRepository;
+  ProcurementRepository procurementRepository;
+  ProcurementItemRepository procurementItemRepository;
+  ReturnRepository returnRepository;
+  ShipmentRepository shipmentRepository;
+  ShipmentItemRepository shipmentItemRepository;
+  ShipmentTrackingRepository shipmentTrackingRepository;
+  SupplierRepository supplierRepository;
+  SupplierProductRepository supplierProductRepository;
+  RoleRepository roleRepository;
+  WareHouseRepository wareHouseRepository;
+  PermissionRepository permissionRepository;
+  BCryptPasswordEncoder passwordEncoder;
+  ProductRepository productRepository;
+  Faker faker = new Faker();
 
   @Transactional
   public void clearSeeds() {
+    shipmentItemRepository.deleteAllInBatch();
+    shipmentRepository.deleteAllInBatch();
+    shipmentTrackingRepository.deleteAllInBatch();
+    returnRepository.deleteAllInBatch();
+    procurementItemRepository.deleteAllInBatch();
+    procurementRepository.deleteAllInBatch();
+    supplierProductRepository.deleteAllInBatch();
+    supplierRepository.deleteAllInBatch();
+    inventoryRepository.deleteAllInBatch();
+    orderItemRepository.deleteAllInBatch();
+    orderRepository.deleteAllInBatch();
     userRepository.deleteAllInBatch();
     permissionRepository.deleteAllInBatch();
     roleRepository.deleteAllInBatch();
