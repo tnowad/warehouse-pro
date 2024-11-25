@@ -115,12 +115,10 @@ public class UserService {
 
   public ItemResponse<GetUserRolesItemResponse> viewUserRoles(String userid) {
     var user = userRepository.findById(userid).orElseThrow();
-    var roles = user.getRoles();
-    List<GetUserRolesItemResponse> result = new ArrayList<>();
-    for (Role role : roles){
-      result.add(roleMapper.toItem(role));
-    }
-
+    List<GetUserRolesItemResponse> result =
+      user.getRoles().stream()
+        .map(roleMapper::toItem)
+        .toList();
 
     return ItemResponse.<GetUserRolesItemResponse>builder()
       .items(result)
