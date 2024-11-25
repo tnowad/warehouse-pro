@@ -1,6 +1,6 @@
 package com.warehousepro.dto.request.shipment;
 
-import com.warehousepro.entity.Orders;
+import com.warehousepro.entity.Order;
 import java.util.Date;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -17,5 +17,5 @@ public class CreateShipmentRequest {
   String shippingMethod;
   Date deliveryEstimate;
   String carrier;
-  Orders order;
+  Order order;
 }

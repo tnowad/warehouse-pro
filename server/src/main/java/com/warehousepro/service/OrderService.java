@@ -5,11 +5,10 @@ import com.warehousepro.dto.request.order.ListOrderRequest;
 import com.warehousepro.dto.request.order.UpdateOrderRequest;
 import com.warehousepro.dto.response.ItemResponse;
 import com.warehousepro.dto.response.order.OrderResponse;
-import com.warehousepro.dto.response.role.RoleRespone;
-import com.warehousepro.entity.Orders;
+import com.warehousepro.entity.Order;
 import com.warehousepro.enums.OrderStatus;
 import com.warehousepro.mapstruct.OrderMapper;
-import com.warehousepro.repository.OrdersRepository;
+import com.warehousepro.repository.OrderRepository;
 import com.warehousepro.specification.OrderSpecification;
 import jakarta.transaction.Transactional;
 import lombok.AccessLevel;
@@ -26,20 +25,20 @@ import java.util.stream.Collectors;
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @RequiredArgsConstructor
 public class OrderService {
-  OrdersRepository orderRepository;
+  OrderRepository orderRepository;
   OrderMapper orderMapper;
   OrderSpecification orderSpecification;
 
   @Transactional
-  public Orders create(CreateOrderRequest request) {
-    Orders order = orderMapper.toOrder(request);
+  public Order create(CreateOrderRequest request) {
+    Order order = orderMapper.toOrder(request);
     orderRepository.save(order);
     return order;
   }
 
   @Transactional
   public OrderResponse cancel(String id) {
-    Orders order =
+    Order order =
         orderRepository
             .findById(id)
             .orElseThrow(() -> new RuntimeException("Không tìm thấy order"));
@@ -70,7 +69,7 @@ public class OrderService {
   }
 
   public OrderResponse getById(String id) {
-    Orders order =
+    Order order =
         orderRepository
             .findById(id)
             .orElseThrow(() -> new RuntimeException("Không tìm thấy order"));
@@ -79,7 +78,7 @@ public class OrderService {
 
   @Transactional
   public OrderResponse update(String id, UpdateOrderRequest request) {
-    Orders order =
+    Order order =
         orderRepository
             .findById(id)
             .orElseThrow(() -> new RuntimeException("Không tìm thấy order"));

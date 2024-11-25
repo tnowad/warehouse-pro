@@ -4,7 +4,6 @@ import com.warehousepro.dto.request.warehouse.ListWarehouseRequest;
 import com.warehousepro.entity.Warehouse;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
-import jakarta.persistence.criteria.Order;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
 import java.time.LocalDate;
@@ -125,7 +124,7 @@ public class WareHouseSpecificationImpl implements WareHouseSpecification {
 
       if (StringUtils.hasLength(filterRequest.getSort())) {
         String[] sortParams = filterRequest.getSort().split(",");
-        List<Order> orders = new ArrayList<>();
+        List<jakarta.persistence.criteria.Order> orders = new ArrayList<>();
 
         for (String sortParam : sortParams) {
           String[] sortFieldAndDirection = sortParam.split(":");
