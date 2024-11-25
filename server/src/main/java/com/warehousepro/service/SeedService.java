@@ -1,14 +1,6 @@
 package com.warehousepro.service;
 
-import com.warehousepro.entity.Inventory;
-import com.warehousepro.entity.Permission;
-import com.warehousepro.entity.PermissionName;
-import com.warehousepro.entity.Product;
-import com.warehousepro.entity.Role;
-import com.warehousepro.entity.Shipment;
-import com.warehousepro.entity.ShipmentItem;
-import com.warehousepro.entity.User;
-import com.warehousepro.entity.Warehouse;
+import com.warehousepro.entity.*;
 import com.warehousepro.repository.InventoryRepository;
 import com.warehousepro.repository.OrderItemRepository;
 import com.warehousepro.repository.OrderRepository;
@@ -468,7 +460,30 @@ public class SeedService {
               .build());
     }
 
+
+
+
     productRepository.saveAll(products);
     wareHouseRepository.saveAll(warehouses);
+
+    List<Inventory> inventories = new ArrayList<>();
+
+    for (var warehouse: warehouses){
+      for (var product: products) {
+        inventories.add(
+          Inventory.builder().warehouse(warehouse).product(product).quantity(
+            faker.number().numberBetween(0, 100)
+          )
+            .status(InventoryStatus.ACTIVE)
+            .minimumStockLevel(faker.number().numberBetween(0, 10))
+            .price(faker.number().numberBetween(0, 10))
+            .build()
+        );
+      }
+    }
+
+    inventoryRepository.saveAll(inventories);
+
+
   }
 }

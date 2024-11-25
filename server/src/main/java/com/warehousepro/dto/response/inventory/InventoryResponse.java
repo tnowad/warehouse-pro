@@ -4,6 +4,7 @@ import com.warehousepro.dto.response.product.ProductResponse;
 import com.warehousepro.dto.response.warehouse.WareHouseResponse;
 import java.util.Date;
 
+import com.warehousepro.entity.InventoryStatus;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
@@ -16,7 +17,7 @@ public class InventoryResponse {
   String id;
   Integer quantity;
   Integer minimumStockLevel;
-  String status;
+  InventoryStatus status;
   String productId;
   String warehouseId;
   Date createdAt;

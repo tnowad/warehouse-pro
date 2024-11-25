@@ -31,8 +31,12 @@ public class Inventory {
   @Column(name = "minimumStockLevel")
   Integer minimumStockLevel;
 
+  @Column(name="price")
+  Integer price;
+
   @Column(name = "status")
-  String status;
+    @Enumerated(EnumType.STRING)
+  InventoryStatus status;
 
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "product_id")
@@ -42,3 +46,4 @@ public class Inventory {
   @JoinColumn(name = "warehouse_id")
   Warehouse warehouse;
 }
+
