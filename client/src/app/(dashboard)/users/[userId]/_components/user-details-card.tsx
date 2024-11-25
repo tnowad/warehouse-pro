@@ -127,7 +127,7 @@ export function UserDetailsCard({ userId }: UserDetailsCardProps) {
                   </AlertDescription>
                 </Alert>
               ) : (
-                data?.roles.map((role) => (
+                getUserRolesQuery.data?.items?.map((role) => (
                   <Badge key={role.id}>{role.name}</Badge>
                 ))
               )}
