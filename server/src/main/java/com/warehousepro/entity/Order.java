@@ -15,7 +15,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Table(name = "orders")
-public class Orders {
+public class Order {
   @Id
   @GeneratedValue(strategy = GenerationType.UUID)
   String id;

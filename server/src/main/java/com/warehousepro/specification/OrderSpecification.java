@@ -1,18 +1,16 @@
 package com.warehousepro.specification;
 
+import com.warehousepro.entity.Order;
 import org.springframework.stereotype.Component;
 import com.warehousepro.dto.request.order.ListOrderRequest;
-import com.warehousepro.entity.Orders;
-import jakarta.persistence.criteria.Order;
 import org.springframework.data.jpa.domain.Specification;
-import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import jakarta.persistence.criteria.Predicate;
 import java.util.ArrayList;
 import java.util.List;
 @Component
 public class OrderSpecification {
-  public Specification<Orders> hasStatus(String status) {
+  public Specification<Order> hasStatus(String status) {
     return (root, query, criteriaBuilder) ->
       StringUtils.hasText(status) ?
         criteriaBuilder.equal(root.get("status"), status) :
@@ -20,7 +18,7 @@ public class OrderSpecification {
   }
 
   // Filter by totalAmount
-  public Specification<Orders> hasTotalAmount(Double totalAmount) {
+  public Specification<Order> hasTotalAmount(Double totalAmount) {
     return (root, query, criteriaBuilder) ->
       totalAmount != null ?
         criteriaBuilder.equal(root.get("totalAmount"), totalAmount) :
@@ -28,7 +26,7 @@ public class OrderSpecification {
   }
 
   // Filter by paymentStatus
-  public Specification<Orders> hasPaymentStatus(String paymentStatus) {
+  public Specification<Order> hasPaymentStatus(String paymentStatus) {
     return (root, query, criteriaBuilder) ->
       StringUtils.hasText(paymentStatus) ?
         criteriaBuilder.equal(root.get("paymentStatus"), paymentStatus) :
@@ -36,7 +34,7 @@ public class OrderSpecification {
   }
 
   // Filter by shippingAddress
-  public Specification<Orders> hasShippingAddress(String shippingAddress) {
+  public Specification<Order> hasShippingAddress(String shippingAddress) {
     return (root, query, criteriaBuilder) ->
       StringUtils.hasText(shippingAddress) ?
         criteriaBuilder.like(criteriaBuilder.lower(root.get("shippingAddress")), "%" + shippingAddress.toLowerCase() + "%") :
@@ -44,7 +42,7 @@ public class OrderSpecification {
   }
 
   // Combine all filters into one Specification
-  public Specification<Orders> getFilterSpecification(ListOrderRequest filterRequest) {
+  public Specification<Order> getFilterSpecification(ListOrderRequest filterRequest) {
     return (root, query, criteriaBuilder) -> {
       List<Predicate> predicates = new ArrayList<>();
 
@@ -68,7 +66,7 @@ public class OrderSpecification {
       // Handle sorting if needed
       if (filterRequest.getSort() != null && !filterRequest.getSort().isEmpty()) {
         String[] sortParams = filterRequest.getSort().split(",");
-        List<Order> orders = new ArrayList<>();
+        List<jakarta.persistence.criteria.Order> orders = new ArrayList<>();
 
         for (String sortParam : sortParams) {
           String[] sortFieldAndDirection = sortParam.split(":");
