@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import java.util.Date;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
+import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 @Entity
@@ -21,9 +22,11 @@ public class Inventory {
   @Column(name = "quantity")
   Integer quantity;
 
+  @CreationTimestamp
+  Date createdAt;
+
   @UpdateTimestamp
-  @Column(name = "lastUpDate")
-  Date lastUpDate;
+  Date updatedAt;
 
   @Column(name = "minimumStockLevel")
   Integer minimumStockLevel;

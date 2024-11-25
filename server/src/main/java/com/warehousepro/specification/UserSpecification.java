@@ -43,6 +43,14 @@ public class UserSpecification {
         : criteriaBuilder.conjunction();
   }
 
+  public Specification<User> hasId(String id) {
+    return (root, query, criteriaBuilder) ->
+      id != null
+        ? criteriaBuilder.equal(root.get("id"), id)
+        : criteriaBuilder.conjunction();
+  }
+
+
   public Specification<User> getFilterSpecification(ListUserRequest filterRequest) {
     return (root, query, criteriaBuilder) -> {
       List<Predicate> predicates = new ArrayList<>();
@@ -80,6 +88,7 @@ public class UserSpecification {
       if (StringUtils.hasText(filterRequest.getQuery())) {
         String queryParam = "%" + filterRequest.getQuery().toLowerCase() + "%";
         Predicate emailPredicate = criteriaBuilder.like(criteriaBuilder.lower(root.get("email")), queryParam);
+        Predicate idPredicate = criteriaBuilder.like(criteriaBuilder.lower(root.get("id")), queryParam);
         Predicate namePredicate = criteriaBuilder.like(criteriaBuilder.lower(root.get("name")), queryParam);
         predicates.add(criteriaBuilder.or(emailPredicate, namePredicate));
       }
@@ -93,6 +102,7 @@ public class UserSpecification {
           String sortField = sortFieldAndDirection[0];
 
           switch (sortField) {
+            case "id":
             case "email":
             case "name":
             case "createdAt":

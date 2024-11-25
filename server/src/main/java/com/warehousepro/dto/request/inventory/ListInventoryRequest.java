@@ -14,6 +14,8 @@ public class ListInventoryRequest {
   String sort;
   String query;
   List<String> ids;
+  List<String> warehouseIds;
+  List<String> productIds;
   Integer quantity;
   Integer minimumStockLevel;
   String status;

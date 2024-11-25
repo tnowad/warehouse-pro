@@ -68,15 +68,10 @@ public class UserController {
             })
       })
   @GetMapping("/{userId}")
-  UserResponse getUser(
+   ResponseEntity<ItemResponse<UserResponse>> getUser(
       @PathVariable @Parameter(description = "id of user to be searched") String userId) {
-    var user = userService.getUser(userId);
-    return UserResponse.builder()
-        .id(user.getId())
-        .email(user.getEmail())
-        .createdAt(user.getCreatedAt())
-        .updatedAt(user.getUpdatedAt())
-        .build();
+   return ResponseEntity.ok(userService.getUser(userId));
+
   }
 
   @GetMapping

@@ -61,10 +61,13 @@ public class UserService {
     return userMapper.toUserResponse(userRepository.save(user));
   }
 
-  public UserResponse getUser(String id) {
-    User user =
-        userRepository.findById(id).orElseThrow(() -> new RuntimeException("Không tìm thấy id"));
-    return userMapper.toUserResponse(user);
+  public ItemResponse<UserResponse> getUser(String id) {
+    List<User> users = new ArrayList<>();
+    User user = userRepository.findById(id).orElseThrow(() -> new RuntimeException("Không tìm thấy id"));
+    users.add(user);
+    return ItemResponse.<UserResponse>builder()
+      .items(users.stream().map(userMapper::toUserResponse).collect(Collectors.toList()))
+      .build();
   }
 
   public ItemResponse<UserResponse> getUsers(ListUserRequest filterRequest) {

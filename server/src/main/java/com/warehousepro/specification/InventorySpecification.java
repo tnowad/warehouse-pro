@@ -53,6 +53,22 @@ public class InventorySpecification {
         criteriaBuilder.conjunction();
   }
 
+  // Filter by warehouseIds
+  public Specification<Inventory> hasWarehouseIds(List<String> warehouseIds) {
+    return (root, query, criteriaBuilder) ->
+      warehouseIds != null && !warehouseIds.isEmpty() ?
+        root.get("warehouseId").in(warehouseIds) :
+        criteriaBuilder.conjunction();
+  }
+
+  // Filter by productIds
+  public Specification<Inventory> hasProductIds(List<String> productIds) {
+    return (root, query, criteriaBuilder) ->
+      productIds != null && !productIds.isEmpty() ?
+        root.get("productId").in(productIds) :
+        criteriaBuilder.conjunction();
+  }
+
   // Combine all filters into one Specification
   public Specification<Inventory> getFilterSpecification(ListInventoryRequest filterRequest) {
     return (root, query, criteriaBuilder) -> {
@@ -78,6 +94,16 @@ public class InventorySpecification {
 
       if (StringUtils.hasText(filterRequest.getUpdatedAt())) {
         predicates.add(hasUpdatedAt(filterRequest.getUpdatedAt()).toPredicate(root, query, criteriaBuilder));
+      }
+
+      // Apply filters for warehouseIds
+      if (filterRequest.getWarehouseIds() != null && !filterRequest.getWarehouseIds().isEmpty()) {
+        predicates.add(hasWarehouseIds(filterRequest.getWarehouseIds()).toPredicate(root, query, criteriaBuilder));
+      }
+
+      // Apply filters for productIds
+      if (filterRequest.getProductIds() != null && !filterRequest.getProductIds().isEmpty()) {
+        predicates.add(hasProductIds(filterRequest.getProductIds()).toPredicate(root, query, criteriaBuilder));
       }
 
       // Handle sorting if needed
