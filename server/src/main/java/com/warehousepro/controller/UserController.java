@@ -4,6 +4,8 @@ import com.warehousepro.dto.request.auth.CreateUserRequest;
 import com.warehousepro.dto.request.user.ListUserRequest;
 import com.warehousepro.dto.response.ItemResponse;
 import com.warehousepro.dto.response.auth.UserResponse;
+import com.warehousepro.dto.response.role.GetUserRolesItemResponse;
+import com.warehousepro.dto.response.role.RoleRespone;
 import com.warehousepro.entity.Permission;
 import com.warehousepro.entity.Role;
 import com.warehousepro.entity.User;
@@ -95,10 +97,9 @@ public class UserController {
     return ResponseEntity.ok(user);
   }
 
-  @GetMapping("/viewUserRole/{user_id}")
-  ResponseEntity<Set<Role>> viewUserRole(@PathVariable("user_id") String id) {
-    Set<Role> roles = userService.viewUserRoles(id);
-    return ResponseEntity.ok(roles);
+  @GetMapping("/{userId}/roles")
+  ResponseEntity<ItemResponse<GetUserRolesItemResponse>> viewUserRole(@PathVariable("userId") String id) {
+    return ResponseEntity.ok(userService.viewUserRoles(id));
   }
 
   @GetMapping("/viewUserPermission/{user_id}")
@@ -106,4 +107,5 @@ public class UserController {
     Set<Permission> permissions = userService.viewUserPermissions(id);
     return ResponseEntity.ok(permissions);
   }
+
 }

@@ -4,8 +4,8 @@ import com.warehousepro.dto.request.auth.CreateUserRequest;
 import com.warehousepro.dto.request.user.ListUserRequest;
 import com.warehousepro.dto.response.ItemResponse;
 import com.warehousepro.dto.response.auth.UserResponse;
+import com.warehousepro.dto.response.role.GetUserRolesItemResponse;
 import com.warehousepro.dto.response.role.RoleRespone;
-import com.warehousepro.dto.response.warehouse.WareHouseResponse;
 import com.warehousepro.entity.Permission;
 import com.warehousepro.entity.Role;
 import com.warehousepro.entity.User;
@@ -25,6 +25,7 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
+import net.sf.saxon.om.Item;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -112,14 +113,25 @@ public class UserService {
     return userRepository.save(user);
   }
 
-  public Set<Role> viewUserRoles(String userid) {
-    // nó không lấy ra được role từ userid
-    log.info(roleRepository.findRoleIdsByUserId(userid).toString() +"xincahao");
+  public ItemResponse<GetUserRolesItemResponse> viewUserRoles(String userid) {
+    var user = userRepository.findById(userid).orElseThrow();
+    var roles = user.getRoles();
+    List<GetUserRolesItemResponse> result = new ArrayList<>();
+    for (Role role : roles){
+      result.add(roleMapper.toItem(role));
+    }
 
-    return roleRepository.findRolesByUsersId(userid);
+
+    return ItemResponse.<GetUserRolesItemResponse>builder()
+      .items(result)
+      .build();
+
+
   }
 
   public Set<Permission> viewUserPermissions(String userId) {
     return permissionRepository.findPermissionsByUsersId(userId);
   }
+
+
 }
