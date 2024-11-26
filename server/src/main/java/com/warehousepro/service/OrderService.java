@@ -90,4 +90,10 @@ public class OrderService {
     orderRepository.save(order);
     return orderMapper.toOrderResponse(order);
   }
+
+  @Transactional
+  public void delete(String id){
+    orderRepository.deleteById(id);
+  }
+
 }

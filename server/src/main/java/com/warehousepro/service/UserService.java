@@ -99,6 +99,7 @@ public class UserService {
     return userRepository.findById(id).orElse(null);
   }
 
+  @Transactional
   public void delete(String id) {
     userRepository.deleteById(id);
   }

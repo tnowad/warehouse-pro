@@ -17,6 +17,7 @@ import jakarta.persistence.EntityNotFoundException;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import jakarta.transaction.Transactional;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -49,6 +50,13 @@ public class InventoryService {
     inventoryRepository.save(inventory);
     return inventory;
   }
+
+  @Transactional
+  public void deleteInventory(String id) {
+    inventoryRepository.deleteById(id);
+  }
+
+
 
   public ItemResponse<InventoryResponse> getInventorys(ListInventoryRequest filterRequest) {
     var spec = specification.getFilterSpecification(filterRequest);

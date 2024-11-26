@@ -54,4 +54,10 @@ public class SupplierService {
       .pageCount(pageCount)
       .build();
   }
+
+  @Transactional
+  public void delete(String id){
+    supplierRepository.deleteById(id);
+  }
+
 }

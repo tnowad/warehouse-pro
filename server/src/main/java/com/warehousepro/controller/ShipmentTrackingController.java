@@ -30,4 +30,11 @@ public class ShipmentTrackingController {
   public ResponseEntity<List<ShipmentTracking>> getAll() {
     return ResponseEntity.ok(service.getAll());
   }
+
+  @DeleteMapping("/{id}")
+  public  ResponseEntity<String> delete(@PathVariable("id") String id){
+    service.delete(id);
+    return ResponseEntity.ok("xóa thành công");
+  }
+
 }

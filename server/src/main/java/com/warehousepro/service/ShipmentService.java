@@ -53,4 +53,10 @@ public class ShipmentService {
       .pageCount(pageCount)
       .build();
   }
+
+  @Transactional
+  public void delete(String id){
+    shipmentRepository.deleteById(id);
+  }
+
 }

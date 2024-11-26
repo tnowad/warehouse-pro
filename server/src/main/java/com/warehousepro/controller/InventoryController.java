@@ -36,6 +36,12 @@ public class InventoryController {
     return ResponseEntity.ok(inventoryService.getInventorys(inventoryRequest));
   }
 
+  @DeleteMapping("/{id}")
+  public ResponseEntity<String> delete(@PathVariable("id") String id){
+    inventoryService.deleteInventory(id);
+    return ResponseEntity.ok("Xóa thành công");
+  }
+
 //  @GetMapping("/{id}")
 //  public ResponseEntity<Page<InventoryResponse>> findInventoryByProductId(
 //      @PathVariable("id") String id, Pageable pageable) {

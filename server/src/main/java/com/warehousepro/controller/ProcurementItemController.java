@@ -9,10 +9,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @Slf4j
 @RestController
@@ -27,5 +24,11 @@ public class ProcurementItemController {
   public ResponseEntity<ProcurementItemResponse> create(
       @RequestBody CreateProcurementItemRequest request) {
     return ResponseEntity.ok(mapper.toProcurementItemResponse(service.create(request)));
+  }
+
+  @DeleteMapping("/{id}")
+  public  ResponseEntity<String> delete(@PathVariable("id") String id){
+    service.delete(id);
+    return ResponseEntity.ok("xóa thành công");
   }
 }

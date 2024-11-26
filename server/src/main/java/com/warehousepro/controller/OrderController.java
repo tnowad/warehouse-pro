@@ -47,4 +47,11 @@ public class OrderController {
   public ResponseEntity<OrderResponse> getById(@PathVariable("id") String id) {
     return ResponseEntity.ok(orderService.getById(id));
   }
+
+  @DeleteMapping("/{id}")
+  public ResponseEntity<String> delete(@PathVariable("id") String id){
+    orderService.delete(id);
+    return ResponseEntity.ok("Xóa thành công");
+  }
+
 }

@@ -43,4 +43,11 @@ public class ProcurementItemService {
     repository.save(procurementItem);
     return procurementItem;
   }
+
+
+  @Transactional
+  public void delete(String id){
+    repository.deleteById(id);
+  }
+
 }

@@ -27,6 +27,11 @@ public class ShipmentTrackingService {
     return shipmentTracking;
   }
 
+  @Transactional
+  public void delete(String id){
+    repository.deleteById(id);
+  }
+
   public List<ShipmentTracking> getAll() {
     return repository.findAll();
   }

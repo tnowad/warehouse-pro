@@ -39,4 +39,10 @@ public class OrderItemService {
             .orElseThrow(() -> new RuntimeException("order item id không tồn tại"));
     return mapper.toOrderItemReponse(orderItem);
   }
+
+  @Transactional
+  public void delete(String id) {
+    repository.deleteById(id);
+  }
+
 }

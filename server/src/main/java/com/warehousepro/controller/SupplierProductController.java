@@ -30,4 +30,10 @@ public class SupplierProductController {
   public ResponseEntity<List<SupplierProduct>> getAll() {
     return ResponseEntity.ok(service.getAll());
   }
+
+  @DeleteMapping("/{id}")
+  public ResponseEntity<String> delete(@PathVariable("id") String id){
+    service.delete(id);
+    return ResponseEntity.ok("xóa thành công");
+  }
 }

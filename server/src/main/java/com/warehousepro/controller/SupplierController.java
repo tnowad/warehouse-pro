@@ -32,4 +32,11 @@ public class SupplierController {
   public ResponseEntity<ItemResponse<SupplierResponse>> getALl(@ModelAttribute ListSupplierRequest listSupplierRequest) {
     return ResponseEntity.ok(supplierService.getAll(listSupplierRequest));
   }
+
+  @DeleteMapping("/{id}")
+  public ResponseEntity<String> delete(@PathVariable("id") String id){
+    supplierService.delete(id);
+    return ResponseEntity.ok("Xóa thành công");
+  }
+
 }

@@ -35,4 +35,10 @@ public class PermissionController {
     return ResponseEntity.ok(permission);
   }
 
+  @DeleteMapping("/{id}")
+  public ResponseEntity<String> delete(@PathVariable("id") String id){
+    permissionService.delete(id);
+    return ResponseEntity.ok("xóa thành công");
+  }
+
 }

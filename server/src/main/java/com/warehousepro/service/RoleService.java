@@ -79,7 +79,10 @@ public class RoleService {
     return roleMapper.toRoleRespone(role);
   }
 
-
+  @Transactional
+  public void delete(String id){
+    roleRepository.deleteById(id);
+  }
 
 
   public List<Role> getUserRoles(String userId) {

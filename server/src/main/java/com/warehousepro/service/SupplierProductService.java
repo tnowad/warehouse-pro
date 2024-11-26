@@ -27,6 +27,11 @@ public class SupplierProductService {
     return supplierProduct;
   }
 
+  @Transactional
+  public void delete(String id){
+    repository.deleteById(id);
+  }
+
   public List<SupplierProduct> getAll() {
     return repository.findAll();
   }

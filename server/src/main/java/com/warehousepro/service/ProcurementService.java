@@ -25,4 +25,11 @@ public class ProcurementService {
     procurementRepository.save(procurement);
     return procurement;
   }
+
+  @Transactional
+  public void delete(String id){
+    procurementRepository.deleteById(id);
+  }
+
+
 }

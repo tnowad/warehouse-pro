@@ -27,6 +27,11 @@ public class ShipmentItemService {
     return shipment;
   }
 
+  @Transactional
+  public void delete(String id){
+    repository.deleteById(id);
+  }
+
   public List<ShipmentItem> getAll() {
     return repository.findAll();
   }

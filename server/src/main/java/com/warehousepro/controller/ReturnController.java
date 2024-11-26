@@ -33,4 +33,10 @@ public class ReturnController {
   public ResponseEntity<ItemResponse<ReturnResponse>> getAll(@ModelAttribute ListReturnRequest request) {
     return ResponseEntity.ok(returnService.getAll(request));
   }
+
+  @DeleteMapping("/{id}")
+  public ResponseEntity<String> delete(@PathVariable("id") String id){
+    returnService.delete(id);
+    return ResponseEntity.ok("xóa thành công");
+  }
 }

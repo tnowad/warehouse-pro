@@ -31,4 +31,10 @@ public class ShipmentController {
   public ResponseEntity<ItemResponse<ShipmentResponse>> getAll(@ModelAttribute ListShipmentRequest listShipmentRequest) {
     return ResponseEntity.ok(shipmentService.getAll(listShipmentRequest));
   }
+
+  @DeleteMapping("/{id}")
+  public ResponseEntity<String> delete(@PathVariable("id") String id){
+    shipmentService.delete(id);
+    return ResponseEntity.ok("xóa thành công");
+  }
 }
