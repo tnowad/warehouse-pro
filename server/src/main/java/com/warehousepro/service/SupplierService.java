@@ -3,16 +3,13 @@ package com.warehousepro.service;
 import com.warehousepro.dto.request.supplier.CreateSupplierRequest;
 import com.warehousepro.dto.request.supplier.ListSupplierRequest;
 import com.warehousepro.dto.response.ItemResponse;
-import com.warehousepro.dto.response.auth.UserResponse;
 import com.warehousepro.dto.response.supplier.SupplierResponse;
 import com.warehousepro.entity.Supplier;
 import com.warehousepro.mapstruct.SupplierMapper;
 import com.warehousepro.repository.SupplierRepository;
 import com.warehousepro.specification.SupplierSpecification;
 import jakarta.transaction.Transactional;
-import java.util.List;
 import java.util.stream.Collectors;
-
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -45,19 +42,16 @@ public class SupplierService {
     var pageCount = (int) Math.ceil((double) totalItems / filterRequest.getPageSize());
 
     return ItemResponse.<SupplierResponse>builder()
-      .items(
-        suppliers.stream()
-          .map(supplierMapper::toSupplierResponse)
-          .collect(Collectors.toList()))
-      .rowCount(Integer.valueOf(totalItems + ""))
-      .page(page)
-      .pageCount(pageCount)
-      .build();
+        .items(
+            suppliers.stream().map(supplierMapper::toSupplierResponse).collect(Collectors.toList()))
+        .rowCount(Integer.valueOf(totalItems + ""))
+        .page(page)
+        .pageCount(pageCount)
+        .build();
   }
 
   @Transactional
-  public void delete(String id){
+  public void delete(String id) {
     supplierRepository.deleteById(id);
   }
-
 }

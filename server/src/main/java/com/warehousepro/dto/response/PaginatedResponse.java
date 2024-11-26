@@ -1,8 +1,6 @@
 package com.warehousepro.dto.response;
 
 import java.util.List;
-
-import com.warehousepro.dto.response.role.RoleRespone;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
@@ -14,6 +12,4 @@ import lombok.experimental.FieldDefaults;
 public class PaginatedResponse<T> {
   List<T> items;
   Metadata metadata;
-
-
 }

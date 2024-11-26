@@ -4,7 +4,6 @@ import com.warehousepro.dto.request.inventory.CreateInventoryRequest;
 import com.warehousepro.dto.request.inventory.ListInventoryRequest;
 import com.warehousepro.dto.response.ItemResponse;
 import com.warehousepro.dto.response.inventory.InventoryResponse;
-import com.warehousepro.dto.response.order.OrderResponse;
 import com.warehousepro.entity.Inventory;
 import com.warehousepro.entity.Product;
 import com.warehousepro.entity.Warehouse;
@@ -14,19 +13,13 @@ import com.warehousepro.repository.ProductRepository;
 import com.warehousepro.repository.WareHouseRepository;
 import com.warehousepro.specification.InventorySpecification;
 import jakarta.persistence.EntityNotFoundException;
-import java.util.Map;
-import java.util.stream.Collectors;
-
 import jakarta.transaction.Transactional;
+import java.util.stream.Collectors;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
 
 @Service
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
@@ -56,8 +49,6 @@ public class InventoryService {
     inventoryRepository.deleteById(id);
   }
 
-
-
   public ItemResponse<InventoryResponse> getInventorys(ListInventoryRequest filterRequest) {
     var spec = specification.getFilterSpecification(filterRequest);
     var pageRequest = PageRequest.of(filterRequest.getPage() - 1, filterRequest.getPageSize());
@@ -66,25 +57,25 @@ public class InventoryService {
     var page = filterRequest.getPage();
     var pageCount = (int) Math.ceil((double) totalItems / filterRequest.getPageSize());
 
-
     return ItemResponse.<InventoryResponse>builder()
-      .items(
-        inventories.stream().map(inventory ->
-            InventoryResponse.builder()
-              .id(inventory.getId())
-              .createdAt(inventory.getCreatedAt())
-              .updatedAt(inventory.getUpdatedAt())
-              .status(inventory.getStatus())
-              .minimumStockLevel(inventory.getMinimumStockLevel())
-              .quantity(inventory.getQuantity())
-              .warehouseId(inventory.getWarehouse().getId())
-              .productId(inventory.getProduct().getId())
-              .build()
-            )
-          .collect(Collectors.toList()))
-      .rowCount(Integer.valueOf(totalItems + ""))
-      .page(page)
-      .pageCount(pageCount)
-      .build();
+        .items(
+            inventories.stream()
+                .map(
+                    inventory ->
+                        InventoryResponse.builder()
+                            .id(inventory.getId())
+                            .createdAt(inventory.getCreatedAt())
+                            .updatedAt(inventory.getUpdatedAt())
+                            .status(inventory.getStatus())
+                            .minimumStockLevel(inventory.getMinimumStockLevel())
+                            .quantity(inventory.getQuantity())
+                            .warehouseId(inventory.getWarehouse().getId())
+                            .productId(inventory.getProduct().getId())
+                            .build())
+                .collect(Collectors.toList()))
+        .rowCount(Integer.valueOf(totalItems + ""))
+        .page(page)
+        .pageCount(pageCount)
+        .build();
   }
 }

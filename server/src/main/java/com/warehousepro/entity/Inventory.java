@@ -22,20 +22,18 @@ public class Inventory {
   @Column(name = "quantity")
   Integer quantity;
 
-  @CreationTimestamp
-  Date createdAt;
+  @CreationTimestamp Date createdAt;
 
-  @UpdateTimestamp
-  Date updatedAt;
+  @UpdateTimestamp Date updatedAt;
 
   @Column(name = "minimumStockLevel")
   Integer minimumStockLevel;
 
-  @Column(name="price")
+  @Column(name = "price")
   Integer price;
 
   @Column(name = "status")
-    @Enumerated(EnumType.STRING)
+  @Enumerated(EnumType.STRING)
   InventoryStatus status;
 
   @ManyToOne(fetch = FetchType.LAZY)
@@ -46,4 +44,3 @@ public class Inventory {
   @JoinColumn(name = "warehouse_id")
   Warehouse warehouse;
 }
-

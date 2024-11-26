@@ -4,10 +4,8 @@ import com.warehousepro.dto.request.shipment.CreateShipmentRequest;
 import com.warehousepro.dto.request.shipment.ListShipmentRequest;
 import com.warehousepro.dto.response.ItemResponse;
 import com.warehousepro.dto.response.shipment.ShipmentResponse;
-import com.warehousepro.entity.Shipment;
 import com.warehousepro.mapstruct.ShipmentMapper;
 import com.warehousepro.service.ShipmentService;
-import java.util.List;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -28,12 +26,13 @@ public class ShipmentController {
   }
 
   @GetMapping
-  public ResponseEntity<ItemResponse<ShipmentResponse>> getAll(@ModelAttribute ListShipmentRequest listShipmentRequest) {
+  public ResponseEntity<ItemResponse<ShipmentResponse>> getAll(
+      @ModelAttribute ListShipmentRequest listShipmentRequest) {
     return ResponseEntity.ok(shipmentService.getAll(listShipmentRequest));
   }
 
   @DeleteMapping("/{id}")
-  public ResponseEntity<String> delete(@PathVariable("id") String id){
+  public ResponseEntity<String> delete(@PathVariable("id") String id) {
     shipmentService.delete(id);
     return ResponseEntity.ok("xóa thành công");
   }

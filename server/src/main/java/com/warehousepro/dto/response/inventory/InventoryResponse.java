@@ -1,10 +1,7 @@
 package com.warehousepro.dto.response.inventory;
 
-import com.warehousepro.dto.response.product.ProductResponse;
-import com.warehousepro.dto.response.warehouse.WareHouseResponse;
-import java.util.Date;
-
 import com.warehousepro.entity.InventoryStatus;
+import java.util.Date;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 

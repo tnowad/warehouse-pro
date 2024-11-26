@@ -1,31 +1,33 @@
 package com.warehousepro.specification;
 
-import org.springframework.stereotype.Component;
 import com.warehousepro.dto.request.role.ListRoleRequest;
 import com.warehousepro.entity.Role;
-
 import jakarta.persistence.criteria.Order;
-import org.springframework.data.jpa.domain.Specification;
-import org.springframework.util.StringUtils;
 import jakarta.persistence.criteria.Predicate;
 import java.util.ArrayList;
 import java.util.List;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
+import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 
 @Component
 public class RoleSpecification {
   public Specification<Role> hasName(String name) {
     return (root, query, criteriaBuilder) ->
-      StringUtils.hasText(name)
-        ? criteriaBuilder.like(criteriaBuilder.lower(root.get("name")), "%" + name.toLowerCase() + "%")
-        : criteriaBuilder.conjunction();
+        StringUtils.hasText(name)
+            ? criteriaBuilder.like(
+                criteriaBuilder.lower(root.get("name")), "%" + name.toLowerCase() + "%")
+            : criteriaBuilder.conjunction();
   }
 
   public Specification<Role> hasDescription(String description) {
     return (root, query, criteriaBuilder) ->
-      StringUtils.hasText(description)
-        ? criteriaBuilder.like(criteriaBuilder.lower(root.get("description")), "%" + description.toLowerCase() + "%")
-        : criteriaBuilder.conjunction();
+        StringUtils.hasText(description)
+            ? criteriaBuilder.like(
+                criteriaBuilder.lower(root.get("description")),
+                "%" + description.toLowerCase() + "%")
+            : criteriaBuilder.conjunction();
   }
 
   public Specification<Role> getFilterSpecification(ListRoleRequest filterRequest) {
@@ -35,28 +37,26 @@ public class RoleSpecification {
       // Kiểm tra filter theo tên
       if (StringUtils.hasText(filterRequest.getName())) {
         predicates.add(
-          criteriaBuilder.like(
-            criteriaBuilder.lower(root.get("name")),
-            "%" + filterRequest.getName().toLowerCase() + "%"
-          )
-        );
+            criteriaBuilder.like(
+                criteriaBuilder.lower(root.get("name")),
+                "%" + filterRequest.getName().toLowerCase() + "%"));
       }
 
       // Kiểm tra filter theo mô tả
       if (StringUtils.hasText(filterRequest.getDescription())) {
         predicates.add(
-          criteriaBuilder.like(
-            criteriaBuilder.lower(root.get("description")),
-            "%" + filterRequest.getDescription().toLowerCase() + "%"
-          )
-        );
+            criteriaBuilder.like(
+                criteriaBuilder.lower(root.get("description")),
+                "%" + filterRequest.getDescription().toLowerCase() + "%"));
       }
 
       // Kiểm tra query tổng hợp
       if (StringUtils.hasText(filterRequest.getQuery())) {
         String queryParam = "%" + filterRequest.getQuery().toLowerCase() + "%";
-        Predicate namePredicate = criteriaBuilder.like(criteriaBuilder.lower(root.get("name")), queryParam);
-        Predicate descriptionPredicate = criteriaBuilder.like(criteriaBuilder.lower(root.get("description")), queryParam);
+        Predicate namePredicate =
+            criteriaBuilder.like(criteriaBuilder.lower(root.get("name")), queryParam);
+        Predicate descriptionPredicate =
+            criteriaBuilder.like(criteriaBuilder.lower(root.get("description")), queryParam);
         predicates.add(criteriaBuilder.or(namePredicate, descriptionPredicate));
       }
 
@@ -73,16 +73,15 @@ public class RoleSpecification {
             case "name":
             case "description":
               Sort.Direction sortDirection =
-                (sortFieldAndDirection.length > 1
-                  && "desc".equalsIgnoreCase(sortFieldAndDirection[1]))
-                  ? Sort.Direction.DESC
-                  : Sort.Direction.ASC;
+                  (sortFieldAndDirection.length > 1
+                          && "desc".equalsIgnoreCase(sortFieldAndDirection[1]))
+                      ? Sort.Direction.DESC
+                      : Sort.Direction.ASC;
 
               orders.add(
-                sortDirection == Sort.Direction.ASC
-                  ? criteriaBuilder.asc(root.get(sortField))
-                  : criteriaBuilder.desc(root.get(sortField))
-              );
+                  sortDirection == Sort.Direction.ASC
+                      ? criteriaBuilder.asc(root.get(sortField))
+                      : criteriaBuilder.desc(root.get(sortField)));
               break;
             default:
               break;

@@ -22,7 +22,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -460,30 +459,34 @@ public class SeedService {
               .build());
     }
 
-
-
-
     productRepository.saveAll(products);
     wareHouseRepository.saveAll(warehouses);
 
     List<Inventory> inventories = new ArrayList<>();
 
-    for (var warehouse: warehouses){
-      for (var product: products) {
+    for (var warehouse : warehouses) {
+      for (var product : products) {
         inventories.add(
-          Inventory.builder().warehouse(warehouse).product(product).quantity(
-            faker.number().numberBetween(0, 100)
-          )
-            .status(InventoryStatus.ACTIVE)
-            .minimumStockLevel(faker.number().numberBetween(0, 10))
-            .price(faker.number().numberBetween(0, 10))
-            .build()
-        );
+            Inventory.builder()
+                .warehouse(warehouse)
+                .product(product)
+                .quantity(faker.number().numberBetween(0, 100))
+                .status(InventoryStatus.ACTIVE)
+                .minimumStockLevel(faker.number().numberBetween(0, 10))
+                .price(faker.number().numberBetween(0, 10))
+                .build());
       }
     }
 
     inventoryRepository.saveAll(inventories);
 
-
+    List<Supplier> suppliers = new ArrayList<>();
+    for (int i = 0; i < 63; i++) {
+      suppliers.add(
+          Supplier.builder()
+              .name(faker.company().name())
+              .contact(faker.phoneNumber().cellPhone())
+              .build());
+    }
   }
 }

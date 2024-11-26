@@ -1,10 +1,9 @@
 package com.warehousepro.dto.request.role;
 
+import java.util.List;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.experimental.FieldDefaults;
-
-import java.util.List;
 
 @Data
 @FieldDefaults(level = AccessLevel.PRIVATE)
@@ -16,5 +15,4 @@ public class ListRoleRequest {
   List<String> ids;
   String name;
   String description;
-
 }

@@ -13,8 +13,6 @@ import lombok.experimental.FieldDefaults;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 @RestController
 @RequestMapping("/roles")
 @RequiredArgsConstructor
@@ -36,14 +34,14 @@ public class RoleController {
   }
 
   @GetMapping
-  public ResponseEntity<ItemResponse<RoleRespone>> getAll(@ModelAttribute ListRoleRequest listRoleRequest){
+  public ResponseEntity<ItemResponse<RoleRespone>> getAll(
+      @ModelAttribute ListRoleRequest listRoleRequest) {
     return ResponseEntity.ok(roleService.getAll(listRoleRequest));
   }
 
   @DeleteMapping("/{id}")
-  public ResponseEntity<String> delete(@PathVariable("id") String id){
+  public ResponseEntity<String> delete(@PathVariable("id") String id) {
     roleService.delete(id);
     return ResponseEntity.ok("xóa thành công");
   }
-
 }

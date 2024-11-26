@@ -11,14 +11,13 @@ import com.warehousepro.mapstruct.OrderMapper;
 import com.warehousepro.repository.OrderRepository;
 import com.warehousepro.specification.OrderSpecification;
 import jakarta.transaction.Transactional;
+import java.util.stream.Collectors;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
-
-import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -58,14 +57,11 @@ public class OrderService {
     var pageCount = (int) Math.ceil((double) totalItems / filterRequest.getPageSize());
 
     return ItemResponse.<OrderResponse>builder()
-      .items(
-        roles.stream().map(orderMapper::toOrderResponse)
-          .collect(Collectors.toList()))
-      .rowCount(Integer.valueOf(totalItems + ""))
-      .page(page)
-      .pageCount(pageCount)
-      .build();
-
+        .items(roles.stream().map(orderMapper::toOrderResponse).collect(Collectors.toList()))
+        .rowCount(Integer.valueOf(totalItems + ""))
+        .page(page)
+        .pageCount(pageCount)
+        .build();
   }
 
   public OrderResponse getById(String id) {
@@ -92,8 +88,7 @@ public class OrderService {
   }
 
   @Transactional
-  public void delete(String id){
+  public void delete(String id) {
     orderRepository.deleteById(id);
   }
-
 }

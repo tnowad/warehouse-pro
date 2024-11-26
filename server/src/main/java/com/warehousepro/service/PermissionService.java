@@ -8,9 +8,8 @@ import com.warehousepro.mapstruct.PermissonMapper;
 import com.warehousepro.repository.PermissionRepository;
 import com.warehousepro.repository.RoleRepository;
 import jakarta.persistence.EntityNotFoundException;
-import java.util.List;
-
 import jakarta.transaction.Transactional;
+import java.util.List;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -49,8 +48,7 @@ public class PermissionService {
   }
 
   @Transactional
-  public void delete(String id){
+  public void delete(String id) {
     permissionRepository.deleteById(id);
   }
-
 }

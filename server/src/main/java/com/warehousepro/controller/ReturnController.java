@@ -4,10 +4,8 @@ import com.warehousepro.dto.request.returns.CreateReturnRequest;
 import com.warehousepro.dto.request.returns.ListReturnRequest;
 import com.warehousepro.dto.response.ItemResponse;
 import com.warehousepro.dto.response.returns.ReturnResponse;
-import com.warehousepro.entity.Return;
 import com.warehousepro.mapstruct.ReturnMapper;
 import com.warehousepro.service.ReturnService;
-import java.util.List;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -30,12 +28,13 @@ public class ReturnController {
   }
 
   @GetMapping
-  public ResponseEntity<ItemResponse<ReturnResponse>> getAll(@ModelAttribute ListReturnRequest request) {
+  public ResponseEntity<ItemResponse<ReturnResponse>> getAll(
+      @ModelAttribute ListReturnRequest request) {
     return ResponseEntity.ok(returnService.getAll(request));
   }
 
   @DeleteMapping("/{id}")
-  public ResponseEntity<String> delete(@PathVariable("id") String id){
+  public ResponseEntity<String> delete(@PathVariable("id") String id) {
     returnService.delete(id);
     return ResponseEntity.ok("xóa thành công");
   }

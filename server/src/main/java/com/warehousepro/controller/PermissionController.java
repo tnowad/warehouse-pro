@@ -11,8 +11,6 @@ import lombok.experimental.FieldDefaults;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 @RestController
 @RequestMapping("/permissions")
 @RequiredArgsConstructor
@@ -24,21 +22,20 @@ public class PermissionController {
   @PostMapping
   public ResponseEntity<PermissionResponse> create(@RequestBody CreatePermisionRequest request) {
     PermissionResponse permissionResponse =
-      permissonMapper.toPermissionResponse(permissionService.create(request));
+        permissonMapper.toPermissionResponse(permissionService.create(request));
     return ResponseEntity.ok(permissionResponse);
   }
 
   @PutMapping("/assignRoleToPermission/{per_id}/{role_id}")
   public ResponseEntity<Permission> assignRoleToPermission(
-    @PathVariable("per_id") String perId, @PathVariable("role_id") String role_id) {
+      @PathVariable("per_id") String perId, @PathVariable("role_id") String role_id) {
     Permission permission = permissionService.assignRoleToPermission(perId, role_id);
     return ResponseEntity.ok(permission);
   }
 
   @DeleteMapping("/{id}")
-  public ResponseEntity<String> delete(@PathVariable("id") String id){
+  public ResponseEntity<String> delete(@PathVariable("id") String id) {
     permissionService.delete(id);
     return ResponseEntity.ok("xóa thành công");
   }
-
 }

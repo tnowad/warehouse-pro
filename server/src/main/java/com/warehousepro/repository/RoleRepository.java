@@ -3,8 +3,6 @@ package com.warehousepro.repository;
 import com.warehousepro.entity.Role;
 import java.util.List;
 import java.util.Set;
-
-import com.warehousepro.entity.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -15,7 +13,8 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface RoleRepository extends JpaRepository<Role, String> , JpaSpecificationExecutor<Role> {
+public interface RoleRepository
+    extends JpaRepository<Role, String>, JpaSpecificationExecutor<Role> {
   Set<Role> findRolesByUsersId(String id);
 
   @Query("SELECT r.id FROM Role r JOIN r.users u WHERE u.id = :userId")
@@ -37,5 +36,4 @@ public interface RoleRepository extends JpaRepository<Role, String> , JpaSpecifi
 
   @Override
   Page<Role> findAll(Specification<Role> spec, Pageable pageable);
-
 }

@@ -7,7 +7,6 @@ import com.warehousepro.dto.response.ItemResponse;
 import com.warehousepro.dto.response.order.OrderResponse;
 import com.warehousepro.mapstruct.OrderMapper;
 import com.warehousepro.service.OrderService;
-import java.util.List;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -28,7 +27,8 @@ public class OrderController {
   }
 
   @GetMapping()
-  public ResponseEntity<ItemResponse<OrderResponse>> getALl(@ModelAttribute ListOrderRequest listOrderRequest) {
+  public ResponseEntity<ItemResponse<OrderResponse>> getALl(
+      @ModelAttribute ListOrderRequest listOrderRequest) {
     return ResponseEntity.ok(orderService.getAll(listOrderRequest));
   }
 
@@ -49,9 +49,8 @@ public class OrderController {
   }
 
   @DeleteMapping("/{id}")
-  public ResponseEntity<String> delete(@PathVariable("id") String id){
+  public ResponseEntity<String> delete(@PathVariable("id") String id) {
     orderService.delete(id);
     return ResponseEntity.ok("Xóa thành công");
   }
-
 }

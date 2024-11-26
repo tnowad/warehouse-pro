@@ -28,7 +28,7 @@ public class SupplierProductService {
   }
 
   @Transactional
-  public void delete(String id){
+  public void delete(String id) {
     repository.deleteById(id);
   }
 

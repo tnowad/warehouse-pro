@@ -1,10 +1,9 @@
 package com.warehousepro.dto.response.role;
 
-import java.util.Date;
-import java.util.Set;
-
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.warehousepro.dto.response.auth.PermissionResponse;
+import java.util.Date;
+import java.util.Set;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 

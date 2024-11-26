@@ -1,9 +1,8 @@
 package com.warehousepro.dto.response.auth;
 
+import com.warehousepro.dto.response.role.RoleRespone;
 import java.time.LocalDate;
 import java.util.Set;
-
-import com.warehousepro.dto.response.role.RoleRespone;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 

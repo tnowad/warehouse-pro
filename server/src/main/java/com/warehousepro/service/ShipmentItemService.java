@@ -28,7 +28,7 @@ public class ShipmentItemService {
   }
 
   @Transactional
-  public void delete(String id){
+  public void delete(String id) {
     repository.deleteById(id);
   }
 

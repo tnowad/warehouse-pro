@@ -5,9 +5,7 @@ import com.warehousepro.dto.request.user.ListUserRequest;
 import com.warehousepro.dto.response.ItemResponse;
 import com.warehousepro.dto.response.auth.UserResponse;
 import com.warehousepro.dto.response.role.GetUserRolesItemResponse;
-import com.warehousepro.dto.response.role.RoleRespone;
 import com.warehousepro.entity.Permission;
-import com.warehousepro.entity.Role;
 import com.warehousepro.entity.User;
 import com.warehousepro.repository.UserRepository;
 import com.warehousepro.service.UserService;
@@ -68,14 +66,14 @@ public class UserController {
             })
       })
   @GetMapping("/{userId}")
-   ResponseEntity<ItemResponse<UserResponse>> getUser(
+  ResponseEntity<ItemResponse<UserResponse>> getUser(
       @PathVariable @Parameter(description = "id of user to be searched") String userId) {
-   return ResponseEntity.ok(userService.getUser(userId));
-
+    return ResponseEntity.ok(userService.getUser(userId));
   }
 
   @GetMapping
-  public ResponseEntity<ItemResponse<UserResponse>> getAll(@ModelAttribute ListUserRequest listUserRequest){
+  public ResponseEntity<ItemResponse<UserResponse>> getAll(
+      @ModelAttribute ListUserRequest listUserRequest) {
     return ResponseEntity.ok(userService.getUsers(listUserRequest));
   }
 
@@ -93,7 +91,8 @@ public class UserController {
   }
 
   @GetMapping("/{userId}/roles")
-  ResponseEntity<ItemResponse<GetUserRolesItemResponse>> viewUserRole(@PathVariable("userId") String id) {
+  ResponseEntity<ItemResponse<GetUserRolesItemResponse>> viewUserRole(
+      @PathVariable("userId") String id) {
     return ResponseEntity.ok(userService.viewUserRoles(id));
   }
 
@@ -102,5 +101,4 @@ public class UserController {
     Set<Permission> permissions = userService.viewUserPermissions(id);
     return ResponseEntity.ok(permissions);
   }
-
 }

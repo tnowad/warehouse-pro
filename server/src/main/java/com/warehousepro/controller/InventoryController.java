@@ -7,12 +7,9 @@ import com.warehousepro.dto.response.inventory.InventoryResponse;
 import com.warehousepro.entity.Inventory;
 import com.warehousepro.mapstruct.InventoryMapper;
 import com.warehousepro.service.InventoryService;
-import java.util.Map;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -32,22 +29,22 @@ public class InventoryController {
 
   @GetMapping
   public ResponseEntity<ItemResponse<InventoryResponse>> findProductByCriteria(
-    @ModelAttribute ListInventoryRequest inventoryRequest) {
+      @ModelAttribute ListInventoryRequest inventoryRequest) {
     return ResponseEntity.ok(inventoryService.getInventorys(inventoryRequest));
   }
 
   @DeleteMapping("/{id}")
-  public ResponseEntity<String> delete(@PathVariable("id") String id){
+  public ResponseEntity<String> delete(@PathVariable("id") String id) {
     inventoryService.deleteInventory(id);
     return ResponseEntity.ok("Xóa thành công");
   }
 
-//  @GetMapping("/{id}")
-//  public ResponseEntity<Page<InventoryResponse>> findInventoryByProductId(
-//      @PathVariable("id") String id, Pageable pageable) {
-//    Page<Inventory> inventories = inventoryService.findAllByProductId(id, pageable);
-//    Page<InventoryResponse> inventoryResponses =
-//        inventories.map(inventoryMapper::toInventoryResponse);
-//    return ResponseEntity.ok(inventoryResponses);
-//  }
+  //  @GetMapping("/{id}")
+  //  public ResponseEntity<Page<InventoryResponse>> findInventoryByProductId(
+  //      @PathVariable("id") String id, Pageable pageable) {
+  //    Page<Inventory> inventories = inventoryService.findAllByProductId(id, pageable);
+  //    Page<InventoryResponse> inventoryResponses =
+  //        inventories.map(inventoryMapper::toInventoryResponse);
+  //    return ResponseEntity.ok(inventoryResponses);
+  //  }
 }

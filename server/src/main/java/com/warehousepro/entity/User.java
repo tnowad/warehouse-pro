@@ -1,6 +1,5 @@
 package com.warehousepro.entity;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import java.time.LocalDate;
 import java.util.HashSet;
@@ -64,7 +63,6 @@ public class User {
     }
     this.roles.add(role);
   }
-
 
   public void removeRole(String name) {
     Role role =

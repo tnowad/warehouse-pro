@@ -5,7 +5,6 @@ import com.warehousepro.dto.request.user.ListUserRequest;
 import com.warehousepro.dto.response.ItemResponse;
 import com.warehousepro.dto.response.auth.UserResponse;
 import com.warehousepro.dto.response.role.GetUserRolesItemResponse;
-import com.warehousepro.dto.response.role.RoleRespone;
 import com.warehousepro.entity.Permission;
 import com.warehousepro.entity.Role;
 import com.warehousepro.entity.User;
@@ -20,12 +19,10 @@ import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import java.util.*;
 import java.util.stream.Collectors;
-
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
-import net.sf.saxon.om.Item;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -63,11 +60,12 @@ public class UserService {
 
   public ItemResponse<UserResponse> getUser(String id) {
     List<User> users = new ArrayList<>();
-    User user = userRepository.findById(id).orElseThrow(() -> new RuntimeException("Không tìm thấy id"));
+    User user =
+        userRepository.findById(id).orElseThrow(() -> new RuntimeException("Không tìm thấy id"));
     users.add(user);
     return ItemResponse.<UserResponse>builder()
-      .items(users.stream().map(userMapper::toUserResponse).collect(Collectors.toList()))
-      .build();
+        .items(users.stream().map(userMapper::toUserResponse).collect(Collectors.toList()))
+        .build();
   }
 
   public ItemResponse<UserResponse> getUsers(ListUserRequest filterRequest) {
@@ -79,17 +77,12 @@ public class UserService {
     var pageCount = (int) Math.ceil((double) totalItems / filterRequest.getPageSize());
 
     return ItemResponse.<UserResponse>builder()
-      .items(
-        users.stream()
-          .map(userMapper::toUserResponse)
-          .collect(Collectors.toList()))
-      .rowCount(Integer.valueOf(totalItems + ""))
-      .page(page)
-      .pageCount(pageCount)
-      .build();
+        .items(users.stream().map(userMapper::toUserResponse).collect(Collectors.toList()))
+        .rowCount(Integer.valueOf(totalItems + ""))
+        .page(page)
+        .pageCount(pageCount)
+        .build();
   }
-
-
 
   public User getUserByEmail(String email) {
     return userRepository.findByEmail(email).orElse(null);
@@ -120,20 +113,12 @@ public class UserService {
   public ItemResponse<GetUserRolesItemResponse> viewUserRoles(String userid) {
     var user = userRepository.findById(userid).orElseThrow();
     List<GetUserRolesItemResponse> result =
-      user.getRoles().stream()
-        .map(roleMapper::toItem)
-        .toList();
+        user.getRoles().stream().map(roleMapper::toItem).toList();
 
-    return ItemResponse.<GetUserRolesItemResponse>builder()
-      .items(result)
-      .build();
-
-
+    return ItemResponse.<GetUserRolesItemResponse>builder().items(result).build();
   }
 
   public Set<Permission> viewUserPermissions(String userId) {
     return permissionRepository.findPermissionsByUsersId(userId);
   }
-
-
 }

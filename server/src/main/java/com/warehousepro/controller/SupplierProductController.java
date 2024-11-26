@@ -32,7 +32,7 @@ public class SupplierProductController {
   }
 
   @DeleteMapping("/{id}")
-  public ResponseEntity<String> delete(@PathVariable("id") String id){
+  public ResponseEntity<String> delete(@PathVariable("id") String id) {
     service.delete(id);
     return ResponseEntity.ok("xóa thành công");
   }

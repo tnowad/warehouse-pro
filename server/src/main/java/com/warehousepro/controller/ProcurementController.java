@@ -27,7 +27,7 @@ public class ProcurementController {
   }
 
   @DeleteMapping("/{id}")
-  public ResponseEntity<String> delete(@PathVariable("id") String id){
+  public ResponseEntity<String> delete(@PathVariable("id") String id) {
     procurementService.delete(id);
     return ResponseEntity.ok("xóa thành công");
   }

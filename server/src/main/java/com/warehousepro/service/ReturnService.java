@@ -4,15 +4,12 @@ import com.warehousepro.dto.request.returns.CreateReturnRequest;
 import com.warehousepro.dto.request.returns.ListReturnRequest;
 import com.warehousepro.dto.response.ItemResponse;
 import com.warehousepro.dto.response.returns.ReturnResponse;
-import com.warehousepro.dto.response.role.RoleRespone;
 import com.warehousepro.entity.Return;
 import com.warehousepro.mapstruct.ReturnMapper;
 import com.warehousepro.repository.ReturnRepository;
 import com.warehousepro.specification.ReturnSpecification;
 import jakarta.transaction.Transactional;
-import java.util.List;
 import java.util.stream.Collectors;
-
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -30,7 +27,6 @@ public class ReturnService {
   ReturnMapper mapper;
   ReturnSpecification specification;
 
-
   @Transactional
   public Return create(CreateReturnRequest request) {
     Return returns = mapper.toReturn(request);
@@ -47,18 +43,15 @@ public class ReturnService {
     var pageCount = (int) Math.ceil((double) totalItems / filterRequest.getPageSize());
 
     return ItemResponse.<ReturnResponse>builder()
-      .items(
-        returns.stream().map(returnMapper::toReturnResponse)
-          .collect(Collectors.toList()))
-      .rowCount(Integer.valueOf(totalItems + ""))
-      .page(page)
-      .pageCount(pageCount)
-      .build();
+        .items(returns.stream().map(returnMapper::toReturnResponse).collect(Collectors.toList()))
+        .rowCount(Integer.valueOf(totalItems + ""))
+        .page(page)
+        .pageCount(pageCount)
+        .build();
   }
 
   @Transactional
-  public void delete(String id){
+  public void delete(String id) {
     repository.deleteById(id);
   }
-
 }

@@ -27,9 +27,7 @@ public class ProcurementService {
   }
 
   @Transactional
-  public void delete(String id){
+  public void delete(String id) {
     procurementRepository.deleteById(id);
   }
-
-
 }
