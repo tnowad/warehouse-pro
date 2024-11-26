@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "concurrently \"npm run client:dev\" \"npm run server:dev\"",
+    "dev": "concurrently --raw npm:client:dev npm:server:dev",
     "client:dev": "cd client && pnpm dev",
     "server:dev": "cd server && mvn spring-boot:run",
     "client:lint": "cd client && pnpm lint",

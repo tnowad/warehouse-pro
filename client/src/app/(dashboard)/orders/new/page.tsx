@@ -11,42 +11,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { useToast } from "@/hooks/use-toast";
-import { useRouter } from "next/navigation";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { cn, mapFieldErrorToFormError } from "@/lib/utils";
-import {
-  useInfiniteQuery,
-  useQuery,
-  useSuspenseQuery,
-} from "@tanstack/react-query";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
-import { ChevronsUpDown } from "lucide-react";
-import {
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-  CommandList,
-} from "@/components/ui/command";
-import { Checkbox } from "@/components/ui/checkbox";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { useDebounce } from "@/components/ui/multiple-selector";
-import { Badge } from "@/components/ui/badge";
-import { createGetUserDetailsQueryOptions } from "@/hooks/queries/get-user-details.query";
-import { createListRolesInfiniteQueryOptions } from "@/hooks/queries/list-roles.query";
-import { useUpdateUserMutation } from "@/hooks/mutations/update-user.mutation";
-import {
-  updateUserBodySchema,
-  UpdateUserBodySchema,
-} from "@/lib/apis/update-user.api";
-import { RoleSchema } from "@/lib/schemas/role.schema";
-import { Skeleton } from "@/components/ui/skeleton";
 import {
   createOrderBodySchema,
   CreateOrderBodySchema,
@@ -61,17 +26,269 @@ import {
 import {
   Table,
   TableBody,
-  TableCaption,
   TableCell,
   TableHead,
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { InventorySchema } from "@/lib/schemas/inventory.schema";
 
+import { useMemo, useState } from "react";
+import {
+  ColumnDef,
+  ColumnFiltersState,
+  getCoreRowModel,
+  getFacetedRowModel,
+  getSortedRowModel,
+  PaginationState,
+  SortingState,
+  VisibilityState,
+} from "@tanstack/react-table";
+import { Checkbox } from "@/components/ui/checkbox";
+
+import {
+  DropdownMenu,
+  DropdownMenuItem,
+  DropdownMenuContent,
+  DropdownMenuTrigger,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+} from "@/components/ui/dropdown-menu";
+import { EllipsisIcon } from "lucide-react";
+import Link from "next/link";
+import { DataTableColumnHeader } from "@/components/ui/data-table-column-header";
+import { UserSchema } from "@/lib/schemas/user.schema";
+
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { useReactTable } from "@tanstack/react-table";
+import { useQuery } from "@tanstack/react-query";
+import { createListUsersQueryOptions } from "@/hooks/queries/list-users.query";
+import { DataTablePagination } from "@/components/ui/data-table-pagination";
+import { DataTableViewOptions } from "@/components/ui/data-table-view-options";
+import { listUsersQueryFilterSchema } from "@/lib/apis/list-users.api";
+import { DataTable } from "@/components/ui/data-table";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { listInventoriesApi } from "@/lib/apis/list-inventories.api";
+import { createListInventoriesQueryOptions } from "@/hooks/queries/list-inventories.query";
+
+export function InventoryTable() {
+  const columns = useMemo<ColumnDef<InventorySchema>[]>(
+    () => [
+      {
+        id: "select",
+        header: ({ table }) => (
+          <Checkbox
+            checked={
+              table.getIsAllPageRowsSelected() ||
+              (table.getIsSomePageRowsSelected() && "indeterminate")
+            }
+            onCheckedChange={(value) =>
+              table.toggleAllPageRowsSelected(!!value)
+            }
+            aria-label="Select all"
+          />
+        ),
+        cell: ({ row }) => (
+          <span className="h-full flex justify-center">
+            <Checkbox
+              checked={row.getIsSelected()}
+              onCheckedChange={(value) => row.toggleSelected(!!value)}
+              aria-label="Select row"
+            />
+          </span>
+        ),
+        enableSorting: false,
+        enableHiding: false,
+      },
+      {
+        accessorKey: "warehouseId",
+        header: ({ column }) => (
+          <DataTableColumnHeader column={column} title="Warehouse ID" />
+        ),
+      },
+      {
+        accessorKey: "productId",
+        header: ({ column }) => (
+          <DataTableColumnHeader column={column} title="Product ID" />
+        ),
+      },
+      {
+        accessorKey: "quantity",
+        header: ({ column }) => (
+          <DataTableColumnHeader column={column} title="Quantity" />
+        ),
+      },
+      {
+        accessorKey: "price",
+        header: ({ column }) => (
+          <DataTableColumnHeader column={column} title="Price" />
+        ),
+      },
+      {
+        accessorKey: "status",
+        header: ({ column }) => (
+          <DataTableColumnHeader column={column} title="Status" />
+        ),
+      },
+      {
+        accessorKey: "createdAt",
+        header: ({ column }) => (
+          <DataTableColumnHeader column={column} title="Created At" />
+        ),
+      },
+      {
+        accessorKey: "updatedAt",
+        header: ({ column }) => (
+          <DataTableColumnHeader column={column} title="Updated At" />
+        ),
+      },
+      {
+        accessorKey: "actions",
+        header: "Actions",
+        cell: ({ row }) => (
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button size={"icon"} variant={"ghost"}>
+                <EllipsisIcon />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent>
+              <DropdownMenuLabel>Actions</DropdownMenuLabel>
+              <DropdownMenuItem
+                onClick={() => navigator.clipboard.writeText(row.original.id)}
+              >
+                Copy Inventory ID
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem asChild>
+                <Link href={`/inventories/${row.original.id}`}>
+                  View details
+                </Link>
+              </DropdownMenuItem>
+              <DropdownMenuItem asChild>
+                <Link href={`/inventories/${row.original.id}/edit`}>
+                  Edit information
+                </Link>
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        ),
+        enableSorting: false,
+        enableHiding: false,
+      },
+    ],
+    [],
+  );
+
+  const [sorting, setSorting] = useState([]);
+  const [columnFilters, setColumnFilters] = useState([]);
+  const [columnVisibility, setColumnVisibility] = useState({});
+  const [rowSelection, setRowSelection] = useState({});
+  const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 10 });
+  const [globalFilter, setGlobalFilter] = useState("");
+
+  const { data, error, status } = useQuery(
+    createListInventoriesQueryOptions({
+      query: globalFilter,
+      page: pagination.pageIndex,
+      pageSize: pagination.pageSize,
+    }),
+  );
+
+  const inventories = data?.items ?? [];
+  const rowCount = data?.rowCount ?? 0;
+
+  const table = useReactTable({
+    data: inventories,
+    columns,
+    debugTable: true,
+    getCoreRowModel: getCoreRowModel(),
+    getFacetedRowModel: getFacetedRowModel(),
+    getSortedRowModel: getSortedRowModel(),
+    onColumnFiltersChange: setColumnFilters,
+    onSortingChange: setSorting,
+    onColumnVisibilityChange: setColumnVisibility,
+    onRowSelectionChange: setRowSelection,
+    onGlobalFilterChange: setGlobalFilter,
+    manualPagination: true,
+    rowCount,
+    onPaginationChange: setPagination,
+    manualFiltering: true,
+    manualSorting: true,
+    enableMultiSort: true,
+    state: {
+      sorting,
+      columnFilters,
+      columnVisibility,
+      rowSelection,
+      pagination,
+      globalFilter,
+    },
+  });
+
+  return (
+    <Card className="min-w-full max-w-full w-full">
+      <CardHeader>
+        <CardTitle>Inventory</CardTitle>
+      </CardHeader>
+      <CardContent>
+        <div className="flex items-center py-4 gap-2">
+          <Input
+            value={globalFilter ?? ""}
+            onChange={(event) =>
+              table.setGlobalFilter(String(event.target.value))
+            }
+            placeholder="Search..."
+            className="max-w-sm"
+          />
+          <Button
+            variant="outline"
+            className="ml-auto"
+            size={"sm"}
+            onClick={() => {
+              table.resetGlobalFilter();
+              table.resetColumnFilters();
+            }}
+          >
+            Clear Filter
+          </Button>
+          <DataTableViewOptions table={table} />
+        </div>
+        <div className="rounded-md border min-w-full max-w-full w-full">
+          <DataTable table={table} status={status} error={error} />
+        </div>
+        <div className="mt-4">
+          <DataTablePagination table={table} />
+        </div>
+      </CardContent>
+    </Card>
+  );
+}
 export type SelectProductButtonProps = {
-  onSelect: () => void;
+  onSelect: (inventory: InventorySchema) => void;
 };
-export function SelectProductButton() {}
+export function SelectProductButton({ onSelect }: SelectProductButtonProps) {
+  return (
+    <Dialog>
+      <DialogTrigger>
+        <Button onClick={() => {}}>Select Product</Button>;
+      </DialogTrigger>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>Select a product to add to the order</DialogTitle>
+        </DialogHeader>
+        <InventoryTable />
+      </DialogContent>
+    </Dialog>
+  );
+}
 
 export default function Page() {
   const createOrderForm = useForm<CreateOrderBodySchema>({
@@ -164,65 +381,34 @@ export default function Page() {
           <TableHeader>
             <TableRow>
               <TableHead>Warehouse</TableHead>
+              <TableHead>Inventory</TableHead>
               <TableHead>Product</TableHead>
               <TableHead>Quantity</TableHead>
               <TableHead>Price</TableHead>
               <TableHead>Discount</TableHead>
               <TableHead>Subtotal</TableHead>
               <TableHead>
-                <Button>Add Item</Button>
+                <div>
+                  <SelectProductButton
+                    onSelect={(inventory) => {
+                      orderItemsFieldArray.append({
+                        inventoryId: inventory.id,
+                        productId: inventory.productId,
+                        price: inventory.price,
+                        quantity: 1,
+                        discount: 0,
+                      });
+                    }}
+                  />
+                </div>
               </TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {orderItemsFieldArray.fields.map((field, index) => (
               <TableRow key={field.id}>
-                <TableCell>
-                  <FormField
-                    control={createOrderForm.control}
-                    name={`items.${index}.warehouseId`}
-                    render={({ field }) => (
-                      <FormControl>
-                        <Select
-                          onValueChange={field.onChange}
-                          defaultValue={field.value}
-                        >
-                          <SelectTrigger>
-                            <SelectValue placeholder="Select warehouse" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="1">Warehouse 1</SelectItem>
-                            <SelectItem value="2">Warehouse 2</SelectItem>
-                            <SelectItem value="3">Warehouse 3</SelectItem>
-                          </SelectContent>
-                        </Select>
-                      </FormControl>
-                    )}
-                  />
-                </TableCell>
-                <TableCell>
-                  <FormField
-                    control={createOrderForm.control}
-                    name={`items.${index}.productId`}
-                    render={({ field }) => (
-                      <FormControl>
-                        <Select
-                          onValueChange={field.onChange}
-                          defaultValue={field.value}
-                        >
-                          <SelectTrigger>
-                            <SelectValue placeholder="Select product" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="1">Product 1</SelectItem>
-                            <SelectItem value="2">Product 2</SelectItem>
-                            <SelectItem value="3">Product 3</SelectItem>
-                          </SelectContent>
-                        </Select>
-                      </FormControl>
-                    )}
-                  />
-                </TableCell>
+                <TableCell>{field.inventoryId}</TableCell>
+                <TableCell>{field.productId}</TableCell>
                 <TableCell>
                   <FormField
                     control={createOrderForm.control}
@@ -257,15 +443,7 @@ export default function Page() {
                   />
                 </TableCell>
                 <TableCell>
-                  <FormField
-                    control={createOrderForm.control}
-                    name={`items.${index}.subtotal`}
-                    render={({ field }) => (
-                      <FormControl>
-                        <Input type="number" {...field} />
-                      </FormControl>
-                    )}
-                  />
+                  {field.price * field.quantity - field.discount}
                 </TableCell>
                 <TableCell>
                   <Button onClick={() => orderItemsFieldArray.remove(index)}>

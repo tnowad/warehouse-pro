@@ -42,10 +42,7 @@ export const tokensFaker = (): TokenSchema => ({
     {
       exp: Math.floor(Date.now() / 1000) + 60 * 60,
       iat: Math.floor(Date.now() / 1000),
-      iss: "warehouse-pro",
       sub: faker.string.uuid(),
-      aud: "warehouse-pro",
-      jti: faker.string.uuid(),
     } satisfies AccessTokenPayloadSchema,
     "access_token_secret",
     { alg: "HS256", typ: "JWT" },
@@ -54,9 +51,7 @@ export const tokensFaker = (): TokenSchema => ({
     {
       exp: Math.floor(Date.now() / 1000) + 60 * 60 * 24 * 30,
       iat: Math.floor(Date.now() / 1000),
-      iss: "warehouse-pro",
       sub: faker.string.uuid(),
-      jti: faker.string.uuid(),
     } satisfies RefreshTokenPayloadSchema,
     "refresh_token_secret",
     { alg: "HS256", typ: "JWT" },

@@ -4,7 +4,16 @@ import { PermissionGuard } from "../_components/permission-guard";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/app-sidebar";
 import { useRouter } from "next/navigation";
-
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { getQueryClient } from "../get-query-client";
+import { LogInIcon, RefreshCwIcon } from "lucide-react";
 export default function DashboardLayout({
   children,
 }: {
@@ -17,7 +26,42 @@ export default function DashboardLayout({
       required={["AUTH_LOGGED_IN"]}
       handlers={{
         unauthorized: () => {
-          router.push("/login");
+          return (
+            <div className="flex justify-center items-center min-h-screen">
+              <Card className="my-auto mx-auto max-w-screen-sm w-full">
+                <CardHeader>
+                  <CardTitle>
+                    <span>Unauthorized</span>
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p>
+                    You are not authorized to view this page. Please login to
+                    continue.
+                  </p>
+                </CardContent>
+                <CardFooter className="space-x-1 justify-end">
+                  <Button
+                    onClick={() => {
+                      const queryClient = getQueryClient();
+                      queryClient.resetQueries({
+                        queryKey: ["current-user-permissions"],
+                      });
+                      router.refresh();
+                    }}
+                    variant={"outline"}
+                  >
+                    <RefreshCwIcon />
+                    Refresh
+                  </Button>
+                  <Button onClick={() => router.push("/login")}>
+                    <LogInIcon />
+                    Login
+                  </Button>
+                </CardFooter>
+              </Card>
+            </div>
+          );
         },
         error: (error) => <div>Error: {error.message}</div>,
       }}

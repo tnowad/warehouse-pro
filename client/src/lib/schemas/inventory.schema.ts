@@ -5,7 +5,10 @@ export const inventorySchema = z.object({
   warehouseId: z.string().uuid(),
   productId: z.string().uuid(),
   quantity: z.number().int(),
-  lastUpdated: z.string().date(),
+  price: z.number().int(),
   minimumStockLevel: z.number().int(),
-  status: z.string(),
+  status: z.enum(["ACTIVE", "IN_ACTIVE"]),
+  updatedAt: z.string(),
+  createdAt: z.string(),
 });
+export type InventorySchema = z.infer<typeof inventorySchema>;

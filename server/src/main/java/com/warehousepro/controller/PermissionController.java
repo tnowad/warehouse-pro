@@ -1,6 +1,8 @@
 package com.warehousepro.controller;
 
 import com.warehousepro.dto.request.permission.CreatePermisionRequest;
+import com.warehousepro.dto.request.permission.ListPermissionRequest;
+import com.warehousepro.dto.response.ItemResponse;
 import com.warehousepro.dto.response.permission.PermissionResponse;
 import com.warehousepro.entity.Permission;
 import com.warehousepro.mapstruct.PermissonMapper;
@@ -10,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
 
 @RestController
 @RequestMapping("/permissions")
@@ -18,6 +21,12 @@ import org.springframework.web.bind.annotation.*;
 public class PermissionController {
   PermissionService permissionService;
   PermissonMapper permissonMapper;
+
+  @GetMapping
+  public ResponseEntity<ItemResponse<PermissionResponse>> listPermissions(
+      @ModelAttribute ListPermissionRequest listPermissionRequest) {
+    return ResponseEntity.ok(permissionService.listPermissions(listPermissionRequest));
+  }
 
   @PostMapping
   public ResponseEntity<PermissionResponse> create(@RequestBody CreatePermisionRequest request) {
