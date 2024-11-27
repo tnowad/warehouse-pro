@@ -14,7 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/inventorys")
+@RequestMapping("/inventories")
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class InventoryController {
@@ -30,7 +30,7 @@ public class InventoryController {
   @GetMapping
   public ResponseEntity<ItemResponse<InventoryResponse>> findProductByCriteria(
       @ModelAttribute ListInventoryRequest inventoryRequest) {
-    return ResponseEntity.ok(inventoryService.getInventorys(inventoryRequest));
+    return ResponseEntity.ok(inventoryService.getInventories(inventoryRequest));
   }
 
   @DeleteMapping("/{id}")

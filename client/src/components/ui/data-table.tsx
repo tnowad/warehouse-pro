@@ -10,23 +10,26 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { cn } from "@/lib/utils";
 
 interface DataTableProps<TData, TValue> {
   table: ReturnType<typeof useReactTable<TData>>;
   status?: "idle" | "pending" | "error" | "success";
   error?: Error | { message: string } | null;
+  className?: string;
 }
 
 export function DataTable<TData, TValue>({
   table,
   status = "idle",
   error,
+  className,
 }: DataTableProps<TData, TValue>) {
   const columns: ColumnDef<TData>[] = table.getAllColumns();
 
   return (
-    <Table className="w-full">
-      <TableHeader>
+    <Table className={cn("w-full", className)}>
+      <TableHeader className="sticky top-0">
         {table.getHeaderGroups().map((headerGroup) => (
           <TableRow key={headerGroup.id}>
             {headerGroup.headers.map((header) => {

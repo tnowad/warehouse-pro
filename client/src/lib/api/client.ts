@@ -4,6 +4,7 @@ import { getCookie, setCookie } from "cookies-next";
 import { jwtDecode } from "jwt-decode";
 import { accessTokenPayloadSchema } from "../schemas/token.schema";
 import { refreshTokenApi } from "../apis/refresh-token.api";
+import qs from "qs";
 
 const client = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_URL,
@@ -29,6 +30,7 @@ export const apiClient = {
   ): Promise<AxiosResponse<TResponse, TQueryParams>> => {
     return client.get<TResponse, AxiosResponse<TResponse, TQueryParams>>(url, {
       params,
+      paramsSerializer: (params) => qs.stringify(params),
       ...config,
     });
   },

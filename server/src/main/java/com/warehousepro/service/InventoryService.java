@@ -49,7 +49,7 @@ public class InventoryService {
     inventoryRepository.deleteById(id);
   }
 
-  public ItemResponse<InventoryResponse> getInventorys(ListInventoryRequest filterRequest) {
+  public ItemResponse<InventoryResponse> getInventories(ListInventoryRequest filterRequest) {
     var spec = specification.getFilterSpecification(filterRequest);
     var pageRequest = PageRequest.of(filterRequest.getPage() - 1, filterRequest.getPageSize());
     var totalItems = inventoryRepository.count(spec);

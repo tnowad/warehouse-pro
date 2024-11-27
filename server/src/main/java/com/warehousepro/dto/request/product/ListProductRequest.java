@@ -1,18 +1,17 @@
 package com.warehousepro.dto.request.product;
 
-import lombok.*;
+import java.util.List;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.experimental.FieldDefaults;
 
 @Data
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class CreateProductRequest {
+public class ListProductRequest {
+  int page = 1;
+  int pageSize = 10;
+  String sort;
+  String query;
+  List<String> ids;
   String name;
-  String description;
-  String sku;
-  Double price;
 }

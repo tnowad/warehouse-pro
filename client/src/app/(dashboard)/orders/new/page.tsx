@@ -75,11 +75,22 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { listInventoriesApi } from "@/lib/apis/list-inventories.api";
+import {
+  listInventoriesApi,
+  listInventoriesQueryFilterSchema,
+} from "@/lib/apis/list-inventories.api";
 import { createListInventoriesQueryOptions } from "@/hooks/queries/list-inventories.query";
+import { createListProductsQueryOptions } from "@/hooks/queries/list-products.query";
+import { ProductSchema } from "@/lib/schemas/product.schema";
 
 export function InventoryTable() {
-  const columns = useMemo<ColumnDef<InventorySchema>[]>(
+  const columns = useMemo<
+    ColumnDef<
+      InventorySchema & {
+        product: ProductSchema | undefined;
+      }
+    >[]
+  >(
     () => [
       {
         id: "select",
@@ -108,16 +119,11 @@ export function InventoryTable() {
         enableHiding: false,
       },
       {
-        accessorKey: "warehouseId",
+        accessorKey: "product",
         header: ({ column }) => (
-          <DataTableColumnHeader column={column} title="Warehouse ID" />
+          <DataTableColumnHeader column={column} title="Product" />
         ),
-      },
-      {
-        accessorKey: "productId",
-        header: ({ column }) => (
-          <DataTableColumnHeader column={column} title="Product ID" />
-        ),
+        cell: ({ row }) => <span>{row.original.product?.name ?? "N/A"}</span>,
       },
       {
         accessorKey: "quantity",
@@ -135,6 +141,18 @@ export function InventoryTable() {
         accessorKey: "status",
         header: ({ column }) => (
           <DataTableColumnHeader column={column} title="Status" />
+        ),
+      },
+      {
+        accessorKey: "warehouseId",
+        header: ({ column }) => (
+          <DataTableColumnHeader column={column} title="Warehouse ID" />
+        ),
+      },
+      {
+        accessorKey: "productId",
+        header: ({ column }) => (
+          <DataTableColumnHeader column={column} title="Product ID" />
         ),
       },
       {
@@ -187,26 +205,56 @@ export function InventoryTable() {
     [],
   );
 
-  const [sorting, setSorting] = useState([]);
-  const [columnFilters, setColumnFilters] = useState([]);
-  const [columnVisibility, setColumnVisibility] = useState({});
+  const [sorting, setSorting] = useState<SortingState>([]);
+  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
+  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = useState({});
-  const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 10 });
-  const [globalFilter, setGlobalFilter] = useState("");
-
-  const { data, error, status } = useQuery(
+  const [pagination, setPagination] = useState<PaginationState>({
+    pageIndex: 0,
+    pageSize: 10,
+  });
+  const [globalFilter, setGlobalFilter] = useState<string>("");
+  const listInventoriesQuery = useQuery(
     createListInventoriesQueryOptions({
       query: globalFilter,
-      page: pagination.pageIndex,
+      page: pagination.pageIndex + 1,
+      pageSize: pagination.pageSize,
+      ...(listInventoriesQueryFilterSchema.safeParse(
+        columnFilters.reduce(
+          (acc, { id, value }) => ({ ...acc, [id]: value }),
+          {},
+        ),
+      ).data ?? {}),
+      sort: sorting
+        .map(({ id, desc }) => `${id}:${desc ? "desc" : "asc"}`)
+        .join(","),
+    }),
+  );
+  const listProductsQuery = useQuery(
+    createListProductsQueryOptions({
+      ids: listInventoriesQuery.data?.items.map(
+        (inventory) => inventory.productId,
+      ),
       pageSize: pagination.pageSize,
     }),
   );
 
-  const inventories = data?.items ?? [];
-  const rowCount = data?.rowCount ?? 0;
+  const inventories = listInventoriesQuery.data?.items ?? [];
+  const products = listProductsQuery.data?.items ?? [];
+  const rowCount = listInventoriesQuery.data?.rowCount ?? 0;
+
+  const data = inventories.map((inventory) => {
+    const product = products.find(
+      (product) => product.id === inventory.productId,
+    );
+    return {
+      ...inventory,
+      product,
+    };
+  });
 
   const table = useReactTable({
-    data: inventories,
+    data: data,
     columns,
     debugTable: true,
     getCoreRowModel: getCoreRowModel(),
@@ -234,7 +282,7 @@ export function InventoryTable() {
   });
 
   return (
-    <Card className="min-w-full max-w-full w-full">
+    <Card className="w-full">
       <CardHeader>
         <CardTitle>Inventory</CardTitle>
       </CardHeader>
@@ -261,8 +309,12 @@ export function InventoryTable() {
           </Button>
           <DataTableViewOptions table={table} />
         </div>
-        <div className="rounded-md border min-w-full max-w-full w-full">
-          <DataTable table={table} status={status} error={error} />
+        <div className="h-96 w-full max-w-full max-h-96 overflow-auto">
+          <DataTable
+            table={table}
+            status={status}
+            error={listInventoriesQuery.error}
+          />
         </div>
         <div className="mt-4">
           <DataTablePagination table={table} />
@@ -277,10 +329,15 @@ export type SelectProductButtonProps = {
 export function SelectProductButton({ onSelect }: SelectProductButtonProps) {
   return (
     <Dialog>
-      <DialogTrigger>
-        <Button onClick={() => {}}>Select Product</Button>;
+      <DialogTrigger asChild>
+        <Button size={"sm"} className="mx-auto">
+          Select Product
+        </Button>
       </DialogTrigger>
-      <DialogContent>
+      <DialogContent
+        className="max-w-screen-lg w-full max-h-screen flex flex-col"
+        onWheel={(e) => e.preventDefault()}
+      >
         <DialogHeader>
           <DialogTitle>Select a product to add to the order</DialogTitle>
         </DialogHeader>
@@ -388,19 +445,17 @@ export default function Page() {
               <TableHead>Discount</TableHead>
               <TableHead>Subtotal</TableHead>
               <TableHead>
-                <div>
-                  <SelectProductButton
-                    onSelect={(inventory) => {
-                      orderItemsFieldArray.append({
-                        inventoryId: inventory.id,
-                        productId: inventory.productId,
-                        price: inventory.price,
-                        quantity: 1,
-                        discount: 0,
-                      });
-                    }}
-                  />
-                </div>
+                <SelectProductButton
+                  onSelect={(inventory) => {
+                    orderItemsFieldArray.append({
+                      inventoryId: inventory.id,
+                      productId: inventory.productId,
+                      price: inventory.price,
+                      quantity: 1,
+                      discount: 0,
+                    });
+                  }}
+                />
               </TableHead>
             </TableRow>
           </TableHeader>
