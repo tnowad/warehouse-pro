@@ -1,7 +1,7 @@
 package com.warehousepro.dto.response.role;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.warehousepro.dto.response.auth.PermissionResponse;
+import com.warehousepro.dto.response.permission.PermissionResponse;
 import java.util.Date;
 import java.util.Set;
 import lombok.*;
@@ -19,5 +19,5 @@ public class RoleRespone {
   String description;
   Date createdAt;
   Date updatedAt;
-  Set<PermissionResponse> response;
+  Set<PermissionResponse> permissions;
 }

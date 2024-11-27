@@ -2,7 +2,6 @@ package com.warehousepro.entity;
 
 import jakarta.persistence.*;
 import java.time.LocalDate;
-import java.util.HashSet;
 import java.util.Set;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -42,27 +41,11 @@ public class User {
   LocalDate updatedAt;
 
   @ManyToMany(
-      fetch = FetchType.LAZY,
-      cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+      cascade = {CascadeType.PERSIST},
+      fetch = FetchType.LAZY)
   @JoinTable(
-      name = "user_roles",
+      name = "users_roles",
       joinColumns = @JoinColumn(name = "user_id"),
       inverseJoinColumns = @JoinColumn(name = "role_id"))
-  Set<Role> roles = new HashSet<>();
-
-  public void addRole(Role role) {
-    if (this.roles == null) {
-      this.roles = new HashSet<>();
-    }
-    this.roles.add(role);
-  }
-
-  public void removeRole(String name) {
-    Role role =
-        this.roles.stream().filter(role1 -> role1.getName() == name).findFirst().orElse(null);
-    if (role == null) {
-      this.roles.remove(role);
-      role.getUsers().remove(this);
-    }
-  }
+  private Set<Role> roles;
 }

@@ -1,5 +1,6 @@
 package com.warehousepro.repository;
 
+import com.warehousepro.entity.Permission;
 import com.warehousepro.entity.Role;
 import java.util.List;
 import java.util.Set;
@@ -33,6 +34,9 @@ public interface RoleRepository
 
   @Override
   long count();
+
+  @Query("SELECT r FROM Role r LEFT JOIN FETCH r.permissions WHERE r.id = :id")
+  Set<Permission> findPermissionsByRolesId(String id);
 
   @Override
   Page<Role> findAll(Specification<Role> spec, Pageable pageable);

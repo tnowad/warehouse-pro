@@ -19,6 +19,7 @@ import com.warehousepro.repository.UserRepository;
 import com.warehousepro.repository.WareHouseRepository;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -399,41 +400,59 @@ public class SeedService {
     Role adminRole =
         roleRepository
             .findById("ADMIN")
-            .orElse(Role.builder().name("ADMIN").description("Admin role").build());
+            .orElse(
+                Role.builder()
+                    .name("ADMIN")
+                    .description("Admin role")
+                    .permissions(new HashSet<>(permissions.values()))
+                    .build());
+
+    roleRepository.save(adminRole);
     Role managerRole =
         roleRepository
             .findById("MANAGER")
-            .orElse(Role.builder().name("MANAGER").description("Manager role").build());
+            .orElse(
+                Role.builder()
+                    .name("MANAGER")
+                    .description("Manager role")
+                    .permissions(new HashSet<>(permissions.values()))
+                    .build());
+
+    roleRepository.save(managerRole);
+
     Role employeeRole =
         roleRepository
             .findById("EMPLOYEE")
-            .orElse(Role.builder().name("EMPLOYEE").description("Employee role").build());
-    log.info("adminRole: {}", adminRole);
+            .orElse(
+                Role.builder()
+                    .name("EMPLOYEE")
+                    .description("Employee role")
+                    .permissions(new HashSet<>(permissions.values()))
+                    .build());
 
-    if (roleRepository.findByName("ADMIN") == null) {
-      adminRole.setPermissions(Set.copyOf(permissions.values()));
-      roleRepository.save(adminRole);
-    }
-    if (roleRepository.findByName("MANAGER") == null) {
-      managerRole.setPermissions(Set.copyOf(permissions.values()));
-      roleRepository.save(managerRole);
-    }
-    if (roleRepository.findByName("EMPLOYEE") == null) {
-      employeeRole.setPermissions(Set.copyOf(permissions.values()));
-      roleRepository.save(employeeRole);
-    }
+    roleRepository.save(employeeRole);
     List<User> users =
         List.of(
             User.builder()
                 .email("admin@warehouse-pro.com")
                 .name("Admin")
                 .password(passwordEncoder.encode("Password@123"))
-                .roles(Set.of(adminRole))
+                .roles(new HashSet<>(Set.of(adminRole)))
+                .build(),
+            User.builder()
+                .email("manager@warehouse-pro.com")
+                .name("Manager")
+                .password(passwordEncoder.encode("Password@123"))
+                .roles(new HashSet<>(Set.of(managerRole)))
+                .build(),
+            User.builder()
+                .email("employee@warehouse-pro.com")
+                .name("Employee")
+                .password(passwordEncoder.encode("Password@123"))
+                .roles(new HashSet<>(Set.of(employeeRole)))
                 .build());
 
-    for (User user : users) {
-      userRepository.save(user);
-    }
+    userRepository.saveAll(users);
   }
 
   @Transactional

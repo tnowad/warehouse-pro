@@ -14,6 +14,7 @@ import com.warehousepro.specification.PermissionSpecification;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import java.util.List;
+import java.util.Set;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -65,11 +66,17 @@ public class PermissionService {
   }
 
   public List<PermissionName> getPermissionNamesByRoleIds(List<String> roleIds) {
-    return permissionRepository.getPermissionNamesByRoleIds(roleIds);
+    return permissionRepository.findDistinctByRoles_IdIn(roleIds).stream()
+        .map(Permission::getName)
+        .toList();
   }
 
   @Transactional
   public void delete(String id) {
     permissionRepository.deleteById(id);
+  }
+
+  public Set<Permission> getPermissionsByRoleId(String id) {
+    return permissionRepository.findPermissionsByRoles_Id(id);
   }
 }

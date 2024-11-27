@@ -9,6 +9,7 @@ import com.warehousepro.entity.User;
 import com.warehousepro.exception.EmailNotFoundException;
 import com.warehousepro.exception.IncorrectPasswordException;
 import com.warehousepro.mapstruct.UserMapper;
+import java.util.ArrayList;
 import java.util.List;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -82,17 +83,16 @@ public class AuthenticationService {
     Jwt jwt = (Jwt) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
     String userId = jwt.getSubject();
-    log.info("User ID: {}", userId);
     var user = userService.getUserById(userId);
     if (user == null) {
       return List.of(PermissionName.AUTH_LOGIN);
     }
-    var roles = user.getRoles();
-    log.info("Roles: {}", roles);
+    var roles = roleService.getUserRoles(userId);
     var permissionNames =
-        permissionService.getPermissionNamesByRoleIds(
-            roles.stream().map(role -> role.getId()).toList());
-    log.info("Permissions: {}", permissionNames);
+        new ArrayList<PermissionName>(
+            permissionService.getPermissionNamesByRoleIds(
+                roles.stream().map(role -> role.getId()).toList()));
+    permissionNames.add(PermissionName.AUTH_LOGIN);
     permissionNames.add(PermissionName.AUTH_LOGGED_IN);
     return permissionNames;
   }

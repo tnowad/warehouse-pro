@@ -119,7 +119,7 @@ export function RoleDetails({ roleId }: RoleDetailProps) {
             <div className="col-span-full">
               <div>Permissions</div>
               <div className="inline-flex gap-1 flex-wrap">
-                {role.permissions.map((permission) => (
+                {role?.permissions?.map((permission) => (
                   <HoverCard key={permission.id}>
                     <HoverCardTrigger asChild>
                       <Badge variant={"outline"}>{permission.name}</Badge>

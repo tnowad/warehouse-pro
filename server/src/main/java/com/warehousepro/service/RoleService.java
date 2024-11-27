@@ -84,4 +84,10 @@ public class RoleService {
     List<Role> roles = roleRepository.findByUserId(userId);
     return roles;
   }
+
+  public Role getRoleById(String id) {
+    return roleRepository
+        .findOne((root, query, criteriaBuilder) -> criteriaBuilder.equal(root.get("id"), id))
+        .orElse(null);
+  }
 }

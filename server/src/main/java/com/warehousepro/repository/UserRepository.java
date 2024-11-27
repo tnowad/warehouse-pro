@@ -26,6 +26,9 @@ public interface UserRepository
   @Query("SELECT u FROM User u WHERE LOWER(u.name) LIKE LOWER(CONCAT('%', :query, '%'))")
   List<User> searchRoles(@Param("query") String query);
 
+  @Query("SELECT u FROM User u LEFT JOIN FETCH u.roles WHERE u.id = :id")
+  User findByIdWithRoles(@Param("id") String id);
+
   @Override
   long count();
 

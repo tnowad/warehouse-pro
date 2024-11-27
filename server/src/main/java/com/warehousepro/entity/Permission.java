@@ -1,6 +1,5 @@
 package com.warehousepro.entity;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 import java.util.Set;
@@ -21,7 +20,7 @@ public class Permission {
   @GeneratedValue(strategy = GenerationType.UUID)
   String id;
 
-  @Column(name = "name")
+  @Column(name = "name", nullable = false, unique = true)
   @Enumerated(EnumType.STRING)
   PermissionName name;
 
@@ -32,14 +31,7 @@ public class Permission {
 
   @UpdateTimestamp LocalDateTime updatedAt;
 
-  @ManyToMany(
-      fetch = FetchType.LAZY,
-      cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE})
-  @JoinTable(
-      name = "role_permissions",
-      joinColumns = @JoinColumn(name = "permission_id"),
-      inverseJoinColumns = @JoinColumn(name = "role_id"))
-  @JsonBackReference
+  @ManyToMany(mappedBy = "permissions", cascade = CascadeType.ALL)
   private Set<Role> roles;
 
   public void addRole(Role role) {

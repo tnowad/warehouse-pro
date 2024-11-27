@@ -1,9 +1,8 @@
 package com.warehousepro.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.Set;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -12,9 +11,9 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 @Entity
 @Data
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class Role {
 
@@ -22,7 +21,7 @@ public class Role {
   @GeneratedValue(strategy = GenerationType.UUID)
   String id;
 
-  @Column(name = "name")
+  @Column(name = "name", nullable = false, unique = true)
   String name;
 
   @Column(name = "description")
@@ -32,17 +31,17 @@ public class Role {
 
   @UpdateTimestamp LocalDateTime updatedAt;
 
-  @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+  @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
   @JoinTable(
-      name = "role_permissions",
-      joinColumns = @JoinColumn(name = "role_id"),
-      inverseJoinColumns = @JoinColumn(name = "permission_id"))
-  @JsonManagedReference
-  Set<Permission> permissions;
+      name = "roles_permissions",
+      joinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"),
+      inverseJoinColumns = @JoinColumn(name = "permission_id", referencedColumnName = "id"))
+  Set<Permission> permissions = new HashSet<>();
 
-  @ManyToMany(
-      fetch = FetchType.LAZY,
-      cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-  @JsonIgnore
-  Set<User> users;
+  @ManyToMany(mappedBy = "roles", cascade = CascadeType.PERSIST)
+  private Set<User> users;
+
+  public void addPermission(Permission permission) {
+    this.permissions.add(permission);
+  }
 }

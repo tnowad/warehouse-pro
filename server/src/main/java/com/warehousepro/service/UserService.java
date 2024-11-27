@@ -97,6 +97,7 @@ public class UserService {
     userRepository.deleteById(id);
   }
 
+  @Transactional
   public User assignRoleToUser(String userId, String roleId) {
     User user =
         userRepository
@@ -106,7 +107,11 @@ public class UserService {
         roleRepository
             .findById(roleId)
             .orElseThrow(() -> new EntityNotFoundException("Role not found"));
-    user.addRole(role);
+
+    var roles = user.getRoles();
+    roles.add(role);
+    user.setRoles(roles);
+
     return userRepository.save(user);
   }
 
