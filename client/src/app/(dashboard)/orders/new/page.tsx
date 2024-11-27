@@ -80,6 +80,7 @@ import { WarehouseSchema } from "@/lib/schemas/warehouse.schema";
 import _ from "lodash";
 import { useToast } from "@/hooks/use-toast";
 import { useCreateOrderMutation } from "@/hooks/mutations/create-order.mutation";
+import { Label } from "@/components/ui/label";
 
 export type SelectProductButtonProps = {
   onSelect: (
@@ -592,6 +593,17 @@ export default function Page() {
             ))}
           </TableBody>
         </Table>
+
+        <Label>Order Total</Label>
+        <Input
+          value={createOrderForm
+            .watch("items")
+            .reduce(
+              (acc, item) => acc + item.quantity * item.price - item.discount,
+              0,
+            )}
+          disabled
+        />
 
         <Button
           className="w-full mt-4"
