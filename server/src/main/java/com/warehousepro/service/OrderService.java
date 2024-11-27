@@ -41,8 +41,7 @@ public class OrderService {
         orderRepository
             .findById(id)
             .orElseThrow(() -> new RuntimeException("Không tìm thấy order"));
-    if (!order.getStatus().equals(OrderStatus.CANCELLED.name()))
-      order.setStatus(OrderStatus.CANCELLED.name());
+    if (!order.getStatus().equals(OrderStatus.CANCELLED)) order.setStatus(OrderStatus.CANCELLED);
     else throw new RuntimeException("Đơn hàng đã được giao");
 
     return orderMapper.toOrderResponse(order);

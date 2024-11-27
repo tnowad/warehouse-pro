@@ -66,7 +66,7 @@ public class UserController {
             })
       })
   @GetMapping("/{userId}")
-  ResponseEntity<ItemResponse<UserResponse>> getUser(
+  ResponseEntity<UserResponse> getUser(
       @PathVariable @Parameter(description = "id of user to be searched") String userId) {
     return ResponseEntity.ok(userService.getUser(userId));
   }

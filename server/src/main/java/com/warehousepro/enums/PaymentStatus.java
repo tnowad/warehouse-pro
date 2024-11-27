@@ -1,3 +1,7 @@
 package com.warehousepro.enums;
 
-public enum PaymentStatus {}
+public enum PaymentStatus {
+  PENDING,
+  PAID,
+  FAILED
+}

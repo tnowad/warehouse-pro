@@ -43,6 +43,7 @@ public class SeedController {
       seedService.mockSeeds();
       return ResponseEntity.ok().build();
     } catch (Exception e) {
+      log.error("Error while seeding mock data", e);
       return ResponseEntity.badRequest().body(e.getMessage());
     }
   }

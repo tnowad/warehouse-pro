@@ -33,6 +33,7 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class UserService {
 
+  RoleService roleService;
   UserRepository userRepository;
   UserMapper userMapper;
   final PasswordEncoder passwordEncoder;
@@ -58,14 +59,11 @@ public class UserService {
     return userMapper.toUserResponse(userRepository.save(user));
   }
 
-  public ItemResponse<UserResponse> getUser(String id) {
-    List<User> users = new ArrayList<>();
-    User user =
-        userRepository.findById(id).orElseThrow(() -> new RuntimeException("Không tìm thấy id"));
-    users.add(user);
-    return ItemResponse.<UserResponse>builder()
-        .items(users.stream().map(userMapper::toUserResponse).collect(Collectors.toList()))
-        .build();
+  public UserResponse getUser(String id) {
+    return userMapper.toUserResponse(
+        userRepository
+            .findById(id)
+            .orElseThrow(() -> new EntityNotFoundException("User not found")));
   }
 
   public ItemResponse<UserResponse> getUsers(ListUserRequest filterRequest) {
@@ -115,15 +113,19 @@ public class UserService {
     return userRepository.save(user);
   }
 
-  public ItemResponse<GetUserRolesItemResponse> viewUserRoles(String userid) {
-    var user = userRepository.findById(userid).orElseThrow();
-    List<GetUserRolesItemResponse> result =
-        user.getRoles().stream().map(roleMapper::toItem).toList();
+  public ItemResponse<GetUserRolesItemResponse> viewUserRoles(String userId) {
+    var roles = roleService.getUserRoles(userId);
 
-    return ItemResponse.<GetUserRolesItemResponse>builder().items(result).build();
+    return ItemResponse.<GetUserRolesItemResponse>builder()
+        .items(roles.stream().map(roleMapper::toItem).collect(Collectors.toList()))
+        .build();
   }
 
   public Set<Permission> viewUserPermissions(String userId) {
-    return permissionRepository.findPermissionsByUsersId(userId);
+    User user = userRepository.findById(userId).orElseThrow();
+    Set<Role> roles = user.getRoles();
+    Set<Permission> permissions = new HashSet<>();
+    roles.forEach(role -> permissions.addAll(role.getPermissions()));
+    return permissions;
   }
 }

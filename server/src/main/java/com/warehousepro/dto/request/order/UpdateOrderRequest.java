@@ -1,5 +1,7 @@
 package com.warehousepro.dto.request.order;
 
+import com.warehousepro.enums.OrderStatus;
+import com.warehousepro.enums.PaymentStatus;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -11,7 +13,7 @@ import lombok.experimental.FieldDefaults;
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class UpdateOrderRequest {
-  String status;
-  String paymentStatus;
+  OrderStatus status;
+  PaymentStatus paymentStatus;
   String shippingAddress;
 }

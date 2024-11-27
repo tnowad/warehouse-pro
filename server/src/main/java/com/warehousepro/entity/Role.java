@@ -31,7 +31,7 @@ public class Role {
 
   @UpdateTimestamp LocalDateTime updatedAt;
 
-  @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+  @ManyToMany(cascade = CascadeType.ALL)
   @JoinTable(
       name = "roles_permissions",
       joinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"),

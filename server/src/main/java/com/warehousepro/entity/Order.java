@@ -1,5 +1,7 @@
 package com.warehousepro.entity;
 
+import com.warehousepro.enums.OrderStatus;
+import com.warehousepro.enums.PaymentStatus;
 import jakarta.persistence.*;
 import java.util.Date;
 import java.util.Set;
@@ -21,13 +23,15 @@ public class Order {
   String id;
 
   @Column(name = "status")
-  String status;
+  @Enumerated(EnumType.STRING)
+  OrderStatus status;
 
   @Column(name = "total_amount")
   Double totalAmount;
 
   @Column(name = "payment_status")
-  String paymentStatus;
+  @Enumerated(EnumType.STRING)
+  PaymentStatus paymentStatus;
 
   @Column(name = "shipping_address")
   String shippingAddress;

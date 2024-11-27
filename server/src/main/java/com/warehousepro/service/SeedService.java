@@ -1,6 +1,8 @@
 package com.warehousepro.service;
 
 import com.warehousepro.entity.*;
+import com.warehousepro.enums.OrderStatus;
+import com.warehousepro.enums.PaymentStatus;
 import com.warehousepro.repository.InventoryRepository;
 import com.warehousepro.repository.OrderItemRepository;
 import com.warehousepro.repository.OrderRepository;
@@ -507,5 +509,32 @@ public class SeedService {
               .contact(faker.phoneNumber().cellPhone())
               .build());
     }
+    supplierRepository.saveAll(suppliers);
+    List<Order> orders = new ArrayList<>();
+
+    for (int i = 0; i < 63; i++) {
+      List<OrderItem> orderItems = new ArrayList<>();
+
+      for (int j = 0; j < 5; j++) {
+        orderItems.add(
+            OrderItem.builder()
+                .quantity(faker.number().numberBetween(0, 10))
+                .price(faker.number().randomDouble(2, 0, 1000))
+                .totalPrice(faker.number().randomDouble(2, 0, 1000))
+                .discount(faker.number().randomDouble(2, 0, 1000))
+                .build());
+      }
+
+      orders.add(
+          Order.builder()
+              .status(OrderStatus.values()[faker.number().numberBetween(0, 3)])
+              .totalAmount(faker.number().randomDouble(2, 0, 1000))
+              .paymentStatus(PaymentStatus.values()[faker.number().numberBetween(0, 3)])
+              .shippingAddress(faker.address().fullAddress())
+              .orderItems(new HashSet<>(orderItems))
+              .build());
+    }
+
+    orderRepository.saveAll(orders);
   }
 }

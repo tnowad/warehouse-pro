@@ -47,6 +47,8 @@ import {
 } from "@/lib/apis/update-user.api";
 import { RoleSchema } from "@/lib/schemas/role.schema";
 import { Skeleton } from "@/components/ui/skeleton";
+import { createGetUserRolesQueryOptions } from "@/hooks/queries/get-user-roles.query";
+import { getUserRolesApi } from "@/lib/apis/get-user-roles.api";
 
 type UserDetailsUpdateFormProps = {
   userId: string;
@@ -63,6 +65,10 @@ export const UserDetailsUpdateForm = ({
 
   const getUserDetailsQuery = useSuspenseQuery(
     createGetUserDetailsQueryOptions({ userId }),
+  );
+
+  const getUserRolesQuery = useQuery(
+    createGetUserRolesQueryOptions({ userId }),
   );
 
   const listRolesInfinityQuery = useInfiniteQuery(
@@ -104,13 +110,13 @@ export const UserDetailsUpdateForm = ({
   });
 
   useEffect(() => {
-    if (getUserDetailsQuery.isSuccess) {
+    if (getUserDetailsQuery.isSuccess && getUserRolesQuery.isSuccess) {
       updateUserForm.reset({
         name: getUserDetailsQuery.data.name,
         email: getUserDetailsQuery.data.email,
         password: "",
         roleIds: getUserDetailsQuery.data.roles.map((role) => role.id),
-        roles: getUserDetailsQuery.data.roles,
+        roles: getUserRolesQuery.data.items,
       });
     } else if (getUserDetailsQuery.isError) {
       toast({
@@ -270,7 +276,7 @@ export const UserDetailsUpdateForm = ({
                                   role.id,
                                 ]);
                                 updateUserForm.setValue("roles", [
-                                  ...updateUserForm.getValues("roles"),
+                                  ...(updateUserForm.getValues("roles") ?? []),
                                   role,
                                 ]);
                               }
