@@ -5,7 +5,7 @@ import lombok.Data;
 
 @Data
 public class ListWarehouseRequest {
-  private int page = 0;
+  private int page = 1;
   private int pageSize = 10;
   private String sort;
   private String query;

@@ -54,40 +54,46 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
-import { EllipsisIcon } from "lucide-react";
+import { EllipsisIcon, PlusIcon } from "lucide-react";
 import Link from "next/link";
 import { DataTableColumnHeader } from "@/components/ui/data-table-column-header";
-import { UserSchema } from "@/lib/schemas/user.schema";
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useReactTable } from "@tanstack/react-table";
 import { useQuery } from "@tanstack/react-query";
-import { createListUsersQueryOptions } from "@/hooks/queries/list-users.query";
 import { DataTablePagination } from "@/components/ui/data-table-pagination";
 import { DataTableViewOptions } from "@/components/ui/data-table-view-options";
-import { listUsersQueryFilterSchema } from "@/lib/apis/list-users.api";
 import { DataTable } from "@/components/ui/data-table";
 import {
   Dialog,
   DialogContent,
-  DialogDescription,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import {
-  listInventoriesApi,
-  listInventoriesQueryFilterSchema,
-} from "@/lib/apis/list-inventories.api";
+import { listInventoriesQueryFilterSchema } from "@/lib/apis/list-inventories.api";
 import { createListInventoriesQueryOptions } from "@/hooks/queries/list-inventories.query";
 import { createListProductsQueryOptions } from "@/hooks/queries/list-products.query";
 import { ProductSchema } from "@/lib/schemas/product.schema";
+import { createListWarehousesQueryOptions } from "@/hooks/queries/list-warehouses.query";
+import { WarehouseSchema } from "@/lib/schemas/warehouse.schema";
+import _ from "lodash";
+import { useToast } from "@/hooks/use-toast";
+import { useCreateOrderMutation } from "@/hooks/mutations/create-order.mutation";
 
-export function InventoryTable() {
+export type SelectProductButtonProps = {
+  onSelect: (
+    inventory: InventorySchema & {
+      maxQuantity: number;
+    },
+  ) => void;
+};
+export function SelectProductButton({ onSelect }: SelectProductButtonProps) {
   const columns = useMemo<
     ColumnDef<
       InventorySchema & {
         product: ProductSchema | undefined;
+        warehouse: WarehouseSchema | undefined;
       }
     >[]
   >(
@@ -119,11 +125,29 @@ export function InventoryTable() {
         enableHiding: false,
       },
       {
+        accessorKey: "warehouse",
+        header: ({ column }) => (
+          <DataTableColumnHeader column={column} title="Warehouse" />
+        ),
+        cell: ({ row }) => (
+          <Link
+            href={`/warehouses/${row.original.warehouseId}`}
+            target="_blank"
+          >
+            {row.original.warehouse?.name ?? row.original.warehouseId}
+          </Link>
+        ),
+      },
+      {
         accessorKey: "product",
         header: ({ column }) => (
           <DataTableColumnHeader column={column} title="Product" />
         ),
-        cell: ({ row }) => <span>{row.original.product?.name ?? "N/A"}</span>,
+        cell: ({ row }) => (
+          <Link href={`/products/${row.original.productId}`} target="_blank">
+            {row.original.product?.name ?? row.original.productId}
+          </Link>
+        ),
       },
       {
         accessorKey: "quantity",
@@ -171,49 +195,48 @@ export function InventoryTable() {
         accessorKey: "actions",
         header: "Actions",
         cell: ({ row }) => (
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button size={"icon"} variant={"ghost"}>
-                <EllipsisIcon />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent>
-              <DropdownMenuLabel>Actions</DropdownMenuLabel>
-              <DropdownMenuItem
-                onClick={() => navigator.clipboard.writeText(row.original.id)}
-              >
-                Copy Inventory ID
-              </DropdownMenuItem>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem asChild>
-                <Link href={`/inventories/${row.original.id}`}>
-                  View details
-                </Link>
-              </DropdownMenuItem>
-              <DropdownMenuItem asChild>
-                <Link href={`/inventories/${row.original.id}/edit`}>
-                  Edit information
-                </Link>
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
+          <Button
+            size={"icon"}
+            variant={"ghost"}
+            onClick={() => {
+              onSelect({
+                ...row.original,
+                maxQuantity: row.original.quantity,
+              });
+            }}
+          >
+            <PlusIcon />
+          </Button>
         ),
         enableSorting: false,
         enableHiding: false,
       },
     ],
-    [],
+    [onSelect],
   );
 
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
-  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
+  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({
+    select: true,
+    warehouse: true,
+    product: true,
+    quantity: true,
+    price: true,
+    status: true,
+    warehouseId: false,
+    productId: false,
+    createdAt: false,
+    updatedAt: false,
+    actions: true,
+  });
   const [rowSelection, setRowSelection] = useState({});
   const [pagination, setPagination] = useState<PaginationState>({
     pageIndex: 0,
     pageSize: 10,
   });
   const [globalFilter, setGlobalFilter] = useState<string>("");
+
   const listInventoriesQuery = useQuery(
     createListInventoriesQueryOptions({
       query: globalFilter,
@@ -232,26 +255,41 @@ export function InventoryTable() {
   );
   const listProductsQuery = useQuery(
     createListProductsQueryOptions({
-      ids: listInventoriesQuery.data?.items.map(
-        (inventory) => inventory.productId,
-      ),
+      ids: _.uniq(_.map(listInventoriesQuery.data?.items, "productId")),
       pageSize: pagination.pageSize,
     }),
   );
 
-  const inventories = listInventoriesQuery.data?.items ?? [];
-  const products = listProductsQuery.data?.items ?? [];
+  const listWarehouseQuery = useQuery(
+    createListWarehousesQueryOptions({
+      ids: _.uniq(_.map(listInventoriesQuery.data?.items, "warehouseId")),
+      pageSize: pagination.pageSize,
+    }),
+  );
+
+  const inventories = useMemo(
+    () => listInventoriesQuery.data?.items ?? [],
+    [listInventoriesQuery.data?.items],
+  );
+
+  const products = useMemo(
+    () => listProductsQuery.data?.items ?? [],
+    [listProductsQuery.data?.items],
+  );
+
+  const warehouses = useMemo(
+    () => listWarehouseQuery.data?.items ?? [],
+    [listWarehouseQuery.data?.items],
+  );
   const rowCount = listInventoriesQuery.data?.rowCount ?? 0;
 
-  const data = inventories.map((inventory) => {
-    const product = products.find(
-      (product) => product.id === inventory.productId,
-    );
-    return {
-      ...inventory,
-      product,
-    };
-  });
+  const data = useMemo(() => {
+    return inventories.map((inventory) => {
+      const product = _.find(products, { id: inventory.productId });
+      const warehouse = _.find(warehouses, { id: inventory.warehouseId });
+      return { ...inventory, product, warehouse };
+    });
+  }, [inventories, products, warehouses]);
 
   const table = useReactTable({
     data: data,
@@ -282,52 +320,6 @@ export function InventoryTable() {
   });
 
   return (
-    <Card className="w-full">
-      <CardHeader>
-        <CardTitle>Inventory</CardTitle>
-      </CardHeader>
-      <CardContent>
-        <div className="flex items-center py-4 gap-2">
-          <Input
-            value={globalFilter ?? ""}
-            onChange={(event) =>
-              table.setGlobalFilter(String(event.target.value))
-            }
-            placeholder="Search..."
-            className="max-w-sm"
-          />
-          <Button
-            variant="outline"
-            className="ml-auto"
-            size={"sm"}
-            onClick={() => {
-              table.resetGlobalFilter();
-              table.resetColumnFilters();
-            }}
-          >
-            Clear Filter
-          </Button>
-          <DataTableViewOptions table={table} />
-        </div>
-        <div className="h-96 w-full max-w-full max-h-96 overflow-auto">
-          <DataTable
-            table={table}
-            status={status}
-            error={listInventoriesQuery.error}
-          />
-        </div>
-        <div className="mt-4">
-          <DataTablePagination table={table} />
-        </div>
-      </CardContent>
-    </Card>
-  );
-}
-export type SelectProductButtonProps = {
-  onSelect: (inventory: InventorySchema) => void;
-};
-export function SelectProductButton({ onSelect }: SelectProductButtonProps) {
-  return (
     <Dialog>
       <DialogTrigger asChild>
         <Button size={"sm"} className="mx-auto">
@@ -341,14 +333,60 @@ export function SelectProductButton({ onSelect }: SelectProductButtonProps) {
         <DialogHeader>
           <DialogTitle>Select a product to add to the order</DialogTitle>
         </DialogHeader>
-        <InventoryTable />
+        <Card className="w-full">
+          <CardHeader>
+            <CardTitle>Inventory</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="flex items-center py-4 gap-2">
+              <Input
+                value={globalFilter ?? ""}
+                onChange={(event) =>
+                  table.setGlobalFilter(String(event.target.value))
+                }
+                placeholder="Search..."
+                className="max-w-sm"
+              />
+              <Button
+                variant="outline"
+                className="ml-auto"
+                size={"sm"}
+                onClick={() => {
+                  table.resetGlobalFilter();
+                  table.resetColumnFilters();
+                }}
+              >
+                Clear Filter
+              </Button>
+              <DataTableViewOptions table={table} />
+            </div>
+            <div className="h-96 w-full max-w-full max-h-96 overflow-auto">
+              <DataTable
+                table={table}
+                status={status}
+                error={listInventoriesQuery.error}
+              />
+            </div>
+            <div className="mt-4">
+              <DataTablePagination table={table} />
+            </div>
+          </CardContent>
+        </Card>
       </DialogContent>
     </Dialog>
   );
 }
 
 export default function Page() {
-  const createOrderForm = useForm<CreateOrderBodySchema>({
+  const createOrderForm = useForm<
+    CreateOrderBodySchema & {
+      items: Array<
+        CreateOrderBodySchema["items"][number] & {
+          maxQuantity: number;
+        }
+      >;
+    }
+  >({
     resolver: zodResolver(createOrderBodySchema),
     values: {
       shippingAddress: "",
@@ -357,13 +395,35 @@ export default function Page() {
       items: [],
     },
   });
+  const createOrderMutation = useCreateOrderMutation();
 
   const orderItemsFieldArray = useFieldArray({
     control: createOrderForm.control,
     name: "items",
   });
 
-  const onSubmit = createOrderForm.handleSubmit(async (values) => {});
+  const listProductsQuery = useQuery(
+    createListProductsQueryOptions({
+      ids: _.uniq(_.map(createOrderForm.getValues().items, "productId")),
+      pageSize: _.size(createOrderForm.getValues().items) + 1,
+    }),
+  );
+
+  const listWarehouseQuery = useQuery(
+    createListWarehousesQueryOptions({
+      ids: _.uniq(_.map(createOrderForm.getValues().items, "warehouseId")),
+      pageSize: _.size(createOrderForm.getValues().items) + 1,
+    }),
+  );
+
+  const onSubmit = createOrderForm.handleSubmit(async (values) =>
+    createOrderMutation.mutate(values, {
+      onSuccess(data) {
+        createOrderForm.reset();
+        orderItemsFieldArray.remove();
+      },
+    }),
+  );
 
   return (
     <Form {...createOrderForm}>
@@ -438,7 +498,6 @@ export default function Page() {
           <TableHeader>
             <TableRow>
               <TableHead>Warehouse</TableHead>
-              <TableHead>Inventory</TableHead>
               <TableHead>Product</TableHead>
               <TableHead>Quantity</TableHead>
               <TableHead>Price</TableHead>
@@ -448,10 +507,11 @@ export default function Page() {
                 <SelectProductButton
                   onSelect={(inventory) => {
                     orderItemsFieldArray.append({
-                      inventoryId: inventory.id,
+                      maxQuantity: inventory.maxQuantity,
+                      warehouseId: inventory.warehouseId,
                       productId: inventory.productId,
                       price: inventory.price,
-                      quantity: 1,
+                      quantity: inventory.quantity,
                       discount: 0,
                     });
                   }}
@@ -460,18 +520,33 @@ export default function Page() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {orderItemsFieldArray.fields.map((field, index) => (
-              <TableRow key={field.id}>
-                <TableCell>{field.inventoryId}</TableCell>
-                <TableCell>{field.productId}</TableCell>
+            {orderItemsFieldArray.fields.map((itemField, index) => (
+              <TableRow key={itemField.id}>
+                <TableCell>
+                  {_.find(listWarehouseQuery.data?.items, {
+                    id: itemField.warehouseId,
+                  })?.name ?? itemField.warehouseId}
+                </TableCell>
+                <TableCell>
+                  {_.find(listProductsQuery.data?.items, {
+                    id: itemField.productId,
+                  })?.name ?? itemField.productId}
+                </TableCell>
                 <TableCell>
                   <FormField
                     control={createOrderForm.control}
                     name={`items.${index}.quantity`}
                     render={({ field }) => (
-                      <FormControl>
-                        <Input type="number" {...field} />
-                      </FormControl>
+                      <FormItem>
+                        <FormControl>
+                          <Input
+                            type="number"
+                            {...field}
+                            max={itemField.maxQuantity}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
                     )}
                   />
                 </TableCell>
@@ -480,9 +555,12 @@ export default function Page() {
                     control={createOrderForm.control}
                     name={`items.${index}.price`}
                     render={({ field }) => (
-                      <FormControl>
-                        <Input type="number" {...field} />
-                      </FormControl>
+                      <FormItem>
+                        <FormControl>
+                          <Input type="number" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
                     )}
                   />
                 </TableCell>
@@ -491,14 +569,19 @@ export default function Page() {
                     control={createOrderForm.control}
                     name={`items.${index}.discount`}
                     render={({ field }) => (
-                      <FormControl>
-                        <Input type="number" {...field} />
-                      </FormControl>
+                      <FormItem>
+                        <FormControl>
+                          <Input type="number" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
                     )}
                   />
                 </TableCell>
                 <TableCell>
-                  {field.price * field.quantity - field.discount}
+                  {createOrderForm.watch(`items.${index}.quantity`) *
+                    createOrderForm.watch(`items.${index}.price`) -
+                    createOrderForm.watch(`items.${index}.discount`)}
                 </TableCell>
                 <TableCell>
                   <Button onClick={() => orderItemsFieldArray.remove(index)}>
@@ -513,10 +596,7 @@ export default function Page() {
         <Button
           className="w-full mt-4"
           type="submit"
-          disabled={
-            createOrderForm.formState.isSubmitting ||
-            !createOrderForm.formState.isValid
-          }
+          disabled={createOrderForm.formState.isSubmitting}
         >
           Create Order
         </Button>

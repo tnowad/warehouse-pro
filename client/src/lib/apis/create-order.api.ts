@@ -14,7 +14,7 @@ export const createOrderBodySchema = orderSchema
     items: z
       .array(
         orderItemSchema.pick({
-          inventoryId: true,
+          warehouseId: true,
           price: true,
           discount: true,
           productId: true,

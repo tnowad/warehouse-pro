@@ -15,6 +15,7 @@ public class InventoryResponse {
   Integer quantity;
   Integer minimumStockLevel;
   InventoryStatus status;
+  Integer price;
   String productId;
   String warehouseId;
   Date createdAt;

@@ -474,7 +474,6 @@ public class SeedService {
       products.add(
           Product.builder()
               .name(faker.commerce().productName())
-              .price(Double.parseDouble(faker.commerce().price()))
               .description(faker.lorem().sentence())
               .sku(faker.number().digits(10))
               .build());
@@ -494,7 +493,7 @@ public class SeedService {
                 .quantity(faker.number().numberBetween(0, 100))
                 .status(InventoryStatus.ACTIVE)
                 .minimumStockLevel(faker.number().numberBetween(0, 10))
-                .price(faker.number().numberBetween(0, 10))
+                .price(faker.number().numberBetween(100000, 5000000))
                 .build());
       }
     }
@@ -510,25 +509,30 @@ public class SeedService {
               .build());
     }
     supplierRepository.saveAll(suppliers);
+
     List<Order> orders = new ArrayList<>();
 
     for (int i = 0; i < 63; i++) {
       List<OrderItem> orderItems = new ArrayList<>();
 
       for (int j = 0; j < 5; j++) {
+        double productPrice = faker.number().numberBetween(100000, 5000000);
+        int quantity = faker.number().numberBetween(1, 10);
+        double totalPrice = productPrice * quantity;
+
         orderItems.add(
             OrderItem.builder()
-                .quantity(faker.number().numberBetween(0, 10))
-                .price(faker.number().randomDouble(2, 0, 1000))
-                .totalPrice(faker.number().randomDouble(2, 0, 1000))
-                .discount(faker.number().randomDouble(2, 0, 1000))
+                .quantity(quantity)
+                .price(productPrice)
+                .totalPrice(totalPrice)
+                .discount(faker.number().randomDouble(2, 0, 100000))
                 .build());
       }
 
       orders.add(
           Order.builder()
               .status(OrderStatus.values()[faker.number().numberBetween(0, 3)])
-              .totalAmount(faker.number().randomDouble(2, 0, 1000))
+              .totalAmount(faker.number().randomDouble(2, 100000, 5000000))
               .paymentStatus(PaymentStatus.values()[faker.number().numberBetween(0, 3)])
               .shippingAddress(faker.address().fullAddress())
               .orderItems(new HashSet<>(orderItems))

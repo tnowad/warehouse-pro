@@ -67,6 +67,7 @@ public class InventoryService {
                             .createdAt(inventory.getCreatedAt())
                             .updatedAt(inventory.getUpdatedAt())
                             .status(inventory.getStatus())
+                            .price(inventory.getPrice())
                             .minimumStockLevel(inventory.getMinimumStockLevel())
                             .quantity(inventory.getQuantity())
                             .warehouseId(inventory.getWarehouse().getId())
