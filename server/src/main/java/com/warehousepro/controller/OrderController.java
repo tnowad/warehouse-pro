@@ -4,6 +4,7 @@ import com.warehousepro.dto.request.order.CreateOrderRequest;
 import com.warehousepro.dto.request.order.ListOrderRequest;
 import com.warehousepro.dto.request.order.UpdateOrderRequest;
 import com.warehousepro.dto.response.ItemResponse;
+import com.warehousepro.dto.response.order.OrderItemReponse;
 import com.warehousepro.dto.response.order.OrderResponse;
 import com.warehousepro.mapstruct.OrderMapper;
 import com.warehousepro.service.OrderService;
@@ -43,9 +44,14 @@ public class OrderController {
     return ResponseEntity.ok(orderService.update(id, request));
   }
 
-  @GetMapping("/view-order/{id}")
+  @GetMapping("/{id}")
   public ResponseEntity<OrderResponse> getById(@PathVariable("id") String id) {
     return ResponseEntity.ok(orderService.getById(id));
+  }
+
+  @GetMapping("/{id}/order-items")
+  public ResponseEntity<ItemResponse<OrderItemReponse>> getItems(@PathVariable("id") String id) {
+    return ResponseEntity.ok(orderService.getOrderItems(id));
   }
 
   @DeleteMapping("/{id}")

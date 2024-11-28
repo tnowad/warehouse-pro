@@ -59,4 +59,11 @@ public class Warehouse {
       mappedBy = "warehouse",
       orphanRemoval = true)
   Set<ShipmentItem> shipmentItems;
+
+  @OneToMany(
+      cascade = CascadeType.ALL,
+      fetch = FetchType.LAZY,
+      mappedBy = "warehouse",
+      orphanRemoval = true)
+  Set<OrderItem> orderItems;
 }

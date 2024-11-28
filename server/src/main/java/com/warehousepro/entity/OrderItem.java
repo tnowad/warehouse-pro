@@ -12,6 +12,7 @@ import lombok.experimental.FieldDefaults;
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class OrderItem {
+
   @Id
   @GeneratedValue(strategy = GenerationType.UUID)
   String id;
@@ -29,12 +30,16 @@ public class OrderItem {
   Double discount;
 
   @ManyToOne
-  @JoinColumn(name = "order_id")
+  @JoinColumn(name = "order_id", nullable = false)
   Order order;
 
   @ManyToOne
-  @JoinColumn(name = "product_id")
+  @JoinColumn(name = "product_id", nullable = false)
   Product product;
+
+  @ManyToOne
+  @JoinColumn(name = "warehouse_id", nullable = false)
+  Warehouse warehouse;
 
   @OneToMany(
       cascade = CascadeType.ALL,

@@ -4,10 +4,12 @@ import com.warehousepro.dto.request.order.CreateOrderRequest;
 import com.warehousepro.dto.request.order.ListOrderRequest;
 import com.warehousepro.dto.request.order.UpdateOrderRequest;
 import com.warehousepro.dto.response.ItemResponse;
+import com.warehousepro.dto.response.order.OrderItemReponse;
 import com.warehousepro.dto.response.order.OrderResponse;
 import com.warehousepro.entity.Order;
 import com.warehousepro.enums.OrderStatus;
 import com.warehousepro.mapstruct.OrderMapper;
+import com.warehousepro.repository.OrderItemRepository;
 import com.warehousepro.repository.OrderRepository;
 import com.warehousepro.specification.OrderSpecification;
 import jakarta.transaction.Transactional;
@@ -27,6 +29,7 @@ public class OrderService {
   OrderRepository orderRepository;
   OrderMapper orderMapper;
   OrderSpecification orderSpecification;
+  OrderItemRepository orderItemRepository;
 
   @Transactional
   public Order create(CreateOrderRequest request) {
@@ -89,5 +92,36 @@ public class OrderService {
   @Transactional
   public void delete(String id) {
     orderRepository.deleteById(id);
+  }
+
+  public ItemResponse<OrderItemReponse> getOrderItems(String id) {
+    Order order =
+        orderRepository
+            .findById(id)
+            .orElseThrow(() -> new RuntimeException("Không tìm thấy order"));
+
+    var items =
+        orderItemRepository.findAllByOrderId(id).stream()
+            .map(
+                item ->
+                    OrderItemReponse.builder()
+                        .id(item.getId())
+                        .orderId(item.getOrder().getId())
+                        .productId(item.getProduct().getId())
+                        .warehouseId(item.getWarehouse().getId())
+                        .quantity(item.getQuantity())
+                        .price(item.getPrice())
+                        .totalPrice(item.getTotalPrice())
+                        .discount(item.getDiscount())
+                        .build())
+            .toList();
+
+    return ItemResponse.<OrderItemReponse>builder()
+        .items(items)
+        .rowCount(items.size())
+        .pageCount(items.size())
+        .page(1)
+        .pageCount(1)
+        .build();
   }
 }

@@ -1,3 +1,9 @@
+import { InventoryTable } from "./_components/inventory-table";
+
 export default function Page() {
-  return <div>Page</div>;
+  return (
+    <div>
+      <InventoryTable />
+    </div>
+  );
 }

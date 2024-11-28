@@ -4,6 +4,7 @@ import com.warehousepro.enums.OrderStatus;
 import com.warehousepro.enums.PaymentStatus;
 import jakarta.persistence.*;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Set;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -53,4 +54,12 @@ public class Order {
       mappedBy = "order",
       orphanRemoval = true)
   Set<OrderItem> orderItems;
+
+  public void addOrderItem(OrderItem orderItem) {
+    if (orderItems == null) {
+      orderItems = new HashSet<>();
+    }
+    orderItems.add(orderItem);
+    orderItem.setOrder(this);
+  }
 }

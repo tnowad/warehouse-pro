@@ -22,7 +22,6 @@ export default async function WarehouseDetailPage({
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
       <WarehouseDetails warehouseId={warehouseId} />
-      <WarehouseRolesDetails warehouseId={warehouseId} />
     </HydrationBoundary>
   );
 }

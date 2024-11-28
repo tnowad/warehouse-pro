@@ -513,32 +513,35 @@ public class SeedService {
     List<Order> orders = new ArrayList<>();
 
     for (int i = 0; i < 63; i++) {
-      List<OrderItem> orderItems = new ArrayList<>();
-
-      for (int j = 0; j < 5; j++) {
-        double productPrice = faker.number().numberBetween(100000, 5000000);
-        int quantity = faker.number().numberBetween(1, 10);
-        double totalPrice = productPrice * quantity;
-
-        orderItems.add(
-            OrderItem.builder()
-                .quantity(quantity)
-                .price(productPrice)
-                .totalPrice(totalPrice)
-                .discount(faker.number().randomDouble(2, 0, 100000))
-                .build());
-      }
-
-      orders.add(
+      var order =
           Order.builder()
               .status(OrderStatus.values()[faker.number().numberBetween(0, 3)])
               .totalAmount(faker.number().randomDouble(2, 100000, 5000000))
               .paymentStatus(PaymentStatus.values()[faker.number().numberBetween(0, 3)])
               .shippingAddress(faker.address().fullAddress())
-              .orderItems(new HashSet<>(orderItems))
-              .build());
+              .orderItems(new HashSet<>())
+              .build();
+      orders.add(order);
     }
 
     orderRepository.saveAll(orders);
+
+    List<OrderItem> orderItems = new ArrayList<>();
+    for (var order : orders) {
+      for (var product : products) {
+        orderItems.add(
+            OrderItem.builder()
+                .order(order)
+                .product(product)
+                .warehouse(warehouses.get(faker.number().numberBetween(0, 63)))
+                .quantity(faker.number().numberBetween(1, 10))
+                .price(faker.number().randomDouble(2, 100000, 5000000))
+                .totalPrice(faker.number().randomDouble(2, 100000, 5000000))
+                .discount(faker.number().randomDouble(2, 1000, 5000))
+                .build());
+      }
+    }
+
+    orderItemRepository.saveAll(orderItems);
   }
 }
