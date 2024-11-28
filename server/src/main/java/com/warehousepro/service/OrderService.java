@@ -13,12 +13,15 @@ import com.warehousepro.repository.OrderItemRepository;
 import com.warehousepro.repository.OrderRepository;
 import com.warehousepro.specification.OrderSpecification;
 import jakarta.transaction.Transactional;
+
+import java.util.List;
 import java.util.stream.Collectors;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 @Slf4j
@@ -66,6 +69,10 @@ public class OrderService {
         .build();
   }
 
+  public List<Order> getAllListOrder(){
+    return orderRepository.findAll();
+  }
+
   public OrderResponse getById(String id) {
     Order order =
         orderRepository
@@ -88,6 +95,11 @@ public class OrderService {
     orderRepository.save(order);
     return orderMapper.toOrderResponse(order);
   }
+
+  public List<OrderResponse> exportExcel(){
+    return orderRepository.findAll(Sort.by("createdAt")).stream().map(orderMapper::toOrderResponse).collect(Collectors.toList());
+  }
+
 
   @Transactional
   public void delete(String id) {

@@ -8,6 +8,10 @@ spring:
     username: "myuser"
     password: "secret"
     driver-class-name: "org.postgresql.Driver"
+  servlet:
+    multipart:
+        max-file-size : 2MB
+        max-request-size : 2MB
 
 jwt:
   access:

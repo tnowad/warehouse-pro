@@ -6,13 +6,22 @@ import com.warehousepro.dto.request.order.UpdateOrderRequest;
 import com.warehousepro.dto.response.ItemResponse;
 import com.warehousepro.dto.response.order.OrderItemReponse;
 import com.warehousepro.dto.response.order.OrderResponse;
+import com.warehousepro.entity.Order;
+import com.warehousepro.generator.OrderExcelGenerator;
 import com.warehousepro.mapstruct.OrderMapper;
 import com.warehousepro.service.OrderService;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
 
 @RestController
 @RequestMapping("/orders")
@@ -59,4 +68,20 @@ public class OrderController {
     orderService.delete(id);
     return ResponseEntity.ok("Xóa thành công");
   }
+
+  @GetMapping("/export-to-excel")
+  public void exportIntoExcelFile(HttpServletResponse response) throws IOException {
+    response.setContentType("application/octet-stream");
+    DateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd_HH:mm:ss");
+    String currentDateTime = dateFormatter.format(new Date());
+
+    String headerKey = "Content-Disposition";
+    String headerValue = "attachment; filename=orders" + currentDateTime + ".xlsx";
+    response.setHeader(headerKey, headerValue);
+
+    List<Order> listOfOrders = orderService.getAllListOrder();
+    OrderExcelGenerator generator = new OrderExcelGenerator(listOfOrders);
+    generator.generateExcelFile(response);
+  }
+
 }
