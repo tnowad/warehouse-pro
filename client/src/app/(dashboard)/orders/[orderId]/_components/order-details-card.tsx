@@ -34,6 +34,14 @@ import _ from "lodash";
 import { createListProductsQueryOptions } from "@/hooks/queries/list-products.query";
 import { createListWarehousesQueryOptions } from "@/hooks/queries/list-warehouses.query";
 
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 type OrderDetailsCardProps = {
   orderId: string;
 };
@@ -52,14 +60,14 @@ export function OrderDetailsCard({ orderId }: OrderDetailsCardProps) {
   const listProductsQuery = useQuery(
     createListProductsQueryOptions({
       ids: _.uniq(_.map(getOrderItemsQuery.data?.items, "productId")),
-      pageSize: getOrderItemsQuery.data?.pageSize,
+      pageSize: getOrderItemsQuery.data?.rowCount,
     }),
   );
 
   const listWarehouseQuery = useQuery(
     createListWarehousesQueryOptions({
       ids: _.uniq(_.map(getOrderItemsQuery.data?.items, "warehouseId")),
-      pageSize: getOrderItemsQuery.data?.pageSize,
+      pageSize: getOrderItemsQuery.data?.rowCount,
     }),
   );
 
@@ -146,20 +154,44 @@ export function OrderDetailsCard({ orderId }: OrderDetailsCardProps) {
             <div>Shipping Address:</div>
             <div>{data?.shippingAddress}</div>
           </div>
-
           <div>
             <div>Items:</div>
-            <div className="space-y-2">
-              {getOrderItemsQuery.data?.items?.map((item) => (
-                <div key={item.id} className="flex justify-between">
-                  <span>{item.productId}</span>
-                  <span>
-                    {item.quantity} x ${item.price}
-                  </span>
-                  <span>Total: ${item.totalPrice}</span>
-                </div>
-              ))}
-            </div>
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Product</TableHead>
+                  <TableHead>Warehouse</TableHead>
+                  <TableHead>Quantity</TableHead>
+                  <TableHead>Discount</TableHead>
+                  <TableHead>Price</TableHead>
+                  <TableHead>Total</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {getOrderItemsQuery.data?.items?.map((item) => {
+                  const productName =
+                    listProductsQuery.data?.items.find(
+                      (product) => product.id === item.productId,
+                    )?.name || item.productId;
+
+                  const warehouseName =
+                    listWarehouseQuery.data?.items.find(
+                      (warehouse) => warehouse.id === item.warehouseId,
+                    )?.name || item.warehouseId;
+
+                  return (
+                    <TableRow key={item.id}>
+                      <TableCell>{productName}</TableCell>
+                      <TableCell>{warehouseName}</TableCell>
+                      <TableCell>{item.quantity}</TableCell>
+                      <TableCell>{item.discount}</TableCell>
+                      <TableCell>${item.price}</TableCell>
+                      <TableCell>${item.totalPrice}</TableCell>
+                    </TableRow>
+                  );
+                })}
+              </TableBody>
+            </Table>
           </div>
         </div>
       </CardContent>
