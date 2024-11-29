@@ -5,6 +5,7 @@ import com.warehousepro.dto.request.inventory.ListInventoryRequest;
 import com.warehousepro.dto.response.ItemResponse;
 import com.warehousepro.dto.response.inventory.InventoryResponse;
 import com.warehousepro.entity.Inventory;
+import com.warehousepro.entity.InventoryStatus;
 import com.warehousepro.entity.Product;
 import com.warehousepro.entity.Warehouse;
 import com.warehousepro.mapstruct.InventoryMapper;
@@ -47,6 +48,26 @@ public class InventoryService {
   @Transactional
   public void deleteInventory(String id) {
     inventoryRepository.deleteById(id);
+  }
+
+  InventoryResponse checkAndUpdateInventory(String productId, String warehouseId, int quantity) {
+    var inventory =
+        inventoryRepository
+            .findByProductIdAndWarehouseId(productId, warehouseId)
+            .orElseThrow(() -> new EntityNotFoundException("Inventory not found"));
+
+    if (inventory.getStatus() == InventoryStatus.IN_ACTIVE) {
+      throw new IllegalArgumentException("Inventory is inactive");
+    }
+
+    if (inventory.getQuantity() < quantity) {
+      throw new IllegalArgumentException("Not enough quantity");
+    }
+
+    inventory.setQuantity(inventory.getQuantity() - quantity);
+    inventoryRepository.save(inventory);
+
+    return inventoryMapper.toInventoryResponse(inventory);
   }
 
   public ItemResponse<InventoryResponse> getInventories(ListInventoryRequest filterRequest) {

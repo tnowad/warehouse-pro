@@ -10,16 +10,12 @@ import com.warehousepro.dto.response.order.OrderResponse;
 import com.warehousepro.entity.Order;
 import com.warehousepro.entity.OrderItem;
 import com.warehousepro.enums.OrderStatus;
-import com.warehousepro.mapstruct.OrderItemMapper;
 import com.warehousepro.mapstruct.OrderMapper;
 import com.warehousepro.repository.OrderItemRepository;
 import com.warehousepro.repository.OrderRepository;
 import com.warehousepro.specification.OrderSpecification;
 import jakarta.transaction.Transactional;
-
 import java.util.List;
-import java.util.Set;
-import java.util.UUID;
 import java.util.stream.Collectors;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -34,7 +30,6 @@ import org.springframework.stereotype.Service;
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @RequiredArgsConstructor
 public class OrderService {
-  private final OrderItemMapper orderItemMapper;
   OrderRepository orderRepository;
   OrderMapper orderMapper;
   OrderSpecification orderSpecification;
@@ -46,25 +41,23 @@ public class OrderService {
     if (request.getItems() == null || request.getItems().isEmpty()) {
       throw new IllegalArgumentException("orderItem must not be empty");
     }
-    Order order = orderMapper.toOrder(request);
+    final Order order = orderRepository.save(orderMapper.toOrder(request));
 
-    double price = 0;
-    int quantity = 0;
-    double discount = 0;
-    double total;
+    var orderItems =
+        request.getItems().stream()
+            .map(
+                item ->
+                    orderItemService.create(
+                        order,
+                        new CreateOrderItemRequest(
+                            item.getProductId(),
+                            item.getWarehouseId(),
+                            item.getQuantity(),
+                            item.getPrice(),
+                            item.getDiscount())))
+            .toList();
 
-    order = orderRepository.save(order);
-
-    for(CreateOrderItemRequest item : request.getItems()){
-      orderItemService.create(item , order);
-      price += item.getPrice();
-      quantity +=  item.getQuantity();
-      discount += item.getDiscount();
-    }
-
-    // set order total
-    total = price * quantity - discount;
-    order.setTotalAmount(total);
+    order.setTotalAmount(orderItems.stream().mapToDouble(OrderItem::getTotalPrice).sum());
 
     orderRepository.save(order);
 
@@ -99,7 +92,7 @@ public class OrderService {
         .build();
   }
 
-  public List<Order> getAllListOrder(){
+  public List<Order> getAllListOrder() {
     return orderRepository.findAll();
   }
 
@@ -126,10 +119,11 @@ public class OrderService {
     return orderMapper.toOrderResponse(order);
   }
 
-  public List<OrderResponse> exportExcel(){
-    return orderRepository.findAll(Sort.by("createdAt")).stream().map(orderMapper::toOrderResponse).collect(Collectors.toList());
+  public List<OrderResponse> exportExcel() {
+    return orderRepository.findAll(Sort.by("createdAt")).stream()
+        .map(orderMapper::toOrderResponse)
+        .collect(Collectors.toList());
   }
-
 
   @Transactional
   public void delete(String id) {

@@ -1,6 +1,7 @@
 package com.warehousepro.repository;
 
 import com.warehousepro.entity.Inventory;
+import java.util.Optional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -15,4 +16,6 @@ public interface InventoryRepository
 
   @Query("select invent from Inventory invent where invent.product.id = :product_id")
   Page<Inventory> getListByProductId(@Param("product_id") String id, Pageable pageable);
+
+  Optional<Inventory> findByProductIdAndWarehouseId(String productId, String warehouseId);
 }

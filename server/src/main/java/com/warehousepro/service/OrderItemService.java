@@ -25,19 +25,30 @@ import org.springframework.stereotype.Service;
 public class OrderItemService {
   OrderItemMapper mapper;
   OrderItemRepository repository;
+  InventoryService inventoryService;
   ProductRepository productRepository;
   WareHouseRepository wareHouseRepository;
 
   @Transactional
-  public OrderItem create(CreateOrderItemRequest request , Order order) {
+  public OrderItem create(Order order, CreateOrderItemRequest request) {
     OrderItem orderItem = mapper.toOrderItem(request);
 
     Product product = productRepository.findById(request.getProductId());
     Warehouse warehouse = wareHouseRepository.findById(request.getWarehouseId()).orElseThrow();
 
+    var total =
+        request.getPrice() * request.getQuantity() - request.getDiscount() * request.getQuantity();
+    if (total < 0) {
+      total = 0.0;
+    }
+
     orderItem.setProduct(product);
     orderItem.setWarehouse(warehouse);
     orderItem.setOrder(order);
+    orderItem.setTotalPrice(total);
+
+    inventoryService.checkAndUpdateInventory(
+        product.getId(), warehouse.getId(), request.getQuantity());
 
     repository.save(orderItem);
     return orderItem;

@@ -1,9 +1,8 @@
 package com.warehousepro.dto.response.order;
 
-import java.util.Date;
-
 import com.warehousepro.enums.OrderStatus;
 import com.warehousepro.enums.PaymentStatus;
+import java.util.Date;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
