@@ -2,6 +2,10 @@ package com.warehousepro.specification;
 
 import com.warehousepro.dto.request.inventory.ListInventoryRequest;
 import com.warehousepro.entity.Inventory;
+import com.warehousepro.entity.Product;
+import com.warehousepro.entity.Warehouse;
+import jakarta.persistence.criteria.Join;
+import jakarta.persistence.criteria.JoinType;
 import jakarta.persistence.criteria.Order;
 import jakarta.persistence.criteria.Predicate;
 import java.util.ArrayList;
@@ -61,12 +65,33 @@ public class InventorySpecification {
             : criteriaBuilder.conjunction();
   }
 
+  public static Specification<Inventory> hasWarehouseNames(List<String> warehouseNames) {
+    return (root, query, criteriaBuilder) -> {
+      if (warehouseNames != null && !warehouseNames.isEmpty()) {
+        Join<Inventory, Warehouse> warehouseJoin = root.join("warehouse");
+        return warehouseJoin.get("name").in(warehouseNames);
+      }
+      return criteriaBuilder.conjunction();
+    };
+  }
+
+
   // Filter by productIds
   public Specification<Inventory> hasProductIds(List<String> productIds) {
     return (root, query, criteriaBuilder) ->
         productIds != null && !productIds.isEmpty()
             ? root.get("productId").in(productIds)
             : criteriaBuilder.conjunction();
+  }
+
+  public static Specification<Inventory> hasProductNames(List<String> productNames) {
+    return (root, query, criteriaBuilder) -> {
+      if (productNames != null && !productNames.isEmpty()) {
+        Join<Inventory, Product> productJoin = root.join("product");
+        return productJoin.get("name").in(productNames);
+      }
+      return criteriaBuilder.conjunction();
+    };
   }
 
   // Combine all filters into one Specification
@@ -109,11 +134,22 @@ public class InventorySpecification {
                 .toPredicate(root, query, criteriaBuilder));
       }
 
+      // Apply filters for warehouseNames
+      if (filterRequest.getWarehouseNames() != null && !filterRequest.getWarehouseNames().isEmpty()) {
+        predicates.add(hasWarehouseNames(filterRequest.getWarehouseNames()).toPredicate(root, query, criteriaBuilder));
+      }
+
       // Apply filters for productIds
       if (filterRequest.getProductIds() != null && !filterRequest.getProductIds().isEmpty()) {
         predicates.add(
             hasProductIds(filterRequest.getProductIds()).toPredicate(root, query, criteriaBuilder));
       }
+
+      // Apply filters for warehouseNames
+      if (filterRequest.getProductNames() != null && !filterRequest.getProductNames().isEmpty()) {
+        predicates.add(hasProductNames(filterRequest.getWarehouseNames()).toPredicate(root, query, criteriaBuilder));
+      }
+
 
       // Handle sorting if needed
       if (filterRequest.getSort() != null && !filterRequest.getSort().isEmpty()) {

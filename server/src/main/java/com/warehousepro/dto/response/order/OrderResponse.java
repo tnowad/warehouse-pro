@@ -1,6 +1,9 @@
 package com.warehousepro.dto.response.order;
 
 import java.util.Date;
+
+import com.warehousepro.enums.OrderStatus;
+import com.warehousepro.enums.PaymentStatus;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -13,9 +16,9 @@ import lombok.experimental.FieldDefaults;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class OrderResponse {
   String id;
-  String status;
+  OrderStatus status;
   Double totalAmount;
-  String paymentStatus;
+  PaymentStatus paymentStatus;
   String shippingAddress;
   Date createdAt;
   Date updatedAt;

@@ -20,10 +20,10 @@ public class OrderItemController {
   OrderItemService service;
   OrderItemMapper mapper;
 
-  @PostMapping
-  public ResponseEntity<OrderItemReponse> create(@RequestBody CreateOrderItemRequest request) {
-    return ResponseEntity.ok(mapper.toOrderItemReponse(service.create(request)));
-  }
+//  @PostMapping
+//  public ResponseEntity<OrderItemReponse> create(@RequestBody CreateOrderItemRequest request) {
+//    return ResponseEntity.ok(mapper.toOrderItemReponse(service.create(request , )));
+//  }
 
   @GetMapping
   public ResponseEntity<List<OrderItem>> getAll() {

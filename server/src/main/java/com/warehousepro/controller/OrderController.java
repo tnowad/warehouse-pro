@@ -11,6 +11,7 @@ import com.warehousepro.generator.OrderExcelGenerator;
 import com.warehousepro.mapstruct.OrderMapper;
 import com.warehousepro.service.OrderService;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -32,8 +33,8 @@ public class OrderController {
   OrderMapper orderMapper;
 
   @PostMapping
-  public ResponseEntity<OrderResponse> create(@RequestBody CreateOrderRequest request) {
-    return ResponseEntity.ok(orderMapper.toOrderResponse(orderService.create(request)));
+  public ResponseEntity<OrderResponse> create(@Valid @RequestBody CreateOrderRequest request) {
+    return ResponseEntity.ok(orderService.create(request));
   }
 
   @GetMapping()

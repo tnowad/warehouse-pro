@@ -2,9 +2,14 @@ package com.warehousepro.service;
 
 import com.warehousepro.dto.request.order.CreateOrderItemRequest;
 import com.warehousepro.dto.response.order.OrderItemReponse;
+import com.warehousepro.entity.Order;
 import com.warehousepro.entity.OrderItem;
+import com.warehousepro.entity.Product;
+import com.warehousepro.entity.Warehouse;
 import com.warehousepro.mapstruct.OrderItemMapper;
 import com.warehousepro.repository.OrderItemRepository;
+import com.warehousepro.repository.ProductRepository;
+import com.warehousepro.repository.WareHouseRepository;
 import jakarta.transaction.Transactional;
 import java.util.List;
 import lombok.AccessLevel;
@@ -20,10 +25,20 @@ import org.springframework.stereotype.Service;
 public class OrderItemService {
   OrderItemMapper mapper;
   OrderItemRepository repository;
+  ProductRepository productRepository;
+  WareHouseRepository wareHouseRepository;
 
   @Transactional
-  public OrderItem create(CreateOrderItemRequest request) {
+  public OrderItem create(CreateOrderItemRequest request , Order order) {
     OrderItem orderItem = mapper.toOrderItem(request);
+
+    Product product = productRepository.findById(request.getProductId());
+    Warehouse warehouse = wareHouseRepository.findById(request.getWarehouseId()).orElseThrow();
+
+    orderItem.setProduct(product);
+    orderItem.setWarehouse(warehouse);
+    orderItem.setOrder(order);
+
     repository.save(orderItem);
     return orderItem;
   }

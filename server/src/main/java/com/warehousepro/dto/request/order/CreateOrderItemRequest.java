@@ -2,6 +2,7 @@ package com.warehousepro.dto.request.order;
 
 import com.warehousepro.entity.Order;
 import com.warehousepro.entity.Product;
+import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -13,10 +14,9 @@ import lombok.experimental.FieldDefaults;
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class CreateOrderItemRequest {
-  Integer quantity;
+  String warehouseId;
   Double price;
-  Double totalPrice;
   Double discount;
-  Order order;
-  Product product;
+  String productId;
+  Integer quantity;
 }
