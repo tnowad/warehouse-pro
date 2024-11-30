@@ -129,7 +129,7 @@ export function OrderDetailsCard({ orderId }: OrderDetailsCardProps) {
         <CardTitle>Order Details</CardTitle>
       </CardHeader>
       <CardContent>
-        <div className="space-y-4">
+        <div className="space-y-4 xl:grid grid-cols-2">
           <div>
             <div>Order ID:</div>
             <div>{data?.id}</div>
@@ -150,11 +150,12 @@ export function OrderDetailsCard({ orderId }: OrderDetailsCardProps) {
             <div>{data?.totalAmount}</div>
           </div>
 
-          <div>
+          <div className="col-span-2">
             <div>Shipping Address:</div>
             <div>{data?.shippingAddress}</div>
           </div>
-          <div>
+
+          <div className="col-span-2">
             <div>Items:</div>
             <Table>
               <TableHeader>
