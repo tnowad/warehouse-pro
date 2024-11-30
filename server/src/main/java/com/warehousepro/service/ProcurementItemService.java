@@ -27,15 +27,17 @@ public class ProcurementItemService {
   ProductRepository productRepository;
   WareHouseRepository wareHouseRepository;
   ProcurementRepository procurementRepository;
+  InventoryService inventoryService;
 
   @Transactional
-  public ProcurementItem create(CreateProcurementItemRequest request) {
+  public ProcurementItem create(Procurement procurement ,CreateProcurementItemRequest request) {
     ProcurementItem procurementItem = mapper.toProcurementItem(request);
 
-    Product product = productRepository.findById(procurementItem.getProduct().getId());
-    Warehouse warehouse = wareHouseRepository.getById(procurementItem.getWarehouse().getId());
-    Procurement procurement =
-        procurementRepository.getById(procurementItem.getProcurement().getId());
+    Product product = productRepository.findById(request.getProductId());
+    Warehouse warehouse = wareHouseRepository.getById(request.getWarehouseId());
+
+    inventoryService.checkAndUpdateInventory(request.getProductId() , request.getWarehouseId() , request.getQuantity());
+
 
     procurementItem.setProduct(product);
     procurementItem.setWarehouse(warehouse);
@@ -43,6 +45,9 @@ public class ProcurementItemService {
     repository.save(procurementItem);
     return procurementItem;
   }
+
+
+
 
   @Transactional
   public void delete(String id) {

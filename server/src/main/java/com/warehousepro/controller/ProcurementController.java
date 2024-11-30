@@ -21,7 +21,7 @@ public class ProcurementController {
   ProcurementMapper procurementMapper;
 
   @PostMapping
-  public ResponseEntity<ProcurementReponse> create(@RequestBody CreateProcurementRequest request) {
+  public ResponseEntity<ProcurementReponse> create(@RequestBody CreateProcurementRequest request ) {
     return ResponseEntity.ok(
         procurementMapper.toProcurementReponse(procurementService.create(request)));
   }

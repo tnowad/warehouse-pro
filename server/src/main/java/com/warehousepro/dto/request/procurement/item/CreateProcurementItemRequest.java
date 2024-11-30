@@ -14,7 +14,6 @@ import lombok.experimental.FieldDefaults;
 public class CreateProcurementItemRequest {
   Integer quantity;
   Double price;
-  Warehouse warehouse;
-  Product product;
-  Procurement procurement;
+  String warehouseId;
+  String productId;
 }
