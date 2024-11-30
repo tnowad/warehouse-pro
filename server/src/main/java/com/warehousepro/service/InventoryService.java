@@ -50,7 +50,8 @@ public class InventoryService {
     inventoryRepository.deleteById(id);
   }
 
-  InventoryResponse checkAndUpdateInventory(String productId, String warehouseId, int quantity) {
+  public InventoryResponse checkAndUpdateInventory(
+      String productId, String warehouseId, int quantity) {
     var inventory =
         inventoryRepository
             .findByProductIdAndWarehouseId(productId, warehouseId)
@@ -60,11 +61,17 @@ public class InventoryService {
       throw new IllegalArgumentException("Inventory is inactive");
     }
 
-    if (inventory.getQuantity() < quantity) {
-      throw new IllegalArgumentException("Not enough quantity");
+    if (quantity > 0) {
+      if (inventory.getQuantity() < quantity) {
+        throw new IllegalArgumentException("Not enough quantity in inventory");
+      }
+      inventory.setQuantity(inventory.getQuantity() - quantity);
+    } else if (quantity < 0) {
+      inventory.setQuantity(inventory.getQuantity() + Math.abs(quantity));
+    } else {
+      throw new IllegalArgumentException("Quantity change cannot be zero");
     }
 
-    inventory.setQuantity(inventory.getQuantity() - quantity);
     inventoryRepository.save(inventory);
 
     return inventoryMapper.toInventoryResponse(inventory);

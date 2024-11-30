@@ -1,6 +1,7 @@
 package com.warehousepro.service;
 
 import com.warehousepro.dto.request.order.CreateOrderItemRequest;
+import com.warehousepro.dto.request.order.UpdateOrderItemRequest;
 import com.warehousepro.dto.response.order.OrderItemReponse;
 import com.warehousepro.entity.Order;
 import com.warehousepro.entity.OrderItem;
@@ -69,5 +70,41 @@ public class OrderItemService {
   @Transactional
   public void delete(String id) {
     repository.deleteById(id);
+  }
+
+  @Transactional
+  public void update(UpdateOrderItemRequest updateOrderItemRequest) {
+    var id = updateOrderItemRequest.getId();
+    OrderItem orderItem =
+        repository.findById(id).orElseThrow(() -> new RuntimeException("Order item not found"));
+
+    Product product = orderItem.getProduct();
+    Warehouse warehouse = orderItem.getWarehouse();
+
+    if (updateOrderItemRequest.getQuantity() <= 0) {
+      throw new IllegalArgumentException("Quantity must be greater than zero.");
+    }
+
+    int quantityDifference = updateOrderItemRequest.getQuantity() - orderItem.getQuantity();
+
+    if (quantityDifference != 0) {
+      inventoryService.checkAndUpdateInventory(
+          product.getId(), warehouse.getId(), quantityDifference);
+    }
+
+    double total =
+        updateOrderItemRequest.getPrice() * updateOrderItemRequest.getQuantity()
+            - updateOrderItemRequest.getDiscount() * updateOrderItemRequest.getQuantity();
+
+    if (total < 0) {
+      total = 0.0;
+    }
+
+    orderItem.setPrice(updateOrderItemRequest.getPrice());
+    orderItem.setQuantity(updateOrderItemRequest.getQuantity());
+    orderItem.setDiscount(updateOrderItemRequest.getDiscount());
+    orderItem.setTotalPrice(total);
+
+    repository.save(orderItem);
   }
 }

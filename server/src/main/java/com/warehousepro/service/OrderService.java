@@ -115,6 +115,36 @@ public class OrderService {
       order.setShippingAddress(request.getShippingAddress());
     if (request.getPaymentStatus() != null) order.setPaymentStatus(request.getPaymentStatus());
 
+    request.getItems().stream()
+        .forEach(
+            item -> {
+              switch (item.getType()) {
+                case CREATE:
+                  orderItemService.create(
+                      order,
+                      new CreateOrderItemRequest(
+                          item.getProductId(),
+                          item.getWarehouseId(),
+                          item.getQuantity(),
+                          item.getPrice(),
+                          item.getDiscount()));
+                  break;
+                case UPDATE:
+                  orderItemService.update(item);
+                  break;
+                case DELETE:
+                  orderItemService.delete(item.getId());
+                  break;
+                default:
+                  break;
+              }
+            });
+
+    order.setTotalAmount(
+        orderItemRepository.findAllByOrderId(id).stream()
+            .mapToDouble(OrderItem::getTotalPrice)
+            .sum());
+
     orderRepository.save(order);
     return orderMapper.toOrderResponse(order);
   }

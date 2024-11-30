@@ -3,6 +3,11 @@ package com.warehousepro.generator;
 import com.warehousepro.entity.Order;
 import jakarta.servlet.ServletOutputStream;
 import jakarta.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 import org.apache.poi.ss.usermodel.Cell;
@@ -11,14 +16,6 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.usermodel.XSSFFont;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-
-import java.io.IOException;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.List;
-
-
 
 @Data
 @NoArgsConstructor
@@ -74,7 +71,6 @@ public class OrderExcelGenerator {
     cell.setCellStyle(style);
   }
 
-
   private void write() {
     int rowCount = 1;
     CellStyle style = workbook.createCellStyle();
@@ -86,9 +82,17 @@ public class OrderExcelGenerator {
       Row row = sheet.createRow(rowCount++);
       int columnCount = 0;
       createCell(row, columnCount++, record.getId(), style);
-      createCell(row, columnCount++, record.getStatus() != null ? record.getStatus().toString() : "", style);
+      createCell(
+          row,
+          columnCount++,
+          record.getStatus() != null ? record.getStatus().toString() : "",
+          style);
       createCell(row, columnCount++, record.getTotalAmount(), style);
-      createCell(row, columnCount++, record.getPaymentStatus() != null ? record.getPaymentStatus().toString() : "", style);
+      createCell(
+          row,
+          columnCount++,
+          record.getPaymentStatus() != null ? record.getPaymentStatus().toString() : "",
+          style);
       createCell(row, columnCount++, record.getShippingAddress(), style);
       createCell(row, columnCount++, record.getCreatedAt(), style);
       createCell(row, columnCount++, record.getUpdatedAt(), style);
@@ -103,7 +107,4 @@ public class OrderExcelGenerator {
     workbook.close();
     outputStream.close();
   }
-
-
-
 }

@@ -3,6 +3,11 @@ package com.warehousepro.generator;
 import com.warehousepro.entity.Order;
 import com.warehousepro.enums.OrderStatus;
 import com.warehousepro.enums.PaymentStatus;
+import java.io.IOException;
+import java.io.InputStream;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
@@ -13,13 +18,6 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.*;
-
 @Slf4j
 @Data
 @Builder
@@ -27,7 +25,9 @@ import java.util.*;
 public class OrderExcelUtility {
 
   public static String TYPE = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
-  static String[] HEADERs = { "ID", "Status", "Total Amount", "Payment Status", "Shipping Address", "Created At", "Updated At" };
+  static String[] HEADERs = {
+    "ID", "Status", "Total Amount", "Payment Status", "Shipping Address", "Created At", "Updated At"
+  };
   static String SHEET = "Order";
 
   public static boolean hasExcelFormat(MultipartFile file) {
@@ -80,7 +80,8 @@ public class OrderExcelUtility {
               // Assuming the cell contains a date
               try {
                 String createdAtString = currentCell.getStringCellValue();
-                Date createdAt = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS").parse(createdAtString);
+                Date createdAt =
+                    new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS").parse(createdAtString);
                 order.setCreatedAt(createdAt);
               } catch (ParseException e) {
                 e.printStackTrace();
@@ -92,7 +93,8 @@ public class OrderExcelUtility {
               // Assuming the cell contains a date
               try {
                 String updatedAtString = currentCell.getStringCellValue();
-                Date updatedAt = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS").parse(updatedAtString);
+                Date updatedAt =
+                    new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS").parse(updatedAtString);
                 order.setCreatedAt(updatedAt);
               } catch (ParseException e) {
                 e.printStackTrace();
@@ -104,7 +106,6 @@ public class OrderExcelUtility {
           }
           cellIdx++;
         }
-
 
         orderList.add(order);
       }

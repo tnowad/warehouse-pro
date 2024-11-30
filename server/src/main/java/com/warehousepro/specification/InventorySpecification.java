@@ -5,7 +5,6 @@ import com.warehousepro.entity.Inventory;
 import com.warehousepro.entity.Product;
 import com.warehousepro.entity.Warehouse;
 import jakarta.persistence.criteria.Join;
-import jakarta.persistence.criteria.JoinType;
 import jakarta.persistence.criteria.Order;
 import jakarta.persistence.criteria.Predicate;
 import java.util.ArrayList;
@@ -75,7 +74,6 @@ public class InventorySpecification {
     };
   }
 
-
   // Filter by productIds
   public Specification<Inventory> hasProductIds(List<String> productIds) {
     return (root, query, criteriaBuilder) ->
@@ -135,8 +133,11 @@ public class InventorySpecification {
       }
 
       // Apply filters for warehouseNames
-      if (filterRequest.getWarehouseNames() != null && !filterRequest.getWarehouseNames().isEmpty()) {
-        predicates.add(hasWarehouseNames(filterRequest.getWarehouseNames()).toPredicate(root, query, criteriaBuilder));
+      if (filterRequest.getWarehouseNames() != null
+          && !filterRequest.getWarehouseNames().isEmpty()) {
+        predicates.add(
+            hasWarehouseNames(filterRequest.getWarehouseNames())
+                .toPredicate(root, query, criteriaBuilder));
       }
 
       // Apply filters for productIds
@@ -147,9 +148,10 @@ public class InventorySpecification {
 
       // Apply filters for warehouseNames
       if (filterRequest.getProductNames() != null && !filterRequest.getProductNames().isEmpty()) {
-        predicates.add(hasProductNames(filterRequest.getWarehouseNames()).toPredicate(root, query, criteriaBuilder));
+        predicates.add(
+            hasProductNames(filterRequest.getWarehouseNames())
+                .toPredicate(root, query, criteriaBuilder));
       }
-
 
       // Handle sorting if needed
       if (filterRequest.getSort() != null && !filterRequest.getSort().isEmpty()) {

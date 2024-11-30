@@ -6,20 +6,22 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { CreateOrderForm } from "../_components/create-order-form";
+import { UpdateOrderForm } from "../../_components/update-order-form";
 import Link from "next/link";
 
-export default function Page() {
+export default async function Page({ params }: PageProps) {
+  const { orderId } = await params;
+
   return (
     <Card className="mx-auto w-full">
       <CardHeader>
-        <CardTitle>Create Order</CardTitle>
+        <CardTitle>Update Order</CardTitle>
         <CardDescription>
-          Fill out the form below to create a new order.
+          Fill out the form below to update the order.
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <CreateOrderForm />
+        <UpdateOrderForm orderId={orderId} />
       </CardContent>
       <CardFooter className="flex justify-between">
         <Link href="/orders" className="text-sm hover:text-primary">

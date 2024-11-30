@@ -12,17 +12,16 @@ import com.warehousepro.mapstruct.OrderMapper;
 import com.warehousepro.service.OrderService;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
-import lombok.AccessLevel;
-import lombok.RequiredArgsConstructor;
-import lombok.experimental.FieldDefaults;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/orders")
@@ -59,6 +58,12 @@ public class OrderController {
     return ResponseEntity.ok(orderService.getById(id));
   }
 
+  @PutMapping("/{id}")
+  public ResponseEntity<OrderResponse> updateStatus(
+      @PathVariable("id") String id, @RequestBody UpdateOrderRequest request) {
+    return ResponseEntity.ok(orderService.update(id, request));
+  }
+
   @GetMapping("/{id}/order-items")
   public ResponseEntity<ItemResponse<OrderItemReponse>> getItems(@PathVariable("id") String id) {
     return ResponseEntity.ok(orderService.getOrderItems(id));
@@ -84,5 +89,4 @@ public class OrderController {
     OrderExcelGenerator generator = new OrderExcelGenerator(listOfOrders);
     generator.generateExcelFile(response);
   }
-
 }
