@@ -1,15 +1,9 @@
 package com.warehousepro.service;
 
 import com.warehousepro.dto.request.procurement.item.CreateProcurementItemRequest;
-import com.warehousepro.entity.Procurement;
-import com.warehousepro.entity.ProcurementItem;
-import com.warehousepro.entity.Product;
-import com.warehousepro.entity.Warehouse;
+import com.warehousepro.entity.*;
 import com.warehousepro.mapstruct.ProcurementItemMapper;
-import com.warehousepro.repository.ProcurementItemRepository;
-import com.warehousepro.repository.ProcurementRepository;
-import com.warehousepro.repository.ProductRepository;
-import com.warehousepro.repository.WareHouseRepository;
+import com.warehousepro.repository.*;
 import jakarta.transaction.Transactional;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -28,10 +22,15 @@ public class ProcurementItemService {
   WareHouseRepository wareHouseRepository;
   ProcurementRepository procurementRepository;
   InventoryService inventoryService;
+  SupplierProductRepository supplierProductRepository;
 
   @Transactional
-  public ProcurementItem create(Procurement procurement ,CreateProcurementItemRequest request) {
+  public ProcurementItem create(Supplier supplier, Procurement procurement , CreateProcurementItemRequest request) {
     ProcurementItem procurementItem = mapper.toProcurementItem(request);
+
+    if (!supplierProductRepository.existsBySupplierIdAndProductId(supplier.getId() , request.getProductId())){
+      throw new RuntimeException("The product not in supplier");
+    }
 
     Product product = productRepository.findById(request.getProductId());
     Warehouse warehouse = wareHouseRepository.getById(request.getWarehouseId());

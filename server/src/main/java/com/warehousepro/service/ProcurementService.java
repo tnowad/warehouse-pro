@@ -33,7 +33,7 @@ public class ProcurementService {
     final Procurement procurement = procurementRepository.save(procurementMapper.toProcurement(request));
 
     var procurementItem = request.getProcurementItemRequests().stream().map(
-      itemRequest -> procurementItemService.create( procurement,
+      itemRequest -> procurementItemService.create(  request.getSupplier(), procurement,
         new CreateProcurementItemRequest(itemRequest.getQuantity() , itemRequest.getPrice()
           , itemRequest.getWarehouseId(), itemRequest.getProductId() )
       )

@@ -20,11 +20,11 @@ public class ProcurementItemController {
   ProcurementItemService service;
   ProcurementItemMapper mapper;
 
-  @PostMapping
-  public ResponseEntity<ProcurementItemResponse> create(
-      @RequestBody CreateProcurementItemRequest request) {
-    return ResponseEntity.ok(mapper.toProcurementItemResponse(service.create(request)));
-  }
+//  @PostMapping
+//  public ResponseEntity<ProcurementItemResponse> create(
+//      @RequestBody CreateProcurementItemRequest request) {
+//    return ResponseEntity.ok(mapper.toProcurementItemResponse(service.create(request)));
+//  }
 
   @DeleteMapping("/{id}")
   public ResponseEntity<String> delete(@PathVariable("id") String id) {
