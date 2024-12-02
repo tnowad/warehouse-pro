@@ -1,7 +1,6 @@
 package com.warehousepro.dto.request.supplierproduct;
 
 import java.util.List;
-
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -22,7 +21,9 @@ public class ListSupplierProductRequest {
   List<String> ids;
   List<String> supplierIds;
   List<String> productIds;
-  String leadTimeDays;
-  String price;
+  Integer leadTimeDays;
+  Double price;
   String availabilityStatus;
+  String supplierName;
+  String productName;
 }

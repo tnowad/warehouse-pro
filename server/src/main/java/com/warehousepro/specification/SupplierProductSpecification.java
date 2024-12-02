@@ -1,9 +1,9 @@
 package com.warehousepro.specification;
 
 import com.warehousepro.dto.request.supplierproduct.ListSupplierProductRequest;
-import com.warehousepro.entity.SupplierProduct;
 import com.warehousepro.entity.Product;
 import com.warehousepro.entity.Supplier;
+import com.warehousepro.entity.SupplierProduct;
 import jakarta.persistence.criteria.Join;
 import jakarta.persistence.criteria.Order;
 import jakarta.persistence.criteria.Predicate;
@@ -18,38 +18,42 @@ public class SupplierProductSpecification {
 
   // Filter by leadTimeDays
   public Specification<SupplierProduct> hasLeadTimeDays(Integer leadTimeDays) {
-    return (root, query, criteriaBuilder) -> leadTimeDays != null
-        ? criteriaBuilder.equal(root.get("leadTimeDays"), leadTimeDays)
-        : criteriaBuilder.conjunction();
+    return (root, query, criteriaBuilder) ->
+        leadTimeDays != null
+            ? criteriaBuilder.equal(root.get("leadTimeDays"), leadTimeDays)
+            : criteriaBuilder.conjunction();
   }
 
   // Filter by price
   public Specification<SupplierProduct> hasPrice(Double price) {
-    return (root, query, criteriaBuilder) -> price != null
-        ? criteriaBuilder.equal(root.get("price"), price)
-        : criteriaBuilder.conjunction();
+    return (root, query, criteriaBuilder) ->
+        price != null
+            ? criteriaBuilder.equal(root.get("price"), price)
+            : criteriaBuilder.conjunction();
   }
 
   // Filter by availabilityStatus
   public Specification<SupplierProduct> hasAvailabilityStatus(String availabilityStatus) {
-    return (root, query, criteriaBuilder) -> StringUtils.hasText(availabilityStatus)
-        ? criteriaBuilder.equal(root.get("availabilityStatus"), availabilityStatus)
-        : criteriaBuilder.conjunction();
+    return (root, query, criteriaBuilder) ->
+        StringUtils.hasText(availabilityStatus)
+            ? criteriaBuilder.equal(root.get("availabilityStatus"), availabilityStatus)
+            : criteriaBuilder.conjunction();
   }
 
   // Filter by supplierIds
   public Specification<SupplierProduct> hasSupplierIds(List<String> supplierIds) {
-    return (root, query, criteriaBuilder) -> supplierIds != null && !supplierIds.isEmpty()
-        ? root.get("supplier").get("id").in(supplierIds)
-        : criteriaBuilder.conjunction();
+    return (root, query, criteriaBuilder) ->
+        supplierIds != null && !supplierIds.isEmpty()
+            ? root.get("supplier").get("id").in(supplierIds)
+            : criteriaBuilder.conjunction();
   }
 
   // Filter by supplierNames
-  public static Specification<SupplierProduct> hasSupplierNames(List<String> supplierNames) {
+  public static Specification<SupplierProduct> hasSupplierName(String supplierName) {
     return (root, query, criteriaBuilder) -> {
-      if (supplierNames != null && !supplierNames.isEmpty()) {
+      if (supplierName != null && !supplierName.isEmpty()) {
         Join<SupplierProduct, Supplier> supplierJoin = root.join("supplier");
-        return supplierJoin.get("name").in(supplierNames);
+        return supplierJoin.get("name").in(supplierName);
       }
       return criteriaBuilder.conjunction();
     };
@@ -57,31 +61,34 @@ public class SupplierProductSpecification {
 
   // Filter by productIds
   public Specification<SupplierProduct> hasProductIds(List<String> productIds) {
-    return (root, query, criteriaBuilder) -> productIds != null && !productIds.isEmpty()
-        ? root.get("product").get("id").in(productIds)
-        : criteriaBuilder.conjunction();
+    return (root, query, criteriaBuilder) ->
+        productIds != null && !productIds.isEmpty()
+            ? root.get("product").get("id").in(productIds)
+            : criteriaBuilder.conjunction();
   }
 
   // Filter by productNames
-  public static Specification<SupplierProduct> hasProductNames(List<String> productNames) {
+  public static Specification<SupplierProduct> hasProductName(String productName) {
     return (root, query, criteriaBuilder) -> {
-      if (productNames != null && !productNames.isEmpty()) {
+      if (productName != null && !productName.isEmpty()) {
         Join<SupplierProduct, Product> productJoin = root.join("product");
-        return productJoin.get("name").in(productNames);
+        return productJoin.get("name").in(productName);
       }
       return criteriaBuilder.conjunction();
     };
   }
 
   // Combine all filters into one Specification
-  public Specification<SupplierProduct> getFilterSpecification(ListSupplierProductRequest filterRequest) {
+  public Specification<SupplierProduct> getFilterSpecification(
+      ListSupplierProductRequest filterRequest) {
     return (root, query, criteriaBuilder) -> {
       List<Predicate> predicates = new ArrayList<>();
 
       // Apply filters based on the request fields
       if (filterRequest.getLeadTimeDays() != null) {
         predicates.add(
-            hasLeadTimeDays(filterRequest.getLeadTimeDays()).toPredicate(root, query, criteriaBuilder));
+            hasLeadTimeDays(filterRequest.getLeadTimeDays())
+                .toPredicate(root, query, criteriaBuilder));
       }
 
       if (filterRequest.getPrice() != null) {
@@ -103,9 +110,9 @@ public class SupplierProductSpecification {
       }
 
       // Apply filters for supplierNames
-      if (filterRequest.getSupplierNames() != null && !filterRequest.getSupplierNames().isEmpty()) {
+      if (filterRequest.getSupplierName() != null && !filterRequest.getSupplierName().isEmpty()) {
         predicates.add(
-            hasSupplierNames(filterRequest.getSupplierNames())
+            hasSupplierName(filterRequest.getSupplierName())
                 .toPredicate(root, query, criteriaBuilder));
       }
 
@@ -116,9 +123,9 @@ public class SupplierProductSpecification {
       }
 
       // Apply filters for productNames
-      if (filterRequest.getProductNames() != null && !filterRequest.getProductNames().isEmpty()) {
+      if (filterRequest.getProductName() != null && !filterRequest.getProductName().isEmpty()) {
         predicates.add(
-            hasProductNames(filterRequest.getProductNames())
+            hasProductName(filterRequest.getProductName())
                 .toPredicate(root, query, criteriaBuilder));
       }
 
@@ -135,8 +142,9 @@ public class SupplierProductSpecification {
             case "leadTimeDays":
             case "price":
             case "availabilityStatus":
-              org.springframework.data.domain.Sort.Direction sortDirection = (sortFieldAndDirection.length > 1
-                  && "desc".equalsIgnoreCase(sortFieldAndDirection[1]))
+              org.springframework.data.domain.Sort.Direction sortDirection =
+                  (sortFieldAndDirection.length > 1
+                          && "desc".equalsIgnoreCase(sortFieldAndDirection[1]))
                       ? org.springframework.data.domain.Sort.Direction.DESC
                       : org.springframework.data.domain.Sort.Direction.ASC;
 
