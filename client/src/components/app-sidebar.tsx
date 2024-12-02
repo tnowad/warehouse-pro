@@ -153,22 +153,22 @@ const mainNav: {
     items: [
       {
         title: "Suppliers",
-        url: "/procurement/suppliers",
+        url: "/suppliers",
         permission: "PROCUREMENT_SUPPLIER_LIST",
       },
       {
         title: "Create Supplier",
-        url: "/procurement/suppliers/new",
+        url: "/suppliers/new",
         permission: "PROCUREMENT_SUPPLIER_CREATE",
       },
       {
         title: "Purchase Orders",
-        url: "/procurement/purchase-orders",
+        url: "/purchase-orders",
         permission: "PROCUREMENT_ORDER_LIST",
       },
       {
         title: "Create Purchase Order",
-        url: "/procurement/purchase-orders/new",
+        url: "/purchase-orders/new",
         permission: "PROCUREMENT_ORDER_CREATE",
       },
     ],
