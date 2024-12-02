@@ -2,6 +2,7 @@ package com.warehousepro.service;
 
 import com.warehousepro.dto.request.supplier.CreateSupplierRequest;
 import com.warehousepro.dto.request.supplier.ListSupplierRequest;
+import com.warehousepro.dto.request.supplier.UpdateSupplierRequest;
 import com.warehousepro.dto.response.ItemResponse;
 import com.warehousepro.dto.response.supplier.SupplierResponse;
 import com.warehousepro.entity.Supplier;
@@ -53,5 +54,18 @@ public class SupplierService {
   @Transactional
   public void delete(String id) {
     supplierRepository.deleteById(id);
+  }
+
+  public SupplierResponse get(String supplierId) {
+    return supplierMapper.toSupplierResponse(supplierRepository.findById(supplierId).get());
+  }
+
+  public SupplierResponse update(String supplierId, UpdateSupplierRequest request) {
+    Supplier supplier = supplierRepository.findById(supplierId).get();
+    supplier.setName(request.getName());
+    supplier.setContact(request.getContact());
+    supplier.setAddress(request.getAddress());
+    supplierRepository.save(supplier);
+    return supplierMapper.toSupplierResponse(supplier);
   }
 }

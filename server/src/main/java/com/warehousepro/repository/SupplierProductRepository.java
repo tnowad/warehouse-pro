@@ -7,5 +7,4 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface SupplierProductRepository extends JpaRepository<SupplierProduct, String> {
   boolean existsBySupplierIdAndProductId(String supplierId, String productId);
-
 }

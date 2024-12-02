@@ -8,7 +8,7 @@ import org.mapstruct.Mapping;
 
 @Mapper(componentModel = "spring")
 public interface ProcurementMapper {
-  
+
   @Mapping(target = "totalCost", ignore = true)
   Procurement toProcurement(CreateProcurementRequest request);
 

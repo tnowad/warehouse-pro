@@ -25,18 +25,20 @@ public class ProcurementItemService {
   SupplierProductRepository supplierProductRepository;
 
   @Transactional
-  public ProcurementItem create(Supplier supplier, Procurement procurement , CreateProcurementItemRequest request) {
+  public ProcurementItem create(
+      Supplier supplier, Procurement procurement, CreateProcurementItemRequest request) {
     ProcurementItem procurementItem = mapper.toProcurementItem(request);
 
-    if (!supplierProductRepository.existsBySupplierIdAndProductId(supplier.getId() , request.getProductId())){
+    if (!supplierProductRepository.existsBySupplierIdAndProductId(
+        supplier.getId(), request.getProductId())) {
       throw new RuntimeException("The product not in supplier");
     }
 
     Product product = productRepository.findById(request.getProductId());
     Warehouse warehouse = wareHouseRepository.getById(request.getWarehouseId());
 
-    inventoryService.checkAndUpdateInventory(request.getProductId() , request.getWarehouseId() , request.getQuantity());
-
+    inventoryService.checkAndUpdateInventory(
+        request.getProductId(), request.getWarehouseId(), request.getQuantity());
 
     procurementItem.setProduct(product);
     procurementItem.setWarehouse(warehouse);
@@ -44,9 +46,6 @@ public class ProcurementItemService {
     repository.save(procurementItem);
     return procurementItem;
   }
-
-
-
 
   @Transactional
   public void delete(String id) {

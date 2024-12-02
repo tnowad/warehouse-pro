@@ -2,6 +2,7 @@ package com.warehousepro.controller;
 
 import com.warehousepro.dto.request.supplier.CreateSupplierRequest;
 import com.warehousepro.dto.request.supplier.ListSupplierRequest;
+import com.warehousepro.dto.request.supplier.UpdateSupplierRequest;
 import com.warehousepro.dto.response.ItemResponse;
 import com.warehousepro.dto.response.supplier.SupplierResponse;
 import com.warehousepro.mapstruct.SupplierMapper;
@@ -36,5 +37,16 @@ public class SupplierController {
   public ResponseEntity<String> delete(@PathVariable("id") String id) {
     supplierService.delete(id);
     return ResponseEntity.ok("Xóa thành công");
+  }
+
+  @GetMapping("/{supplierId}")
+  public ResponseEntity<SupplierResponse> get(@PathVariable("supplierId") String supplierId) {
+    return ResponseEntity.ok(supplierService.get(supplierId));
+  }
+
+  @PutMapping("/{supplierId}")
+  public ResponseEntity<SupplierResponse> update(
+      @PathVariable("supplierId") String supplierId, @RequestBody UpdateSupplierRequest request) {
+    return ResponseEntity.ok((supplierService.update(supplierId, request)));
   }
 }

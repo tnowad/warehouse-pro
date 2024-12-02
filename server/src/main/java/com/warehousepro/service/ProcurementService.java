@@ -7,13 +7,12 @@ import com.warehousepro.entity.ProcurementItem;
 import com.warehousepro.mapstruct.ProcurementMapper;
 import com.warehousepro.repository.ProcurementRepository;
 import jakarta.transaction.Transactional;
+import java.util.stream.Collectors;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-
-import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -26,18 +25,27 @@ public class ProcurementService {
 
   @Transactional
   public Procurement create(CreateProcurementRequest request) {
-    if (request.getProcurementItemRequests() == null || request.getProcurementItemRequests().isEmpty()){
+    if (request.getProcurementItemRequests() == null
+        || request.getProcurementItemRequests().isEmpty()) {
       throw new IllegalArgumentException("procurementItem must not be empty");
     }
 
-    final Procurement procurement = procurementRepository.save(procurementMapper.toProcurement(request));
+    final Procurement procurement =
+        procurementRepository.save(procurementMapper.toProcurement(request));
 
-    var procurementItem = request.getProcurementItemRequests().stream().map(
-      itemRequest -> procurementItemService.create(  request.getSupplier(), procurement,
-        new CreateProcurementItemRequest(itemRequest.getQuantity() , itemRequest.getPrice()
-          , itemRequest.getWarehouseId(), itemRequest.getProductId() )
-      )
-    ).collect(Collectors.toSet());
+    var procurementItem =
+        request.getProcurementItemRequests().stream()
+            .map(
+                itemRequest ->
+                    procurementItemService.create(
+                        request.getSupplier(),
+                        procurement,
+                        new CreateProcurementItemRequest(
+                            itemRequest.getQuantity(),
+                            itemRequest.getPrice(),
+                            itemRequest.getWarehouseId(),
+                            itemRequest.getProductId())))
+            .collect(Collectors.toSet());
 
     double totalCost = 0;
 
@@ -46,7 +54,6 @@ public class ProcurementService {
 
     procurement.setProcurementItems(procurementItem);
     procurement.setTotalCost(totalCost);
-
 
     return procurement;
   }
