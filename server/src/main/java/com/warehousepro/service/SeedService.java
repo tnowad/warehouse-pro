@@ -510,6 +510,22 @@ public class SeedService {
     }
     supplierRepository.saveAll(suppliers);
 
+    List<SupplierProduct> supplierProducts = new ArrayList<>();
+    for (var supplier : suppliers) {
+      for (var product : products) {
+        supplierProducts.add(
+            SupplierProduct.builder()
+                .supplier(supplier)
+                .product(product)
+                .leadTimeDays(faker.number().numberBetween(1, 30))
+                .price(faker.number().randomDouble(2, 100000, 5000000))
+                .availabilityStatus(faker.options().option("AVAILABLE", "OUT_OF_STOCK"))
+                .build());
+      }
+    }
+
+    supplierProductRepository.saveAll(supplierProducts);
+
     List<Order> orders = new ArrayList<>();
 
     for (int i = 0; i < 63; i++) {

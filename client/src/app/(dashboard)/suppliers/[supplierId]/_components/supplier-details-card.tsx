@@ -30,6 +30,18 @@ import { useToast } from "@/hooks/use-toast";
 import { createGetSupplierDetailsQuery as createGetSupplierDetailsQueryOptions } from "@/hooks/queries/get-supplier-details.query";
 import { useDeleteSupplierMutation } from "@/hooks/mutations/delete-supplier.mutation";
 
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { createListProductsQueryOptions } from "@/hooks/queries/list-products.query";
+import _ from "lodash";
+import { createListSuppliersQueryOptions } from "@/hooks/queries/list-suppliers.query";
+import { createListSupplierProductsQueryOptions } from "@/hooks/queries/list-supplier-products.query";
 type SupplierDetailsCardProps = {
   supplierId: string;
 };
@@ -42,6 +54,32 @@ export function SupplierDetailsCard({ supplierId }: SupplierDetailsCardProps) {
   );
 
   const deleteSupplierMutation = useDeleteSupplierMutation({ supplierId });
+
+  const listSupplierProductsQuery = useQuery(
+    createListSupplierProductsQueryOptions({
+      supplierIds: [supplierId],
+    }),
+  );
+
+  const listProductsQuery = useQuery({
+    ...createListProductsQueryOptions({
+      ids: _.uniq(_.map(listSupplierProductsQuery.data?.items, "productId")),
+      pageSize: listSupplierProductsQuery.data?.rowCount,
+    }),
+    enabled:
+      !!listSupplierProductsQuery.data?.rowCount &&
+      listSupplierProductsQuery.data?.rowCount > 0,
+  });
+
+  const listSuppliersQuery = useQuery({
+    ...createListSuppliersQueryOptions({
+      ids: _.uniq(_.map(listSupplierProductsQuery.data?.items, "supplierId")),
+      pageSize: listSupplierProductsQuery.data?.rowCount,
+    }),
+    enabled:
+      !!listSupplierProductsQuery.data?.rowCount &&
+      listSupplierProductsQuery.data?.rowCount > 0,
+  });
 
   const onDelete = () =>
     deleteSupplierMutation.mutate(undefined, {
@@ -91,7 +129,6 @@ export function SupplierDetailsCard({ supplierId }: SupplierDetailsCardProps) {
     );
   }
   const { data } = getSupplierDetailsQuery;
-
   return (
     <Card>
       <CardHeader>
@@ -118,6 +155,44 @@ export function SupplierDetailsCard({ supplierId }: SupplierDetailsCardProps) {
             <div>Address:</div>
             <div>{data?.address}</div>
           </div>
+        </div>
+        <div className="col-span-2">
+          <div>Items:</div>
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Product</TableHead>
+                <TableHead>Supplier</TableHead>
+                <TableHead>Quantity</TableHead>
+                <TableHead>Discount</TableHead>
+                <TableHead>Price</TableHead>
+                <TableHead>Total</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {listSupplierProductsQuery.data?.items?.map((item) => {
+                const supplierName = _.find(
+                  listSuppliersQuery.data?.items,
+                  (supplier) => supplier.id === item.supplierId,
+                )?.name;
+                const productName = _.find(
+                  listProductsQuery.data?.items,
+                  (product) => product.id === item.productId,
+                )?.name;
+
+                return (
+                  <TableRow key={item.id}>
+                    <TableCell>{productName}</TableCell>
+                    <TableCell>{supplierName}</TableCell>
+                    <TableCell>{item.quantity}</TableCell>
+                    <TableCell>{item.discount}</TableCell>
+                    <TableCell>${item.price}</TableCell>
+                    <TableCell>${item.totalPrice}</TableCell>
+                  </TableRow>
+                );
+              })}
+            </TableBody>
+          </Table>
         </div>
       </CardContent>
       <CardFooter className="space-x-2">
