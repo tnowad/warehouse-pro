@@ -90,6 +90,20 @@ public class UserService {
     return userRepository.findById(id).orElse(null);
   }
 
+  public UserResponse getById(String id) {
+    return userMapper.toUserResponse(
+        userRepository
+            .findById(id)
+            .orElseThrow(() -> new EntityNotFoundException("User not found")));
+  }
+
+  public UserResponse getByEmail(String email) {
+    return userMapper.toUserResponse(
+        userRepository
+            .findByEmail(email)
+            .orElseThrow(() -> new EntityNotFoundException("User not found")));
+  }
+
   @Transactional
   public void delete(String id) {
     userRepository.deleteById(id);

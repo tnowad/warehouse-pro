@@ -1,8 +1,8 @@
 spring:
   jpa:
     hibernate:
-      ddl-auto:  ${JPA_HIBERNATE_DDL_AUTO:update}
-    show-sql: true
+      ddl-auto: ${JPA_HIBERNATE_DDL_AUTO:update}
+    show-sql: false
   datasource:
     url: "jdbc:postgresql://localhost:5432/mydatabase"
     username: "myuser"
@@ -10,8 +10,8 @@ spring:
     driver-class-name: "org.postgresql.Driver"
   servlet:
     multipart:
-        max-file-size : 2MB
-        max-request-size : 2MB
+      max-file-size: 2MB
+      max-request-size: 2MB
 
 jwt:
   access:
@@ -25,6 +25,6 @@ logging:
   level:
     org:
       hibernate:
-        SQL: DEBUG
+        SQL: INFO
       springframework:
         security: DEBUG

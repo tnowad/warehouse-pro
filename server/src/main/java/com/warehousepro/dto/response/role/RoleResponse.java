@@ -13,7 +13,7 @@ import lombok.experimental.FieldDefaults;
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class RoleRespone {
+public class RoleResponse {
   String id;
   String name;
   String description;

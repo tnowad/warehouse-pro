@@ -1,5 +1,6 @@
 package com.warehousepro.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import java.time.LocalDate;
 import java.util.Set;
@@ -47,5 +48,6 @@ public class User {
       name = "users_roles",
       joinColumns = @JoinColumn(name = "user_id"),
       inverseJoinColumns = @JoinColumn(name = "role_id"))
+  @JsonIgnore
   private Set<Role> roles;
 }

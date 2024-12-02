@@ -15,15 +15,9 @@ public class ShipmentItem {
   @GeneratedValue(strategy = GenerationType.UUID)
   String id;
 
-  Integer quantity;
-
   @ManyToOne
   @JoinColumn(name = "shipment_id")
   Shipment shipment;
-
-  @ManyToOne
-  @JoinColumn(name = "warehouse_id")
-  Warehouse warehouse;
 
   @ManyToOne
   @JoinColumn(name = "order_item_id")

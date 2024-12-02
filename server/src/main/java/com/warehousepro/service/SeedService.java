@@ -20,11 +20,13 @@ import com.warehousepro.repository.SupplierRepository;
 import com.warehousepro.repository.UserRepository;
 import com.warehousepro.repository.WareHouseRepository;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -559,5 +561,35 @@ public class SeedService {
     }
 
     orderItemRepository.saveAll(orderItems);
+
+    List<Shipment> shipments = new ArrayList<>();
+    List<ShipmentItem> shipmentItems = new ArrayList<>();
+
+    for (int i = 0; i < 63; i++) {
+      var order = orders.get(faker.number().numberBetween(0, 63));
+
+      Shipment shipment =
+          Shipment.builder()
+              .status(faker.options().option(ShipmentStatus.class))
+              .trackingNumber(faker.number().digits(10).toString())
+              .shippingMethod(faker.options().option("AIR", "SEA", "LAND"))
+              .deliveryEstimate(new Date(faker.date().future(30, TimeUnit.DAYS).getTime()))
+              .carrier(faker.company().name())
+              .order(order)
+              .shipmentItems(new HashSet<>())
+              .build();
+
+      shipments.add(shipment);
+
+      for (var orderItem : order.getOrderItems()) {
+        var shipmentItem = ShipmentItem.builder().shipment(shipment).orderItem(orderItem).build();
+
+        shipmentItems.add(shipmentItem);
+      }
+    }
+
+    shipmentRepository.saveAll(shipments);
+
+    shipmentItemRepository.saveAll(shipmentItems);
   }
 }

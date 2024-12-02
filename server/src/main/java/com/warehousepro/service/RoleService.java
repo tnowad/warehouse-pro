@@ -4,14 +4,12 @@ import com.warehousepro.dto.request.role.CreateRoleRequest;
 import com.warehousepro.dto.request.role.ListRoleRequest;
 import com.warehousepro.dto.request.role.UpdateRoleRequest;
 import com.warehousepro.dto.response.ItemResponse;
-import com.warehousepro.dto.response.role.RoleRespone;
+import com.warehousepro.dto.response.role.RoleResponse;
 import com.warehousepro.entity.Permission;
 import com.warehousepro.entity.Role;
 import com.warehousepro.mapstruct.RoleMapper;
 import com.warehousepro.repository.PermissionRepository;
-import com.warehousepro.repository.ProductRepository;
 import com.warehousepro.repository.RoleRepository;
-import com.warehousepro.repository.UserRepository;
 import com.warehousepro.specification.RoleSpecification;
 import jakarta.transaction.Transactional;
 import java.util.HashSet;
@@ -29,10 +27,8 @@ import org.springframework.stereotype.Service;
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @RequiredArgsConstructor
 public class RoleService {
-  private final ProductRepository productRepository;
   RoleRepository roleRepository;
   RoleMapper roleMapper;
-  UserRepository userRepository;
   RoleSpecification roleSpecification;
   PermissionRepository permissionRepository;
 
@@ -51,7 +47,7 @@ public class RoleService {
     return role;
   }
 
-  public ItemResponse<RoleRespone> getAll(ListRoleRequest filterRequest) {
+  public ItemResponse<RoleResponse> getAll(ListRoleRequest filterRequest) {
     var spec = roleSpecification.getFilterSpecification(filterRequest);
     var pageRequest = PageRequest.of(filterRequest.getPage() - 1, filterRequest.getPageSize());
     var totalItems = roleRepository.count(spec);
@@ -59,8 +55,8 @@ public class RoleService {
     var page = filterRequest.getPage();
     var pageCount = (int) Math.ceil((double) totalItems / filterRequest.getPageSize());
 
-    return ItemResponse.<RoleRespone>builder()
-        .items(roles.stream().map(roleMapper::toRoleRespone).collect(Collectors.toList()))
+    return ItemResponse.<RoleResponse>builder()
+        .items(roles.stream().map(roleMapper::toRoleResponse).collect(Collectors.toList()))
         .rowCount(Integer.valueOf(totalItems + ""))
         .page(page)
         .pageCount(pageCount)
@@ -68,7 +64,7 @@ public class RoleService {
   }
 
   @Transactional
-  public RoleRespone update(String id, UpdateRoleRequest request) {
+  public RoleResponse update(String id, UpdateRoleRequest request) {
     Role role = roleRepository.findById(id).orElseThrow();
 
     if (request.getDescription() != null) {
@@ -91,7 +87,7 @@ public class RoleService {
     }
 
     roleRepository.save(role);
-    return roleMapper.toRoleRespone(role);
+    return roleMapper.toRoleResponse(role);
   }
 
   @Transactional
@@ -104,6 +100,11 @@ public class RoleService {
   public Set<Role> getUserRoles(String userId) {
     Set<Role> roles = roleRepository.findByUsersId(userId);
     return roles;
+  }
+
+  public Set<RoleResponse> getUserRolesResponse(String userId) {
+    Set<Role> roles = roleRepository.findByUsersId(userId);
+    return roles.stream().map(roleMapper::toRoleResponse).collect(Collectors.toSet());
   }
 
   public Role getRoleById(String id) {

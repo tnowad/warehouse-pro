@@ -4,11 +4,10 @@ import com.warehousepro.dto.request.auth.LoginRequest;
 import com.warehousepro.dto.response.auth.LoginResponse;
 import com.warehousepro.dto.response.auth.RefreshTokenResponse;
 import com.warehousepro.dto.response.auth.TokensResponse;
+import com.warehousepro.dto.response.auth.UserResponse;
 import com.warehousepro.entity.PermissionName;
-import com.warehousepro.entity.User;
 import com.warehousepro.exception.EmailNotFoundException;
 import com.warehousepro.exception.IncorrectPasswordException;
-import com.warehousepro.mapstruct.UserMapper;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.AccessLevel;
@@ -30,30 +29,27 @@ public class AuthenticationService {
   RoleService roleService;
   PermissionService permissionService;
   BCryptPasswordEncoder passwordEncoder;
-  UserMapper userMapper;
 
   public LoginResponse login(LoginRequest request) {
     try {
-      var user = userService.getUserByEmail(request.getEmail());
+      var user = userService.getByEmail(request.getEmail());
 
       if (user == null) {
+        log.warn("Login attempt failed: User not found for email {}", request.getEmail());
         throw new EmailNotFoundException("User not found");
       }
 
       if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
+        log.warn("Login attempt failed: Incorrect password for email {}", request.getEmail());
         throw new IncorrectPasswordException("Incorrect password");
       }
 
-      String refreshToken;
-      String accessToken;
+      String refreshToken = tokenService.generateRefreshToken(user.getId());
+      String accessToken = tokenService.generateAccessToken(user);
 
-      refreshToken = tokenService.generateRefreshToken(user.getId());
-      accessToken = tokenService.generateAccessToken(user);
+      log.info("User {} logged in successfully", request.getEmail());
 
-      return LoginResponse.builder()
-          .user(userMapper.toUserResponse(user))
-          .tokens(new TokensResponse(accessToken, refreshToken))
-          .build();
+      return LoginResponse.builder().tokens(new TokensResponse(accessToken, refreshToken)).build();
     } catch (EmailNotFoundException | IncorrectPasswordException e) {
       log.warn("Error while logging in: {}", e.getMessage());
       throw e;
@@ -69,7 +65,7 @@ public class AuthenticationService {
     }
 
     var userId = decodedJWT.getSubject();
-    User user = userService.getUserById(userId);
+    UserResponse user = userService.getById(userId);
     var newAccessToken = tokenService.generateAccessToken(user);
 
     return RefreshTokenResponse.builder().accessToken(newAccessToken).build();

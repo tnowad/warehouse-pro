@@ -1,5 +1,6 @@
 package com.warehousepro.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 import java.util.Set;
@@ -31,7 +32,8 @@ public class Permission {
 
   @UpdateTimestamp LocalDateTime updatedAt;
 
-  @ManyToMany(mappedBy = "permissions", cascade = CascadeType.ALL)
+  @ManyToMany(mappedBy = "permissions", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+  @JsonIgnore
   private Set<Role> roles;
 
   public void addRole(Role role) {

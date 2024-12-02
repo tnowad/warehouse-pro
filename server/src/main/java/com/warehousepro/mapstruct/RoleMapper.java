@@ -2,7 +2,7 @@ package com.warehousepro.mapstruct;
 
 import com.warehousepro.dto.request.role.CreateRoleRequest;
 import com.warehousepro.dto.response.role.GetUserRolesItemResponse;
-import com.warehousepro.dto.response.role.RoleRespone;
+import com.warehousepro.dto.response.role.RoleResponse;
 import com.warehousepro.entity.Role;
 import org.mapstruct.Mapper;
 
@@ -10,7 +10,7 @@ import org.mapstruct.Mapper;
 public interface RoleMapper {
   Role toRole(CreateRoleRequest request);
 
-  RoleRespone toRoleRespone(Role role);
+  RoleResponse toRoleResponse(Role role);
 
   GetUserRolesItemResponse toItem(Role role);
 }
