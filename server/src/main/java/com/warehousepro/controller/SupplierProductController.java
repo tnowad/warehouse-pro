@@ -1,6 +1,9 @@
 package com.warehousepro.controller;
 
 import com.warehousepro.dto.request.supplierproduct.CreateSupplierProductRequest;
+import com.warehousepro.dto.request.supplierproduct.ListSupplierProductRequest;
+import com.warehousepro.dto.request.supplierproduct.ListSupplierProductRequest.ListSupplierProductRequestBuilder;
+import com.warehousepro.dto.response.ItemResponse;
 import com.warehousepro.dto.response.supplierproduct.SupplierProductResponse;
 import com.warehousepro.entity.SupplierProduct;
 import com.warehousepro.mapstruct.SupplierProductMapper;
@@ -27,8 +30,9 @@ public class SupplierProductController {
   }
 
   @GetMapping
-  public ResponseEntity<List<SupplierProduct>> getAll() {
-    return ResponseEntity.ok(service.getAll());
+  public ResponseEntity<ItemResponse<SupplierProductResponse>> listSupplierProducts(
+      @ModelAttribute ListSupplierProductRequest request) {
+    return ResponseEntity.ok(service.listSupplierProducts(request));
   }
 
   @DeleteMapping("/{id}")
