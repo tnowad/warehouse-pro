@@ -3,6 +3,8 @@ package com.warehousepro.dto.request.role;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
+import java.util.Set;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -11,4 +13,5 @@ import lombok.experimental.FieldDefaults;
 public class UpdateRoleRequest {
   String name;
   String description;
+  Set<String> permissionIds;
 }

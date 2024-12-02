@@ -34,7 +34,7 @@ public class RoleController {
     return ResponseEntity.ok(roleRespone);
   }
 
-  @PutMapping("/update/{id}")
+  @PutMapping("/{id}")
   public ResponseEntity<RoleRespone> update(
       @PathVariable String id, @RequestBody UpdateRoleRequest request) {
     return ResponseEntity.ok(roleService.update(id, request));

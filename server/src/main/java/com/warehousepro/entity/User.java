@@ -41,7 +41,7 @@ public class User {
   LocalDate updatedAt;
 
   @ManyToMany(
-      cascade = {CascadeType.PERSIST},
+      cascade = {CascadeType.ALL},
       fetch = FetchType.LAZY)
   @JoinTable(
       name = "users_roles",

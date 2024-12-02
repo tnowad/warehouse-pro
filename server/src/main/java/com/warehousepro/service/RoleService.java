@@ -5,8 +5,11 @@ import com.warehousepro.dto.request.role.ListRoleRequest;
 import com.warehousepro.dto.request.role.UpdateRoleRequest;
 import com.warehousepro.dto.response.ItemResponse;
 import com.warehousepro.dto.response.role.RoleRespone;
+import com.warehousepro.entity.Permission;
 import com.warehousepro.entity.Role;
 import com.warehousepro.mapstruct.RoleMapper;
+import com.warehousepro.repository.PermissionRepository;
+import com.warehousepro.repository.ProductRepository;
 import com.warehousepro.repository.RoleRepository;
 import com.warehousepro.repository.UserRepository;
 import com.warehousepro.specification.RoleSpecification;
@@ -25,10 +28,12 @@ import org.springframework.stereotype.Service;
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @RequiredArgsConstructor
 public class RoleService {
+  private final ProductRepository productRepository;
   RoleRepository roleRepository;
   RoleMapper roleMapper;
   UserRepository userRepository;
   RoleSpecification roleSpecification;
+  PermissionRepository permissionRepository;
 
   @Transactional
   public Role create(CreateRoleRequest request) {
@@ -63,20 +68,40 @@ public class RoleService {
 
   @Transactional
   public RoleRespone update(String id, UpdateRoleRequest request) {
-    Role role = roleRepository.findByName(id);
 
-    if (role.getDescription() != null) {
+    Role role = roleRepository.findById(id).orElseThrow();
+
+    if (request.getDescription() != null)
       role.setDescription(request.getDescription());
-    }
 
-    role.setName(request.getName());
+    if (request.getPermissionIds() != null)
+      for (String permissionId : request.getPermissionIds()) {
+        Permission permission = permissionRepository.findById(permissionId).orElseThrow();
+        if (!roleRepository.existsByRoleIdAndPermission(role.getId() , permission)) {
+          role.getPermissions().add(permission);
+        }
+      }
+
+
+
+    if (request.getName() != null)
+      role.setName(request.getName());
+
 
     roleRepository.save(role);
     return roleMapper.toRoleRespone(role);
   }
 
+
+
   @Transactional
   public void delete(String id) {
+    roleRepository.deletePermissionRolesByRoleId(id);
+
+    // Xóa mối quan hệ với User
+    roleRepository.deleteUserRolesByRoleId(id);
+
+    // Xóa Role
     roleRepository.deleteById(id);
   }
 

@@ -9,6 +9,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -26,6 +27,17 @@ public interface RoleRepository
   @Query("SELECT r FROM Role r JOIN r.users u WHERE u.id = :userId")
   List<Role> findByUserId(String userId);
 
+  @Modifying
+  @Query(value = "DELETE FROM users_roles WHERE role_id = :roleId", nativeQuery = true)
+  void deleteUserRolesByRoleId(@Param("roleId") String roleId);
+
+  @Modifying
+  @Query(value = "DELETE FROM roles_permissions WHERE role_id = :roleId", nativeQuery = true)
+  void deletePermissionRolesByRoleId(@Param("roleId") String roleId);
+
+  @Query("DELETE FROM Role r WHERE r.id = :roleId")
+  void deleteRoleById(@Param("roleId") String roleId);
+
   @Query("SELECT r FROM Role r JOIN FETCH r.permissions")
   List<Role> findAllRolesWithPermissions();
 
@@ -37,6 +49,12 @@ public interface RoleRepository
 
   @Query("SELECT r FROM Role r LEFT JOIN FETCH r.permissions WHERE r.id = :id")
   Set<Permission> findPermissionsByRolesId(String id);
+
+  @Query("SELECT CASE WHEN COUNT(r) > 0 THEN true ELSE false END " +
+    "FROM Role r JOIN r.permissions p " +
+    "WHERE r.id = :roleId AND p = :permission")
+  boolean existsByRoleIdAndPermission(@Param("roleId") String roleId, @Param("permission") Permission permission);
+
 
   @Override
   Page<Role> findAll(Specification<Role> spec, Pageable pageable);

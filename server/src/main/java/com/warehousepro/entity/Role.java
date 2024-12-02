@@ -31,14 +31,14 @@ public class Role {
 
   @UpdateTimestamp LocalDateTime updatedAt;
 
-  @ManyToMany(cascade = CascadeType.ALL)
+  @ManyToMany(cascade = CascadeType.ALL )
   @JoinTable(
       name = "roles_permissions",
       joinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"),
       inverseJoinColumns = @JoinColumn(name = "permission_id", referencedColumnName = "id"))
   Set<Permission> permissions = new HashSet<>();
 
-  @ManyToMany(mappedBy = "roles", cascade = CascadeType.PERSIST)
+  @ManyToMany(mappedBy = "roles", cascade = CascadeType.ALL)
   private Set<User> users;
 
   public void addPermission(Permission permission) {
