@@ -1,7 +1,5 @@
 package com.warehousepro.dto.response.supplierproduct;
 
-import com.warehousepro.entity.Product;
-import com.warehousepro.entity.Supplier;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
@@ -15,6 +13,6 @@ public class SupplierProductResponse {
   Integer leadTimeDays;
   Double price;
   String availabilityStatus;
-  Supplier supplier;
-  Product product;
+  String supplierId;
+  String productId;
 }
