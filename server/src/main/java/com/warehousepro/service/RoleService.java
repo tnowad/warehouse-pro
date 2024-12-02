@@ -14,7 +14,8 @@ import com.warehousepro.repository.RoleRepository;
 import com.warehousepro.repository.UserRepository;
 import com.warehousepro.specification.RoleSpecification;
 import jakarta.transaction.Transactional;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.stream.Collectors;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -37,13 +38,13 @@ public class RoleService {
 
   @Transactional
   public Role create(CreateRoleRequest request) {
-    //    if(request.getName() == null || request.getName().isEmpty()){
-    //      throw new IllegalArgumentException("Role name cannot be null or empty");
-    //    }
+    // if(request.getName() == null || request.getName().isEmpty()){
+    // throw new IllegalArgumentException("Role name cannot be null or empty");
+    // }
     //
-    //    if(roleRepository.existsById(request.getName())){
-    //      throw new RuntimeException("role is existed");
-    //    }
+    // if(roleRepository.existsById(request.getName())){
+    // throw new RuntimeException("role is existed");
+    // }
 
     Role role = roleMapper.toRole(request);
     roleRepository.save(role);
@@ -68,45 +69,40 @@ public class RoleService {
 
   @Transactional
   public RoleRespone update(String id, UpdateRoleRequest request) {
-
     Role role = roleRepository.findById(id).orElseThrow();
 
-    if (request.getDescription() != null)
+    if (request.getDescription() != null) {
       role.setDescription(request.getDescription());
+    }
 
-    if (request.getPermissionIds() != null)
+    if (request.getPermissionIds() != null) {
+      Set<Permission> updatedPermissions = new HashSet<>();
+
       for (String permissionId : request.getPermissionIds()) {
         Permission permission = permissionRepository.findById(permissionId).orElseThrow();
-        if (!roleRepository.existsByRoleIdAndPermission(role.getId() , permission)) {
-          role.getPermissions().add(permission);
-        }
+        updatedPermissions.add(permission);
       }
 
+      role.setPermissions(updatedPermissions);
+    }
 
-
-    if (request.getName() != null)
+    if (request.getName() != null) {
       role.setName(request.getName());
-
+    }
 
     roleRepository.save(role);
     return roleMapper.toRoleRespone(role);
   }
 
-
-
   @Transactional
   public void delete(String id) {
-    roleRepository.deletePermissionRolesByRoleId(id);
-
-    // Xóa mối quan hệ với User
     roleRepository.deleteUserRolesByRoleId(id);
-
-    // Xóa Role
+    roleRepository.deletePermissionRolesByRoleId(id);
     roleRepository.deleteById(id);
   }
 
-  public List<Role> getUserRoles(String userId) {
-    List<Role> roles = roleRepository.findByUserId(userId);
+  public Set<Role> getUserRoles(String userId) {
+    Set<Role> roles = roleRepository.findByUsersId(userId);
     return roles;
   }
 

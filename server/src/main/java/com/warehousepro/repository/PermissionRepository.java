@@ -21,4 +21,6 @@ public interface PermissionRepository
   Set<Permission> findDistinctByRoles_IdIn(List<String> roleIds);
 
   Set<Permission> findPermissionsByRoles_Id(String id);
+
+  Set<Permission> findAllByIdIn(Set<String> ids);
 }
