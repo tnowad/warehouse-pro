@@ -5,6 +5,7 @@ import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.warehousepro.dto.response.auth.TokensResponse;
 import com.warehousepro.dto.response.auth.UserResponse;
+import com.warehousepro.dto.response.role.RoleResponse;
 import java.util.Date;
 import java.util.StringJoiner;
 import lombok.AccessLevel;
@@ -21,6 +22,7 @@ import org.springframework.util.CollectionUtils;
 public class TokenService {
   RoleService roleService;
   UserService userService;
+  PermissionService permissionService;
   String accessSecret = "accessSecret";
   String refreshSecret = "refreshSecret";
   long accessExpiration = 1000 * 60 * 60 * 24;
@@ -44,11 +46,13 @@ public class TokenService {
   private String buildScope(UserResponse user) {
     StringJoiner stringJoiner = new StringJoiner(" ");
     var roles = roleService.getUserRolesResponse(user.getId());
-    log.info("Roles for user {}: {}", user.getId(), roles);
-    if (!CollectionUtils.isEmpty(roles)) {
-      roles.forEach(
-          role -> {
-            stringJoiner.add("ROLE_" + role.getName());
+    var permissions =
+        permissionService.getPermissionNamesByRoleIds(
+            roles.stream().map(RoleResponse::getId).toList());
+    if (!CollectionUtils.isEmpty(permissions)) {
+      permissions.forEach(
+          permission -> {
+            stringJoiner.add("PERMISSION_" + permission.toString());
           });
     }
 
