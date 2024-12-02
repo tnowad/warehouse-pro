@@ -1,6 +1,6 @@
 package com.warehousepro.dto.response.shipment;
 
-import com.warehousepro.dto.response.order.OrderItemReponse;
+import com.warehousepro.dto.response.order.OrderItemResponse;
 import com.warehousepro.dto.response.warehouse.WareHouseResponse;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -15,5 +15,5 @@ public class ShipmentItemResponse {
   Integer quantity;
   ShipmentResponse shipment;
   WareHouseResponse warehouse;
-  OrderItemReponse orderItem;
+  OrderItemResponse orderItem;
 }

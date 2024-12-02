@@ -1,6 +1,5 @@
 package com.warehousepro.dto.response.returns;
 
-import com.warehousepro.dto.response.order.OrderItemReponse;
 import java.util.Date;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -17,5 +16,5 @@ public class ReturnResponse {
   Date returnDate;
   String reason;
   String status;
-  OrderItemReponse orderItem;
+  String orderItemId;
 }

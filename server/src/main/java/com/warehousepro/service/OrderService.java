@@ -5,7 +5,7 @@ import com.warehousepro.dto.request.order.CreateOrderRequest;
 import com.warehousepro.dto.request.order.ListOrderRequest;
 import com.warehousepro.dto.request.order.UpdateOrderRequest;
 import com.warehousepro.dto.response.ItemResponse;
-import com.warehousepro.dto.response.order.OrderItemReponse;
+import com.warehousepro.dto.response.order.OrderItemResponse;
 import com.warehousepro.dto.response.order.OrderResponse;
 import com.warehousepro.entity.Order;
 import com.warehousepro.entity.OrderItem;
@@ -54,7 +54,8 @@ public class OrderService {
                             item.getWarehouseId(),
                             item.getQuantity(),
                             item.getPrice(),
-                            item.getDiscount())))
+                            item.getDiscount(),
+                            item.getStatus())))
             .toList();
 
     order.setTotalAmount(orderItems.stream().mapToDouble(OrderItem::getTotalPrice).sum());
@@ -127,7 +128,8 @@ public class OrderService {
                           item.getWarehouseId(),
                           item.getQuantity(),
                           item.getPrice(),
-                          item.getDiscount()));
+                          item.getDiscount(),
+                          item.getStatus()));
                   break;
                 case UPDATE:
                   orderItemService.update(item);
@@ -160,7 +162,7 @@ public class OrderService {
     orderRepository.deleteById(id);
   }
 
-  public ItemResponse<OrderItemReponse> getOrderItems(String id) {
+  public ItemResponse<OrderItemResponse> getOrderItems(String id) {
     Order order =
         orderRepository
             .findById(id)
@@ -170,7 +172,7 @@ public class OrderService {
         orderItemRepository.findAllByOrderId(id).stream()
             .map(
                 item ->
-                    OrderItemReponse.builder()
+                    OrderItemResponse.builder()
                         .id(item.getId())
                         .orderId(item.getOrder().getId())
                         .productId(item.getProduct().getId())
@@ -179,10 +181,11 @@ public class OrderService {
                         .price(item.getPrice())
                         .totalPrice(item.getTotalPrice())
                         .discount(item.getDiscount())
+                        .status(item.getStatus())
                         .build())
             .toList();
 
-    return ItemResponse.<OrderItemReponse>builder()
+    return ItemResponse.<OrderItemResponse>builder()
         .items(items)
         .rowCount(items.size())
         .pageCount(items.size())

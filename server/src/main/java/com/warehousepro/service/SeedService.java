@@ -556,6 +556,7 @@ public class SeedService {
                 .price(faker.number().randomDouble(2, 100000, 5000000))
                 .totalPrice(faker.number().randomDouble(2, 100000, 5000000))
                 .discount(faker.number().randomDouble(2, 1000, 5000))
+                .status(OrderItemStatus.PENDING)
                 .build());
       }
     }

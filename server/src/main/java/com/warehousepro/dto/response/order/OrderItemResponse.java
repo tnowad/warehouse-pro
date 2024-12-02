@@ -1,4 +1,4 @@
-package com.warehousepro.dto.request.order;
+package com.warehousepro.dto.response.order;
 
 import com.warehousepro.entity.OrderItemStatus;
 import lombok.AccessLevel;
@@ -13,11 +13,14 @@ import lombok.experimental.FieldDefaults;
 @NoArgsConstructor
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class CreateOrderItemRequest {
+public class OrderItemResponse {
+  String id;
+  String orderId;
   String productId;
   String warehouseId;
   Integer quantity;
   Double price;
+  Double totalPrice;
   Double discount;
   OrderItemStatus status;
 }

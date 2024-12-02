@@ -42,6 +42,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { OrderItemsTable } from "./order-items-table";
 type OrderDetailsCardProps = {
   orderId: string;
 };
@@ -157,42 +158,7 @@ export function OrderDetailsCard({ orderId }: OrderDetailsCardProps) {
 
           <div className="col-span-2">
             <div>Items:</div>
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Product</TableHead>
-                  <TableHead>Warehouse</TableHead>
-                  <TableHead>Quantity</TableHead>
-                  <TableHead>Discount</TableHead>
-                  <TableHead>Price</TableHead>
-                  <TableHead>Total</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {getOrderItemsQuery.data?.items?.map((item) => {
-                  const productName =
-                    listProductsQuery.data?.items.find(
-                      (product) => product.id === item.productId,
-                    )?.name || item.productId;
-
-                  const warehouseName =
-                    listWarehouseQuery.data?.items.find(
-                      (warehouse) => warehouse.id === item.warehouseId,
-                    )?.name || item.warehouseId;
-
-                  return (
-                    <TableRow key={item.id}>
-                      <TableCell>{productName}</TableCell>
-                      <TableCell>{warehouseName}</TableCell>
-                      <TableCell>{item.quantity}</TableCell>
-                      <TableCell>{item.discount}</TableCell>
-                      <TableCell>${item.price}</TableCell>
-                      <TableCell>${item.totalPrice}</TableCell>
-                    </TableRow>
-                  );
-                })}
-              </TableBody>
-            </Table>
+            <OrderItemsTable orderId={orderId} />
           </div>
         </div>
       </CardContent>

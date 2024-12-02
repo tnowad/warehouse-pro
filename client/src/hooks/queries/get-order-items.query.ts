@@ -8,7 +8,7 @@ import {
 export function createGetOrderItemsQueryOptions(
   params: GetOrderItemsParamsSchema,
 ) {
-  const queryKey = ["get-order-items", params];
+  const queryKey = ["order-items", params];
   return queryOptions({
     queryKey,
     queryFn: () => getOrderItemsApi(params),

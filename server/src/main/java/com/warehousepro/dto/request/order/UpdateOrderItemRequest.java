@@ -1,5 +1,6 @@
 package com.warehousepro.dto.request.order;
 
+import com.warehousepro.entity.OrderItemStatus;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -19,5 +20,6 @@ public class UpdateOrderItemRequest {
   Integer quantity;
   Double price;
   Double discount;
+  OrderItemStatus status;
   UpdateOrderItemRequestType type;
 }
