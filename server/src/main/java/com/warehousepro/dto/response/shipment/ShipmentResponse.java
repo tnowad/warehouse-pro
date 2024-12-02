@@ -18,5 +18,5 @@ public class ShipmentResponse {
   String shippingMethod;
   Date deliveryEstimate;
   String carrier;
-  OrderResponse order;
+  String orderId;
 }
