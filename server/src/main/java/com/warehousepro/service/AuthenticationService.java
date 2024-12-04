@@ -83,7 +83,7 @@ public class AuthenticationService {
     if (user == null) {
       return List.of(PermissionName.AUTH_LOGIN);
     }
-    var roles = roleService.getUserRoles(userId);
+    var roles = roleService.getRolesForUser(userId);
     var permissionNames =
         new ArrayList<PermissionName>(
             permissionService.getPermissionNamesByRoleIds(

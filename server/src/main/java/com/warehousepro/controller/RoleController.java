@@ -30,20 +30,20 @@ public class RoleController {
 
   @PostMapping
   public ResponseEntity<RoleResponse> create(@RequestBody CreateRoleRequest request) {
-    RoleResponse roleRespone = roleMapper.toRoleResponse(roleService.create(request));
+    RoleResponse roleRespone = roleMapper.toRoleResponse(roleService.createRole(request));
     return ResponseEntity.ok(roleRespone);
   }
 
   @PutMapping("/{id}")
   public ResponseEntity<RoleResponse> update(
       @PathVariable String id, @RequestBody UpdateRoleRequest request) {
-    return ResponseEntity.ok(roleService.update(id, request));
+    return ResponseEntity.ok(roleService.updateRole(id, request));
   }
 
   @GetMapping
   public ResponseEntity<ItemResponse<RoleResponse>> getAll(
       @ModelAttribute ListRoleRequest listRoleRequest) {
-    return ResponseEntity.ok(roleService.getAll(listRoleRequest));
+    return ResponseEntity.ok(roleService.getRoles(listRoleRequest));
   }
 
   @GetMapping("/{id}")
@@ -58,7 +58,7 @@ public class RoleController {
 
   @DeleteMapping("/{id}")
   public ResponseEntity<String> delete(@PathVariable("id") String id) {
-    roleService.delete(id);
+    roleService.deleteRole(id);
     return ResponseEntity.ok("xóa thành công");
   }
 }

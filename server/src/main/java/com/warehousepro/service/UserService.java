@@ -173,7 +173,7 @@ public class UserService {
 
   public ItemResponse<GetUserRolesItemResponse> getUserRoles(String userId) {
     log.info("Fetching roles for user ID: {}", userId);
-    var roles = roleService.getUserRoles(userId);
+    var roles = roleService.getRolesForUser(userId);
 
     log.info("Fetched {} roles for user ID: {}", roles.size(), userId);
 

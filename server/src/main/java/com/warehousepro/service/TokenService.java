@@ -45,7 +45,7 @@ public class TokenService {
 
   private String buildScope(UserResponse user) {
     StringJoiner stringJoiner = new StringJoiner(" ");
-    var roles = roleService.getUserRolesResponse(user.getId());
+    var roles = roleService.getRoleResponsesForUser(user.getId());
     var permissions =
         permissionService.getPermissionNamesByRoleIds(
             roles.stream().map(RoleResponse::getId).toList());
