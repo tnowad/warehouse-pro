@@ -211,7 +211,7 @@ public class UserService {
       user.setName(request.getName());
     if (request.getEmail() != null)
       user.setEmail(request.getEmail());
-    if (request.getPassword() != null)
+    if (request.getPassword() != null || !request.getPassword().isEmpty())
       user.setPassword(passwordEncoder.encode(request.getPassword()));
 
     if (request.getRoleIds() != null) {
