@@ -1,11 +1,11 @@
 package com.warehousepro.controller;
 
+import com.warehousepro.dto.request.returns.CreateBulkReturnRequest;
 import com.warehousepro.dto.request.returns.CreateReturnRequest;
 import com.warehousepro.dto.request.returns.ListReturnRequest;
 import com.warehousepro.dto.response.ItemResponse;
 import com.warehousepro.dto.response.returns.ReturnResponse;
 import com.warehousepro.generator.OrderExcelUtility;
-import com.warehousepro.mapstruct.ReturnMapper;
 import com.warehousepro.service.ReturnService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -23,11 +23,16 @@ import org.springframework.web.multipart.MultipartFile;
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class ReturnController {
   ReturnService returnService;
-  ReturnMapper returnMapper;
 
   @PostMapping
   public ResponseEntity<ReturnResponse> create(@RequestBody CreateReturnRequest request) {
-    return ResponseEntity.ok(returnMapper.toReturnResponse(returnService.create(request)));
+    return ResponseEntity.ok(returnService.create(request));
+  }
+
+  @PostMapping("/bulk")
+  public ResponseEntity<ItemResponse<ReturnResponse>> createBulk(
+      @RequestBody CreateBulkReturnRequest request) {
+    return ResponseEntity.ok(returnService.createBulk(request));
   }
 
   @GetMapping

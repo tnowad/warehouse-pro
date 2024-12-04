@@ -1,5 +1,6 @@
 package com.warehousepro.dto.request.auth;
 
+import java.util.Set;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
@@ -9,7 +10,8 @@ import lombok.experimental.FieldDefaults;
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class CreateUserRequest {
-  String email;
   String name;
+  String email;
   String password;
+  Set<String> roleIds;
 }

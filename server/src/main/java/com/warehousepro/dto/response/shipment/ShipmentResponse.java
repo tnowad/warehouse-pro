@@ -1,6 +1,5 @@
 package com.warehousepro.dto.response.shipment;
 
-import com.warehousepro.dto.response.order.OrderResponse;
 import java.util.Date;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -18,5 +17,5 @@ public class ShipmentResponse {
   String shippingMethod;
   Date deliveryEstimate;
   String carrier;
-  OrderResponse order;
+  String orderId;
 }

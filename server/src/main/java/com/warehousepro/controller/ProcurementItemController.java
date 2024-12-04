@@ -1,7 +1,5 @@
 package com.warehousepro.controller;
 
-import com.warehousepro.dto.request.procurement.item.CreateProcurementItemRequest;
-import com.warehousepro.dto.response.procurement.item.ProcurementItemResponse;
 import com.warehousepro.mapstruct.ProcurementItemMapper;
 import com.warehousepro.service.ProcurementItemService;
 import lombok.AccessLevel;
@@ -20,11 +18,11 @@ public class ProcurementItemController {
   ProcurementItemService service;
   ProcurementItemMapper mapper;
 
-//  @PostMapping
-//  public ResponseEntity<ProcurementItemResponse> create(
-//      @RequestBody CreateProcurementItemRequest request) {
-//    return ResponseEntity.ok(mapper.toProcurementItemResponse(service.create(request)));
-//  }
+  //  @PostMapping
+  //  public ResponseEntity<ProcurementItemResponse> create(
+  //      @RequestBody CreateProcurementItemRequest request) {
+  //    return ResponseEntity.ok(mapper.toProcurementItemResponse(service.create(request)));
+  //  }
 
   @DeleteMapping("/{id}")
   public ResponseEntity<String> delete(@PathVariable("id") String id) {

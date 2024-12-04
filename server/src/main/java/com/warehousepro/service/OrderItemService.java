@@ -2,9 +2,10 @@ package com.warehousepro.service;
 
 import com.warehousepro.dto.request.order.CreateOrderItemRequest;
 import com.warehousepro.dto.request.order.UpdateOrderItemRequest;
-import com.warehousepro.dto.response.order.OrderItemReponse;
+import com.warehousepro.dto.response.order.OrderItemResponse;
 import com.warehousepro.entity.Order;
 import com.warehousepro.entity.OrderItem;
+import com.warehousepro.entity.OrderItemStatus;
 import com.warehousepro.entity.Product;
 import com.warehousepro.entity.Warehouse;
 import com.warehousepro.mapstruct.OrderItemMapper;
@@ -59,7 +60,7 @@ public class OrderItemService {
     return repository.findAll();
   }
 
-  public OrderItemReponse getById(String id) {
+  public OrderItemResponse getById(String id) {
     OrderItem orderItem =
         repository
             .findById(id)
@@ -105,6 +106,13 @@ public class OrderItemService {
     orderItem.setDiscount(updateOrderItemRequest.getDiscount());
     orderItem.setTotalPrice(total);
 
+    repository.save(orderItem);
+  }
+
+  public void updateStatus(String id, OrderItemStatus returned) {
+    var orderItem =
+        repository.findById(id).orElseThrow(() -> new RuntimeException("Order item not found"));
+    orderItem.setStatus(returned);
     repository.save(orderItem);
   }
 }

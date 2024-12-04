@@ -4,7 +4,7 @@ import com.warehousepro.dto.request.role.CreateRoleRequest;
 import com.warehousepro.dto.request.role.ListRoleRequest;
 import com.warehousepro.dto.request.role.UpdateRoleRequest;
 import com.warehousepro.dto.response.ItemResponse;
-import com.warehousepro.dto.response.role.RoleRespone;
+import com.warehousepro.dto.response.role.RoleResponse;
 import com.warehousepro.mapstruct.PermissionMapper;
 import com.warehousepro.mapstruct.RoleMapper;
 import com.warehousepro.service.PermissionService;
@@ -29,28 +29,28 @@ public class RoleController {
   RoleMapper roleMapper;
 
   @PostMapping
-  public ResponseEntity<RoleRespone> create(@RequestBody CreateRoleRequest request) {
-    RoleRespone roleRespone = roleMapper.toRoleRespone(roleService.create(request));
+  public ResponseEntity<RoleResponse> create(@RequestBody CreateRoleRequest request) {
+    RoleResponse roleRespone = roleMapper.toRoleResponse(roleService.createRole(request));
     return ResponseEntity.ok(roleRespone);
   }
 
   @PutMapping("/{id}")
-  public ResponseEntity<RoleRespone> update(
+  public ResponseEntity<RoleResponse> update(
       @PathVariable String id, @RequestBody UpdateRoleRequest request) {
-    return ResponseEntity.ok(roleService.update(id, request));
+    return ResponseEntity.ok(roleService.updateRole(id, request));
   }
 
   @GetMapping
-  public ResponseEntity<ItemResponse<RoleRespone>> getAll(
+  public ResponseEntity<ItemResponse<RoleResponse>> getAll(
       @ModelAttribute ListRoleRequest listRoleRequest) {
-    return ResponseEntity.ok(roleService.getAll(listRoleRequest));
+    return ResponseEntity.ok(roleService.getRoles(listRoleRequest));
   }
 
   @GetMapping("/{id}")
-  public ResponseEntity<RoleRespone> get(@PathVariable("id") String id) {
+  public ResponseEntity<RoleResponse> get(@PathVariable("id") String id) {
     var role = roleService.getRoleById(id);
     var permissions = permissionService.getPermissionsByRoleId(id);
-    var roleRespone = roleMapper.toRoleRespone(role);
+    var roleRespone = roleMapper.toRoleResponse(role);
     roleRespone.setPermissions(
         new HashSet<>(permissions.stream().map(permissionMapper::toPermissionResponse).toList()));
     return ResponseEntity.ok(roleRespone);
@@ -58,7 +58,7 @@ public class RoleController {
 
   @DeleteMapping("/{id}")
   public ResponseEntity<String> delete(@PathVariable("id") String id) {
-    roleService.delete(id);
+    roleService.deleteRole(id);
     return ResponseEntity.ok("xóa thành công");
   }
 }

@@ -11,7 +11,7 @@ export type UpdateUserParamsSchema = z.infer<typeof updateUserParamsSchema>;
 export const updateUserBodySchema = z.object({
   name: z.string().min(1).optional(),
   email: z.string().email().optional(),
-  password: z.string().min(8).optional(),
+  password: z.string().min(8).max(100).optional().or(z.literal("")),
   roleIds: z.array(z.string().uuid()).optional(),
 });
 export type UpdateUserBodySchema = z.infer<typeof updateUserBodySchema>;

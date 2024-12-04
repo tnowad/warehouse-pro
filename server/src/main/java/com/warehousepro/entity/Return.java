@@ -23,7 +23,8 @@ public class Return {
   String reason;
 
   @Column(name = "status")
-  String status;
+  @Enumerated(EnumType.STRING)
+  ReturnStatus status;
 
   @ManyToOne
   @JoinColumn(name = "order_item_id")

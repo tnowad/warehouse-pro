@@ -29,6 +29,10 @@ public class OrderItem {
   @Column(name = "discount")
   Double discount;
 
+  @Column(name = "status")
+  @Enumerated(EnumType.STRING)
+  OrderItemStatus status;
+
   @ManyToOne
   @JoinColumn(name = "order_id", nullable = false)
   Order order;

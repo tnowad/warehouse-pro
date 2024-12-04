@@ -21,7 +21,8 @@ public class Shipment {
   Date shipmentDate;
 
   @Column(name = "status")
-  String status;
+  @Enumerated(EnumType.STRING)
+  ShipmentStatus status;
 
   @Column(name = "tracking_number")
   String trackingNumber;

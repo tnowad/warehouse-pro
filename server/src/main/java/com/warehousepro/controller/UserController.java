@@ -1,13 +1,12 @@
 package com.warehousepro.controller;
 
 import com.warehousepro.dto.request.auth.CreateUserRequest;
+import com.warehousepro.dto.request.auth.UpdateUserRequest;
 import com.warehousepro.dto.request.user.ListUserRequest;
 import com.warehousepro.dto.response.ItemResponse;
 import com.warehousepro.dto.response.auth.UserResponse;
 import com.warehousepro.dto.response.role.GetUserRolesItemResponse;
 import com.warehousepro.entity.Permission;
-import com.warehousepro.entity.User;
-import com.warehousepro.repository.UserRepository;
 import com.warehousepro.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -29,11 +28,10 @@ import org.springframework.web.bind.annotation.*;
 public class UserController {
 
   UserService userService;
-  private final UserRepository userRepository;
 
   @PostMapping
-  ResponseEntity<UserResponse> create(@RequestBody CreateUserRequest request) {
-    var user = userService.createUser(request);
+  ResponseEntity<UserResponse> createUser(@RequestBody CreateUserRequest request) {
+    var user = userService.registerUser(request);
     return ResponseEntity.ok(user);
   }
 
@@ -66,39 +64,38 @@ public class UserController {
             })
       })
   @GetMapping("/{userId}")
-  ResponseEntity<UserResponse> getUser(
+  ResponseEntity<UserResponse> getUserById(
       @PathVariable @Parameter(description = "id of user to be searched") String userId) {
-    return ResponseEntity.ok(userService.getUser(userId));
+    return ResponseEntity.ok(userService.findUserResponseById(userId));
   }
 
   @GetMapping
-  public ResponseEntity<ItemResponse<UserResponse>> getAll(
+  public ResponseEntity<ItemResponse<UserResponse>> getUsers(
       @ModelAttribute ListUserRequest listUserRequest) {
-    return ResponseEntity.ok(userService.getUsers(listUserRequest));
+    return ResponseEntity.ok(userService.findUsersByFilter(listUserRequest));
   }
 
   @DeleteMapping("/{id}")
-  ResponseEntity<String> delete(@PathVariable("id") String id) {
-    userService.delete(id);
+  ResponseEntity<String> deleteUserById(@PathVariable("id") String id) {
+    userService.removeUserById(id);
     return ResponseEntity.ok("Xóa User thành công");
   }
 
-  @PutMapping("/assignRoleToUser/{user_id}/{role_id}")
-  ResponseEntity<User> assignRoleToUser(
-      @PathVariable("user_id") String userId, @PathVariable("role_id") String roleId) {
-    User user = userService.assignRoleToUser(userId, roleId);
-    return ResponseEntity.ok(user);
+  @PutMapping("/{id}")
+  ResponseEntity<UserResponse> updateUser(
+      @PathVariable("id") String id, @RequestBody UpdateUserRequest request) {
+    return ResponseEntity.ok(userService.updateUserDetails(id, request));
   }
 
   @GetMapping("/{userId}/roles")
-  ResponseEntity<ItemResponse<GetUserRolesItemResponse>> viewUserRole(
+  ResponseEntity<ItemResponse<GetUserRolesItemResponse>> getUserRoles(
       @PathVariable("userId") String id) {
-    return ResponseEntity.ok(userService.viewUserRoles(id));
+    return ResponseEntity.ok(userService.getUserRoles(id));
   }
 
-  @GetMapping("/viewUserPermission/{user_id}")
-  ResponseEntity<Set<Permission>> viewUserPermission(@PathVariable("user_id") String id) {
-    Set<Permission> permissions = userService.viewUserPermissions(id);
+  @GetMapping("/{userId}/permissions")
+  ResponseEntity<Set<Permission>> getUserPermissions(@PathVariable("userId") String id) {
+    Set<Permission> permissions = userService.getUserPermissions(id);
     return ResponseEntity.ok(permissions);
   }
 }

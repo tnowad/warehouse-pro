@@ -26,9 +26,10 @@ public class CustomJwtDecoder implements JwtDecoder {
 
   TokenService tokenService;
 
-  @Override
   public Jwt decode(String token) throws JwtException {
     try {
+      log.debug("Attempting to decode JWT token");
+
       DecodedJWT decoded = tokenService.decodeAccessToken(token);
 
       Instant issuedAt =
@@ -52,10 +53,14 @@ public class CustomJwtDecoder implements JwtDecoder {
       headerClaims.put("cty", decoded.getContentType());
       headerClaims.put("typ", decoded.getType());
 
+      log.debug("JWT decoded successfully with claims: {}", claims);
+
       return new Jwt(token, issuedAt, expiresAt, headerClaims, claims);
     } catch (TokenExpiredException expired) {
+      log.warn("Token expired: {}", expired.getMessage());
       throw new JwtException("Token expired: " + expired.getMessage(), expired);
     } catch (JWTVerificationException invalid) {
+      log.warn("JWT verification failed: {}", invalid.getMessage());
       throw new JwtException("JWT verification failed: " + invalid.getMessage(), invalid);
     } catch (Exception e) {
       log.debug("JWT decoding failed: {}", e.getMessage());

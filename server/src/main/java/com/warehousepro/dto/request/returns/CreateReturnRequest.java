@@ -1,6 +1,6 @@
 package com.warehousepro.dto.request.returns;
 
-import com.warehousepro.entity.OrderItem;
+import com.warehousepro.entity.ReturnStatus;
 import java.util.Date;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -13,6 +13,6 @@ import lombok.experimental.FieldDefaults;
 public class CreateReturnRequest {
   Date returnDate;
   String reason;
-  String status;
-  OrderItem orderItem;
+  ReturnStatus status;
+  String orderItemId;
 }

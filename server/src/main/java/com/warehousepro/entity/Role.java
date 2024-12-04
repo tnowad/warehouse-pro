@@ -1,5 +1,6 @@
 package com.warehousepro.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 import java.util.HashSet;
@@ -15,6 +16,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 @NoArgsConstructor
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
+@EqualsAndHashCode(exclude = "permissions")
 public class Role {
 
   @Id
@@ -31,7 +33,7 @@ public class Role {
 
   @UpdateTimestamp LocalDateTime updatedAt;
 
-  @ManyToMany(cascade = CascadeType.ALL )
+  @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
   @JoinTable(
       name = "roles_permissions",
       joinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"),
@@ -39,6 +41,7 @@ public class Role {
   Set<Permission> permissions = new HashSet<>();
 
   @ManyToMany(mappedBy = "roles", cascade = CascadeType.ALL)
+  @JsonIgnore
   private Set<User> users;
 
   public void addPermission(Permission permission) {

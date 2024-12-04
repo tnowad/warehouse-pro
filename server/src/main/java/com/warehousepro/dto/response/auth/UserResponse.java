@@ -1,8 +1,7 @@
 package com.warehousepro.dto.response.auth;
 
-import com.warehousepro.dto.response.role.RoleRespone;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.time.LocalDate;
-import java.util.Set;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
@@ -15,7 +14,7 @@ public class UserResponse {
   String id;
   String email;
   String name;
+  @JsonIgnore String password;
   LocalDate createdAt;
   LocalDate updatedAt;
-  Set<RoleRespone> roleRespones;
 }

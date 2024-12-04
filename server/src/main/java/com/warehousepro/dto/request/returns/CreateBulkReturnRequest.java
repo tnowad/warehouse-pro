@@ -1,5 +1,8 @@
-package com.warehousepro.dto.response.order;
+package com.warehousepro.dto.request.returns;
 
+import com.warehousepro.entity.ReturnStatus;
+import java.util.Date;
+import java.util.Set;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -8,17 +11,13 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
 
 @Data
-@Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class OrderItemReponse {
-  String id;
-  String orderId;
-  String productId;
-  String warehouseId;
-  Integer quantity;
-  Double price;
-  Double totalPrice;
-  Double discount;
+public class CreateBulkReturnRequest {
+  Set<String> orderItemIds;
+  Date returnDate;
+  String reason;
+  ReturnStatus status;
 }
