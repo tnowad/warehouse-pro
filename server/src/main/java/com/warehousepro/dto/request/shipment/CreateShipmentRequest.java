@@ -17,5 +17,5 @@ public class CreateShipmentRequest {
   String shippingMethod;
   Date deliveryEstimate;
   String carrier;
-  Order order;
+  String orderId;
 }

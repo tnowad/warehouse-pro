@@ -1,6 +1,9 @@
 package com.warehousepro.controller;
 
 import com.warehousepro.dto.request.shipment.CreateShipmentTrackingRequest;
+import com.warehousepro.dto.request.shipment.ListShipmentTracking;
+import com.warehousepro.dto.request.shipment.UpdateShipmentTracking;
+import com.warehousepro.dto.response.ItemResponse;
 import com.warehousepro.dto.response.shipment.ShipmentTrackingResponse;
 import com.warehousepro.entity.ShipmentTracking;
 import com.warehousepro.mapstruct.ShipmentTrackingMapper;
@@ -27,8 +30,19 @@ public class ShipmentTrackingController {
   }
 
   @GetMapping
-  public ResponseEntity<List<ShipmentTracking>> getAll() {
-    return ResponseEntity.ok(service.getAll());
+  public ResponseEntity<ItemResponse<ShipmentTrackingResponse>> getAll(
+    @ModelAttribute ListShipmentTracking listShipmentTracking) {
+    return ResponseEntity.ok(service.getAll(listShipmentTracking));
+  }
+
+  @GetMapping("/{id}")
+  public ResponseEntity<ShipmentTrackingResponse> getById(@PathVariable("id") String id){
+    return ResponseEntity.ok(service.getById(id));
+  }
+
+  @PutMapping("/{id}")
+  public ResponseEntity<ShipmentTrackingResponse> update(@PathVariable("id") String id, @RequestBody UpdateShipmentTracking request){
+    return ResponseEntity.ok(service.update(id, request));
   }
 
   @DeleteMapping("/{id}")

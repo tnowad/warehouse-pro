@@ -2,6 +2,7 @@ package com.warehousepro.service;
 
 import com.warehousepro.dto.request.product.CreateProductRequest;
 import com.warehousepro.dto.request.product.ListProductRequest;
+import com.warehousepro.dto.request.product.UpdateProductRequest;
 import com.warehousepro.dto.response.ItemResponse;
 import com.warehousepro.dto.response.product.ProductResponse;
 import com.warehousepro.entity.Product;
@@ -39,27 +40,33 @@ public class ProductService {
     return product;
   }
 
-  public Page<Product> findByCriteria(Map<String, String> searchCriteria, Pageable pageable) {
-    Specification<Product> spec = Specification.where(null);
-
-    if (StringUtils.hasLength(searchCriteria.get("name"))) {
-      spec = spec.and(specification.containName(searchCriteria.get("name")));
+  @Transactional
+  public ProductResponse update(String id , UpdateProductRequest request){
+    Product product = productRepository.findById(id);
+    if (request.getDescription() != null){
+      product.setDescription(request.getDescription());
     }
 
-    if (StringUtils.hasLength(searchCriteria.get("description"))) {
-      spec = spec.and(specification.containDesc(searchCriteria.get("description")));
+    if (request.getName() != null) {
+      product.setName(request.getName());
     }
 
-    if (StringUtils.hasLength(searchCriteria.get("sku"))) {
-      spec = spec.and(specification.containSku(searchCriteria.get("sku")));
+    if (request.getSku() != null) {
+      product.setSku(request.getSku());
     }
 
-    if (StringUtils.hasLength(searchCriteria.get("price"))) {
-      spec = spec.and(specification.hasPrice(searchCriteria.get("price")));
+    if (request.getPrice() != null) {
+      product.setPrice(request.getPrice());
     }
 
-    return productRepository.findAll(spec, pageable);
+    product = productRepository.save(product);
+    return productMapper.toProductResponse(product);
   }
+
+  public ProductResponse getById(String id){
+    return productMapper.toProductResponse(productRepository.findById(id));
+  }
+
 
   @Transactional
   public void delete(String id) {

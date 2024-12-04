@@ -1,6 +1,8 @@
 package com.warehousepro.controller;
 
 import com.warehousepro.dto.request.shipment.CreateShipmentItemRequest;
+import com.warehousepro.dto.request.shipment.ListShipmentItemRequest;
+import com.warehousepro.dto.response.ItemResponse;
 import com.warehousepro.dto.response.shipment.ShipmentItemResponse;
 import com.warehousepro.entity.ShipmentItem;
 import com.warehousepro.mapstruct.ShipmentItemMapper;
@@ -27,8 +29,13 @@ public class ShipmentItemController {
   }
 
   @GetMapping
-  public ResponseEntity<List<ShipmentItem>> getAll() {
-    return ResponseEntity.ok(service.getAll());
+  public ResponseEntity<ItemResponse<ShipmentItemResponse>> getAll(@ModelAttribute ListShipmentItemRequest request) {
+    return ResponseEntity.ok(service.getAll(request));
+  }
+
+  @GetMapping("/{id}")
+  public ResponseEntity<ShipmentItemResponse> getById(@PathVariable String id){
+    return ResponseEntity.ok(service.getById(id));
   }
 
   @DeleteMapping("/{id}")

@@ -3,6 +3,7 @@ package com.warehousepro.controller;
 import com.warehousepro.dto.request.returns.CreateBulkReturnRequest;
 import com.warehousepro.dto.request.returns.CreateReturnRequest;
 import com.warehousepro.dto.request.returns.ListReturnRequest;
+import com.warehousepro.dto.request.returns.UpdateReturnRequest;
 import com.warehousepro.dto.response.ItemResponse;
 import com.warehousepro.dto.response.returns.ReturnResponse;
 import com.warehousepro.generator.OrderExcelUtility;
@@ -33,6 +34,16 @@ public class ReturnController {
   public ResponseEntity<ItemResponse<ReturnResponse>> createBulk(
       @RequestBody CreateBulkReturnRequest request) {
     return ResponseEntity.ok(returnService.createBulk(request));
+  }
+
+  @PutMapping("/{id}")
+  public ResponseEntity<ReturnResponse> update(@PathVariable("id") String id , @RequestBody UpdateReturnRequest request){
+    return ResponseEntity.ok(returnService.update(id , request));
+  }
+
+  @GetMapping("/{id}")
+  public ResponseEntity<ReturnResponse> getById(@PathVariable("id") String id){
+    return  ResponseEntity.ok(returnService.getById(id));
   }
 
   @GetMapping

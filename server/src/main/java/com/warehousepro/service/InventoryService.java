@@ -2,6 +2,7 @@ package com.warehousepro.service;
 
 import com.warehousepro.dto.request.inventory.CreateInventoryRequest;
 import com.warehousepro.dto.request.inventory.ListInventoryRequest;
+import com.warehousepro.dto.request.inventory.UpdateInventoryRequest;
 import com.warehousepro.dto.response.ItemResponse;
 import com.warehousepro.dto.response.inventory.InventoryResponse;
 import com.warehousepro.entity.Inventory;
@@ -21,6 +22,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 @Service
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
@@ -48,6 +50,32 @@ public class InventoryService {
   @Transactional
   public void deleteInventory(String id) {
     inventoryRepository.deleteById(id);
+  }
+
+  @Transactional
+  public InventoryResponse update(String id , UpdateInventoryRequest request){
+    Inventory inventory = inventoryRepository.findById(id).orElseThrow();
+
+    if (request.getQuantity() != null) {
+      inventory.setQuantity(request.getQuantity());
+    }
+
+    if (request.getMinimumStockLevel() != null) {
+      inventory.setMinimumStockLevel(request.getMinimumStockLevel());
+    }
+
+    if (StringUtils.hasText(request.getStatus())) {
+      try {
+        InventoryStatus inventoryStatus = InventoryStatus.valueOf(request.getStatus().toUpperCase());
+        inventory.setStatus(inventoryStatus);
+      } catch (IllegalArgumentException e) {
+        // Handle the case where the status is not valid
+        throw new RuntimeException("Invalid status provided.");
+      }
+    }
+
+    inventory = inventoryRepository.save(inventory);
+    return inventoryMapper.toInventoryResponse(inventory);
   }
 
   public InventoryResponse checkAndUpdateInventory(

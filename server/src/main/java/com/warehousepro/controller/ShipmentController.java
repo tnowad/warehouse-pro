@@ -2,6 +2,7 @@ package com.warehousepro.controller;
 
 import com.warehousepro.dto.request.shipment.CreateShipmentRequest;
 import com.warehousepro.dto.request.shipment.ListShipmentRequest;
+import com.warehousepro.dto.request.shipment.UpdateShipmentRequest;
 import com.warehousepro.dto.response.ItemResponse;
 import com.warehousepro.dto.response.shipment.ShipmentResponse;
 import com.warehousepro.mapstruct.ShipmentMapper;
@@ -30,6 +31,17 @@ public class ShipmentController {
       @ModelAttribute ListShipmentRequest listShipmentRequest) {
     return ResponseEntity.ok(shipmentService.getAll(listShipmentRequest));
   }
+
+  @PutMapping("/{id}")
+  public ResponseEntity<ShipmentResponse> update(@PathVariable("id") String id , @RequestBody UpdateShipmentRequest request){
+    return ResponseEntity.ok(shipmentService.update(id, request));
+  }
+
+  @GetMapping("/{id}")
+  public ResponseEntity<ShipmentResponse> getById(@PathVariable("id") String id){
+    return ResponseEntity.ok(shipmentService.getById(id));
+  }
+
 
   @DeleteMapping("/{id}")
   public ResponseEntity<String> delete(@PathVariable("id") String id) {

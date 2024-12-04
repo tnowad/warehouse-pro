@@ -1,7 +1,9 @@
 package com.warehousepro.service;
 
 import com.warehousepro.dto.request.order.CreateOrderItemRequest;
+import com.warehousepro.dto.request.order.ListOrderItemRequest;
 import com.warehousepro.dto.request.order.UpdateOrderItemRequest;
+import com.warehousepro.dto.response.ItemResponse;
 import com.warehousepro.dto.response.order.OrderItemResponse;
 import com.warehousepro.entity.Order;
 import com.warehousepro.entity.OrderItem;
@@ -12,12 +14,14 @@ import com.warehousepro.mapstruct.OrderItemMapper;
 import com.warehousepro.repository.OrderItemRepository;
 import com.warehousepro.repository.ProductRepository;
 import com.warehousepro.repository.WareHouseRepository;
+import com.warehousepro.specification.OrderItemSpecification;
 import jakarta.transaction.Transactional;
 import java.util.List;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 @Slf4j
@@ -30,6 +34,7 @@ public class OrderItemService {
   InventoryService inventoryService;
   ProductRepository productRepository;
   WareHouseRepository wareHouseRepository;
+  OrderItemSpecification orderItemSpecification;
 
   @Transactional
   public OrderItem create(Order order, CreateOrderItemRequest request) {
@@ -56,9 +61,22 @@ public class OrderItemService {
     return orderItem;
   }
 
-  public List<OrderItem> getAll() {
-    return repository.findAll();
+  public ItemResponse<OrderItemResponse> getAll(ListOrderItemRequest request) {
+    var spec = orderItemSpecification.getFilterSpecification(request);
+    var pageRequest = PageRequest.of(request.getPage() - 1, request.getPageSize());
+    var totalItems = repository.count(spec);
+    var orderItems = repository.findAll(spec, pageRequest);
+    var page = request.getPage();
+    var pageCount = (int) Math.ceil((double) totalItems / request.getPageSize());
+
+    return ItemResponse.<OrderItemResponse>builder()
+      .items(orderItems.stream().map(mapper::toOrderItemReponse).toList())
+      .rowCount((int) totalItems)
+      .page(page)
+      .pageCount(pageCount)
+      .build();
   }
+
 
   public OrderItemResponse getById(String id) {
     OrderItem orderItem =

@@ -2,6 +2,7 @@ package com.warehousepro.controller;
 
 import com.warehousepro.dto.request.product.CreateProductRequest;
 import com.warehousepro.dto.request.product.ListProductRequest;
+import com.warehousepro.dto.request.product.UpdateProductRequest;
 import com.warehousepro.dto.response.ItemResponse;
 import com.warehousepro.dto.response.product.ProductResponse;
 import com.warehousepro.mapstruct.InventoryMapper;
@@ -25,7 +26,7 @@ public class ProductController {
   ProductMapper productMapper;
   InventoryMapper inventoryMapper;
 
-  @GetMapping()
+  @GetMapping
   public ResponseEntity<ItemResponse<ProductResponse>> getALl(
       @ModelAttribute ListProductRequest listProductRequest) {
     return ResponseEntity.ok(productService.getAll(listProductRequest));
@@ -37,6 +38,16 @@ public class ProductController {
         productMapper.toProductResponse(productService.createProduct(request));
 
     return ResponseEntity.ok(productResponse);
+  }
+
+  @PutMapping("/{id}")
+  public ResponseEntity<ProductResponse> update(@PathVariable("id") String id , @RequestBody UpdateProductRequest request){
+    return ResponseEntity.ok(productService.update(id, request));
+  }
+
+  @GetMapping("/{id}")
+  public ResponseEntity<ProductResponse> getById(@PathVariable("id") String id){
+    return ResponseEntity.ok(productService.getById(id));
   }
 
   @DeleteMapping("/{id}")

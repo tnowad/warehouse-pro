@@ -3,12 +3,14 @@ package com.warehousepro.service;
 import com.warehousepro.dto.request.returns.CreateBulkReturnRequest;
 import com.warehousepro.dto.request.returns.CreateReturnRequest;
 import com.warehousepro.dto.request.returns.ListReturnRequest;
+import com.warehousepro.dto.request.returns.UpdateReturnRequest;
 import com.warehousepro.dto.response.ItemResponse;
 import com.warehousepro.dto.response.order.OrderItemResponse;
 import com.warehousepro.dto.response.returns.ReturnResponse;
 import com.warehousepro.entity.Order;
 import com.warehousepro.entity.OrderItemStatus;
 import com.warehousepro.entity.Return;
+import com.warehousepro.entity.ReturnStatus;
 import com.warehousepro.generator.OrderExcelUtility;
 import com.warehousepro.mapstruct.ReturnMapper;
 import com.warehousepro.repository.OrderRepository;
@@ -64,6 +66,35 @@ public class ReturnService {
         .pageCount(pageCount)
         .build();
   }
+
+  public ReturnResponse update(String id , UpdateReturnRequest request){
+    Return returns = repository.findById(id).orElseThrow(() -> new RuntimeException("Không tìm thấy return id"));
+
+    if (request.getReason() != null){
+      returns.setReason(returns.getReason());
+    }
+
+    if (request.getReturnDate() != null) {
+      returns.setReturnDate(request.getReturnDate());
+    }
+
+    if (request.getStatus() != null) {
+      try {
+        returns.setStatus(ReturnStatus.valueOf(request.getStatus().toUpperCase()));
+      } catch (IllegalArgumentException e) {
+        throw new IllegalArgumentException("Invalid status value: " + request.getStatus());
+      }
+    }
+
+    returns = repository.save(returns);
+    return mapper.toReturnResponse(returns);
+  }
+
+  public ReturnResponse getById(String id){
+    return mapper.toReturnResponse(repository.findById(id).orElseThrow(
+      () -> new RuntimeException("Không tìm thấy return id")));
+  }
+
 
   public void save(MultipartFile file) {
     log.info("Saving orders from uploaded file");

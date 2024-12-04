@@ -4,9 +4,11 @@ import com.warehousepro.dto.request.supplierproduct.CreateSupplierProductRequest
 import com.warehousepro.dto.request.supplierproduct.ListSupplierProductRequest;
 import com.warehousepro.dto.response.ItemResponse;
 import com.warehousepro.dto.response.supplierproduct.SupplierProductResponse;
+import com.warehousepro.dto.response.supplierproduct.UpdateSupplierProduct;
 import com.warehousepro.entity.SupplierProduct;
 import com.warehousepro.mapstruct.SupplierProductMapper;
 import com.warehousepro.repository.SupplierProductRepository;
+import com.warehousepro.repository.SupplierRepository;
 import com.warehousepro.specification.SupplierProductSpecification;
 import jakarta.transaction.Transactional;
 import java.util.List;
@@ -22,6 +24,7 @@ import org.springframework.stereotype.Service;
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @RequiredArgsConstructor
 public class SupplierProductService {
+  private final SupplierRepository supplierRepository;
   SupplierProductRepository repository;
   SupplierProductMapper mapper;
   SupplierProductSpecification supplierProductSpecification;
@@ -32,6 +35,12 @@ public class SupplierProductService {
     repository.save(supplierProduct);
     return supplierProduct;
   }
+
+  public SupplierProductResponse getById(String id){
+    return mapper.toSupplierProductResponse(repository.findById(id).orElseThrow(
+      () -> new RuntimeException("Không tìm thấy supplier-product id")));
+  }
+
 
   @Transactional
   public void delete(String id) {
@@ -58,4 +67,26 @@ public class SupplierProductService {
         .pageCount(pageCount)
         .build();
   }
+
+  @Transactional
+  public SupplierProductResponse update(String id, UpdateSupplierProduct request){
+      SupplierProduct supplierProduct = repository.findById(id).orElseThrow(
+        () -> new RuntimeException("Không tồn tại supplier-product id"));
+
+    if (request.getPrice() != null) {
+      supplierProduct.setPrice(request.getPrice());
+    }
+
+    if (request.getLeadTimeDays() != null){
+      supplierProduct.setLeadTimeDays(request.getLeadTimeDays());
+    }
+
+    if (request.getAvailabilityStatus() != null){
+      supplierProduct.setAvailabilityStatus(request.getAvailabilityStatus());
+    }
+
+    supplierProduct = repository.save(supplierProduct);
+    return  mapper.toSupplierProductResponse(supplierProduct);
+  }
+
 }

@@ -1,5 +1,7 @@
 package com.warehousepro.controller;
 
+import com.warehousepro.dto.request.order.ListOrderItemRequest;
+import com.warehousepro.dto.response.ItemResponse;
 import com.warehousepro.dto.response.order.OrderItemResponse;
 import com.warehousepro.entity.OrderItem;
 import com.warehousepro.mapstruct.OrderItemMapper;
@@ -19,16 +21,9 @@ public class OrderItemController {
   OrderItemService service;
   OrderItemMapper mapper;
 
-  // @PostMapping
-  // public ResponseEntity<OrderItemReponse> create(@RequestBody
-  // CreateOrderItemRequest request) {
-  // return ResponseEntity.ok(mapper.toOrderItemReponse(service.create(request ,
-  // )));
-  // }
-
   @GetMapping
-  public ResponseEntity<List<OrderItem>> getAll() {
-    return ResponseEntity.ok(service.getAll());
+  public ResponseEntity<ItemResponse<OrderItemResponse>> getAll(@ModelAttribute ListOrderItemRequest request) {
+    return ResponseEntity.ok(service.getAll(request));
   }
 
   @GetMapping("/view-order-item/{id}")
@@ -41,4 +36,5 @@ public class OrderItemController {
     service.delete(id);
     return ResponseEntity.ok("xóa thành công");
   }
+
 }

@@ -1,6 +1,5 @@
-package com.warehousepro.dto.request.returns;
+package com.warehousepro.dto.request.shipment;
 
-import com.warehousepro.entity.ReturnStatus;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
@@ -11,8 +10,9 @@ import java.util.Date;
 @AllArgsConstructor
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class UpdateReturnRequest {
-  Date returnDate;
-  String reason;
+public class UpdateShipmentTracking {
+  String trackingEvent;
+  Date eventDate;
+  String location;
   String status;
 }

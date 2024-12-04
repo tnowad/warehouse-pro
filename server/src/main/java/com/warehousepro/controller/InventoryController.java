@@ -2,6 +2,7 @@ package com.warehousepro.controller;
 
 import com.warehousepro.dto.request.inventory.CreateInventoryRequest;
 import com.warehousepro.dto.request.inventory.ListInventoryRequest;
+import com.warehousepro.dto.request.inventory.UpdateInventoryRequest;
 import com.warehousepro.dto.response.ItemResponse;
 import com.warehousepro.dto.response.inventory.InventoryResponse;
 import com.warehousepro.entity.Inventory;
@@ -39,12 +40,10 @@ public class InventoryController {
     return ResponseEntity.ok("Xóa thành công");
   }
 
-  //  @GetMapping("/{id}")
-  //  public ResponseEntity<Page<InventoryResponse>> findInventoryByProductId(
-  //      @PathVariable("id") String id, Pageable pageable) {
-  //    Page<Inventory> inventories = inventoryService.findAllByProductId(id, pageable);
-  //    Page<InventoryResponse> inventoryResponses =
-  //        inventories.map(inventoryMapper::toInventoryResponse);
-  //    return ResponseEntity.ok(inventoryResponses);
-  //  }
+  @PutMapping("/{id}")
+  public ResponseEntity<InventoryResponse> update(@PathVariable("id") String id , @RequestBody UpdateInventoryRequest request){
+    return ResponseEntity.ok(inventoryService.update(id, request));
+  }
+
+
 }
