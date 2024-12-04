@@ -8,3 +8,4 @@ export const returnSchema = z.object({
   reason: z.string(),
   status: returnStatusSchema,
 });
+export type ReturnTableSchema = z.infer<typeof returnSchema>;

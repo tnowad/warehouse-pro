@@ -1,3 +1,5 @@
+import { ProcurementTable } from "./_components/procurement-table";
+
 export default function Page() {
-  return <div>Page</div>;
+  return <ProcurementTable />;
 }

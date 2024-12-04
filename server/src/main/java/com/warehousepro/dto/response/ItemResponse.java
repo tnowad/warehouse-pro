@@ -27,5 +27,10 @@ public class ItemResponse<T> {
       this.rowCount = rowCount.intValue();
       return this;
     }
+
+    public ItemResponseBuilder<T> rowCount(long rowCount) {
+      this.rowCount = (int) rowCount;
+      return this;
+    }
   }
 }
