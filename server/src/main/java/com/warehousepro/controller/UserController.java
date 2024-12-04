@@ -7,7 +7,6 @@ import com.warehousepro.dto.response.ItemResponse;
 import com.warehousepro.dto.response.auth.UserResponse;
 import com.warehousepro.dto.response.role.GetUserRolesItemResponse;
 import com.warehousepro.entity.Permission;
-import com.warehousepro.entity.User;
 import com.warehousepro.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -31,7 +30,7 @@ public class UserController {
   UserService userService;
 
   @PostMapping
-  ResponseEntity<UserResponse> create(@RequestBody CreateUserRequest request) {
+  ResponseEntity<UserResponse> createUser(@RequestBody CreateUserRequest request) {
     var user = userService.registerUser(request);
     return ResponseEntity.ok(user);
   }
@@ -65,44 +64,37 @@ public class UserController {
             })
       })
   @GetMapping("/{userId}")
-  ResponseEntity<UserResponse> getUser(
+  ResponseEntity<UserResponse> getUserById(
       @PathVariable @Parameter(description = "id of user to be searched") String userId) {
     return ResponseEntity.ok(userService.findUserResponseById(userId));
   }
 
   @GetMapping
-  public ResponseEntity<ItemResponse<UserResponse>> getAll(
+  public ResponseEntity<ItemResponse<UserResponse>> getUsers(
       @ModelAttribute ListUserRequest listUserRequest) {
     return ResponseEntity.ok(userService.findUsersByFilter(listUserRequest));
   }
 
   @DeleteMapping("/{id}")
-  ResponseEntity<String> delete(@PathVariable("id") String id) {
+  ResponseEntity<String> deleteUserById(@PathVariable("id") String id) {
     userService.removeUserById(id);
     return ResponseEntity.ok("Xóa User thành công");
   }
 
   @PutMapping("/{id}")
-  ResponseEntity<UserResponse> update(
+  ResponseEntity<UserResponse> updateUser(
       @PathVariable("id") String id, @RequestBody UpdateUserRequest request) {
     return ResponseEntity.ok(userService.updateUserDetails(id, request));
   }
 
-  @PutMapping("/assignRoleToUser/{user_id}/{role_id}")
-  ResponseEntity<User> assignRoleToUser(
-      @PathVariable("user_id") String userId, @PathVariable("role_id") String roleId) {
-    User user = userService.addRoleToUser(userId, roleId);
-    return ResponseEntity.ok(user);
-  }
-
   @GetMapping("/{userId}/roles")
-  ResponseEntity<ItemResponse<GetUserRolesItemResponse>> viewUserRole(
+  ResponseEntity<ItemResponse<GetUserRolesItemResponse>> getUserRoles(
       @PathVariable("userId") String id) {
     return ResponseEntity.ok(userService.getUserRoles(id));
   }
 
-  @GetMapping("/viewUserPermission/{user_id}")
-  ResponseEntity<Set<Permission>> viewUserPermission(@PathVariable("user_id") String id) {
+  @GetMapping("/{userId}/permissions")
+  ResponseEntity<Set<Permission>> getUserPermissions(@PathVariable("userId") String id) {
     Set<Permission> permissions = userService.getUserPermissions(id);
     return ResponseEntity.ok(permissions);
   }
