@@ -27,7 +27,8 @@ public class Procurement {
   Date deliveryDate;
 
   @Column(name = "status")
-  String status;
+  @Enumerated(EnumType.STRING)
+  ProcurementStatus status;
 
   @Column(name = "total_cost")
   Double totalCost;

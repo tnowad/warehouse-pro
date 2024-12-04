@@ -12,5 +12,6 @@ public interface ProcurementMapper {
   @Mapping(target = "totalCost", ignore = true)
   Procurement toProcurement(CreateProcurementRequest request);
 
+  @Mapping(target = "supplierId", source = "supplier.id")
   ProcurementResponse toProcurementResponse(Procurement procurement);
 }

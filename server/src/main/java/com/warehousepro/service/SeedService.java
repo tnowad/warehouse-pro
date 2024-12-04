@@ -508,6 +508,7 @@ public class SeedService {
           Supplier.builder()
               .name(faker.company().name())
               .contact(faker.phoneNumber().cellPhone())
+              .supplierProducts(new HashSet<>())
               .build());
     }
     supplierRepository.saveAll(suppliers);
@@ -592,5 +593,44 @@ public class SeedService {
     shipmentRepository.saveAll(shipments);
 
     shipmentItemRepository.saveAll(shipmentItems);
+
+    List<Procurement> procurements = new ArrayList<>();
+    List<ProcurementItem> procurementItems = new ArrayList<>();
+
+    for (int i = 0; i < 63; i++) {
+
+      var supplier = suppliers.get(faker.number().numberBetween(0, 63));
+      var warehouse = warehouses.get(faker.number().numberBetween(0, 63));
+
+      var procurement =
+          Procurement.builder()
+              .orderDate(new Date(faker.date().past(30, TimeUnit.DAYS).getTime()))
+              .deliveryDate(new Date(faker.date().future(30, TimeUnit.DAYS).getTime()))
+              .status(faker.options().option(ProcurementStatus.class))
+              .totalCost(faker.number().randomDouble(2, 100000, 5000000))
+              .supplier(supplier)
+              .procurementItems(new HashSet<>())
+              .build();
+
+      procurements.add(procurement);
+
+      for (var product :
+          supplier.getSupplierProducts().stream().map(SupplierProduct::getProduct).toList()) {
+        var procurementItem =
+            ProcurementItem.builder()
+                .procurement(procurement)
+                .warehouse(warehouse)
+                .product(product)
+                .quantity(faker.number().numberBetween(1, 10))
+                .price(faker.number().randomDouble(2, 100000, 5000000))
+                .warehouse(warehouses.get(faker.number().numberBetween(0, 63)))
+                .build();
+
+        procurementItems.add(procurementItem);
+      }
+    }
+
+    procurementRepository.saveAll(procurements);
+    procurementItemRepository.saveAll(procurementItems);
   }
 }

@@ -6,6 +6,7 @@ import com.warehousepro.dto.response.auth.RefreshTokenResponse;
 import com.warehousepro.dto.response.auth.TokensResponse;
 import com.warehousepro.dto.response.auth.UserResponse;
 import com.warehousepro.entity.PermissionName;
+import com.warehousepro.entity.User;
 import com.warehousepro.exception.EmailNotFoundException;
 import com.warehousepro.exception.IncorrectPasswordException;
 import java.util.ArrayList;
@@ -31,65 +32,101 @@ public class AuthenticationService {
   BCryptPasswordEncoder passwordEncoder;
 
   public LoginResponse login(LoginRequest request) {
+    log.info("Login attempt initiated for email: {}", request.getEmail());
     try {
       var user = userService.getByEmail(request.getEmail());
 
       if (user == null) {
-        log.warn("Login attempt failed: User not found for email {}", request.getEmail());
+        log.warn("User not found for email: {}", request.getEmail());
         throw new EmailNotFoundException("User not found");
       }
 
       if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
-        log.warn("Login attempt failed: Incorrect password for email {}", request.getEmail());
+        log.warn("Incorrect password for email: {}", request.getEmail());
         throw new IncorrectPasswordException("Incorrect password");
       }
 
       String refreshToken = tokenService.generateRefreshToken(user.getId());
       String accessToken = tokenService.generateAccessToken(user);
 
-      log.info("User {} logged in successfully", request.getEmail());
+      log.info("Login successful for user ID: {}", user.getId());
 
       return LoginResponse.builder().tokens(new TokensResponse(accessToken, refreshToken)).build();
     } catch (EmailNotFoundException | IncorrectPasswordException e) {
-      log.warn("Error while logging in: {}", e.getMessage());
+      log.error("Login failed for email: {}. Reason: {}", request.getEmail(), e.getMessage());
+      throw e;
+    } catch (Exception e) {
+      log.error("Unexpected error during login for email: {}", request.getEmail(), e);
       throw e;
     }
   }
 
   public RefreshTokenResponse refreshToken(String refreshToken) {
-    var decodedJWT = tokenService.decodeAccessToken(refreshToken);
-    log.info("Decoded JWT: {}", decodedJWT);
+    log.info("Refresh token attempt initiated.");
+    try {
+      var decodedJWT = tokenService.decodeAccessToken(refreshToken);
 
-    if (decodedJWT == null) {
-      throw new IllegalArgumentException("Invalid token");
+      if (decodedJWT == null) {
+        log.error("Invalid refresh token provided.");
+        throw new IllegalArgumentException("Invalid token");
+      }
+
+      String userId = decodedJWT.getSubject();
+      log.debug("Token decoded successfully. User ID: {}", userId);
+
+      UserResponse user = userService.getById(userId);
+      var newAccessToken = tokenService.generateAccessToken(user);
+
+      log.info("New access token generated for user ID: {}", userId);
+      return RefreshTokenResponse.builder().accessToken(newAccessToken).build();
+    } catch (Exception e) {
+      log.error("Error while refreshing token: {}", e.getMessage(), e);
+      throw e;
     }
-
-    var userId = decodedJWT.getSubject();
-    UserResponse user = userService.getById(userId);
-    var newAccessToken = tokenService.generateAccessToken(user);
-
-    return RefreshTokenResponse.builder().accessToken(newAccessToken).build();
   }
 
   public List<PermissionName> getCurrentUserPermissionNames() {
+    log.info("Fetching permissions for the current user.");
+    try {
+      var authentication = SecurityContextHolder.getContext().getAuthentication();
+      if (authentication.getPrincipal() instanceof String) {
+        log.debug("Anonymous user detected. Returning default permissions.");
+        return List.of(PermissionName.AUTH_LOGIN);
+      }
 
-    if (SecurityContextHolder.getContext().getAuthentication().getPrincipal() instanceof String) {
-      return List.of(PermissionName.AUTH_LOGIN);
-    }
-    Jwt jwt = (Jwt) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+      Jwt jwt = (Jwt) authentication.getPrincipal();
+      String userId = jwt.getSubject();
 
-    String userId = jwt.getSubject();
-    var user = userService.getUserById(userId);
-    if (user == null) {
-      return List.of(PermissionName.AUTH_LOGIN);
+      log.debug("Fetching user details for user ID: {}", userId);
+      User user;
+
+      try {
+        user = userService.getUserById(userId);
+      } catch (Exception e) {
+        log.error("Error while fetching user details for user ID: {}", userId, e);
+        return List.of(PermissionName.AUTH_LOGIN);
+      }
+
+      if (user == null) {
+        log.warn("User not found for user ID: {}", userId);
+        return List.of(PermissionName.AUTH_LOGIN);
+      }
+
+      var roles = roleService.getRolesForUser(userId);
+      log.debug("Roles fetched for user ID: {}: {}", userId, roles);
+
+      var permissionNames =
+          new ArrayList<>(
+              permissionService.getPermissionNamesByRoleIds(
+                  roles.stream().map(role -> role.getId()).toList()));
+      permissionNames.add(PermissionName.AUTH_LOGIN);
+      permissionNames.add(PermissionName.AUTH_LOGGED_IN);
+
+      log.info("Permissions fetched for user ID: {}: {}", userId, permissionNames);
+      return permissionNames;
+    } catch (Exception e) {
+      log.error("Error while fetching permissions for the current user.", e);
+      throw e;
     }
-    var roles = roleService.getRolesForUser(userId);
-    var permissionNames =
-        new ArrayList<PermissionName>(
-            permissionService.getPermissionNamesByRoleIds(
-                roles.stream().map(role -> role.getId()).toList()));
-    permissionNames.add(PermissionName.AUTH_LOGIN);
-    permissionNames.add(PermissionName.AUTH_LOGGED_IN);
-    return permissionNames;
   }
 }
