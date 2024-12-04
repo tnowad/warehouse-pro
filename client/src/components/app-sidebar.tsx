@@ -157,19 +157,14 @@ const mainNav: {
         permission: "PROCUREMENT_SUPPLIER_LIST",
       },
       {
+        title: "Create procurement order",
+        url: "/procurement/new",
+        permission: "PROCUREMENT_ORDER_CREATE",
+      },
+      {
         title: "Create Supplier",
         url: "/suppliers/new",
         permission: "PROCUREMENT_SUPPLIER_CREATE",
-      },
-      {
-        title: "Purchase Orders",
-        url: "/purchase-orders",
-        permission: "PROCUREMENT_ORDER_LIST",
-      },
-      {
-        title: "Create Purchase Order",
-        url: "/purchase-orders/new",
-        permission: "PROCUREMENT_ORDER_CREATE",
       },
     ],
   },
@@ -183,11 +178,6 @@ const mainNav: {
         title: "Shipments",
         url: "/shipments",
         permission: "SHIPMENT_LIST",
-      },
-      {
-        title: "Create Shipment",
-        url: "/shipments/new",
-        permission: "SHIPMENT_CREATE",
       },
       {
         title: "Track Shipment",
@@ -206,11 +196,6 @@ const mainNav: {
         title: "Returns",
         url: "/returns",
         permission: "RETURN_LIST",
-      },
-      {
-        title: "Create Return",
-        url: "/returns/new",
-        permission: "RETURN_CREATE",
       },
     ],
   },

@@ -9,3 +9,5 @@ export const procurementSchema = z.object({
   totalCost: z.number().positive(),
   createdAt: z.string().date(),
 });
+
+export type ProcurementSchema = z.infer<typeof procurementSchema>;

@@ -1,6 +1,6 @@
 package com.warehousepro.dto.response.procurement.item;
 
-import com.warehousepro.dto.response.procurement.ProcurementReponse;
+import com.warehousepro.dto.response.procurement.ProcurementResponse;
 import com.warehousepro.dto.response.product.ProductResponse;
 import com.warehousepro.dto.response.warehouse.WareHouseResponse;
 import lombok.*;
@@ -17,5 +17,5 @@ public class ProcurementItemResponse {
   Double price;
   WareHouseResponse warehouse;
   ProductResponse product;
-  ProcurementReponse procurement;
+  ProcurementResponse procurement;
 }
