@@ -10,6 +10,8 @@ import org.mapstruct.Mapper;
 public interface RoleMapper {
   Role toRole(CreateRoleRequest request);
 
+  Role toRole(RoleResponse response);
+
   RoleResponse toRoleResponse(Role role);
 
   GetUserRolesItemResponse toItem(Role role);

@@ -112,4 +112,8 @@ public class RoleService {
         .findOne((root, query, criteriaBuilder) -> criteriaBuilder.equal(root.get("id"), id))
         .orElse(null);
   }
+
+  public Set<Role> getRolesByIds(Set<String> roleIds) {
+    return roleRepository.findAllById(roleIds).stream().collect(Collectors.toSet());
+  }
 }

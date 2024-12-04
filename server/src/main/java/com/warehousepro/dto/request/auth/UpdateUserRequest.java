@@ -1,5 +1,6 @@
 package com.warehousepro.dto.request.auth;
 
+import java.util.Set;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
@@ -10,5 +11,7 @@ import lombok.experimental.FieldDefaults;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class UpdateUserRequest {
   String name;
+  String email;
   String password;
+  Set<String> roleIds;
 }

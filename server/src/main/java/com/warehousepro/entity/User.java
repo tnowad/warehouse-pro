@@ -3,6 +3,7 @@ package com.warehousepro.entity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import java.time.LocalDate;
+import java.util.Objects;
 import java.util.Set;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -50,4 +51,12 @@ public class User {
       inverseJoinColumns = @JoinColumn(name = "role_id"))
   @JsonIgnore
   private Set<Role> roles;
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+    User user = (User) o;
+    return Objects.equals(id, user.id);
+  }
 }

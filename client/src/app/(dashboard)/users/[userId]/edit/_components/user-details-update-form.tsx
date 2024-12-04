@@ -115,7 +115,7 @@ export const UserDetailsUpdateForm = ({
         name: getUserDetailsQuery.data.name,
         email: getUserDetailsQuery.data.email,
         password: "",
-        roleIds: getUserDetailsQuery.data.roles.map((role) => role.id),
+        roleIds: getUserRolesQuery.data?.items.map((role) => role.id),
         roles: getUserRolesQuery.data.items,
       });
     } else if (getUserDetailsQuery.isError) {
@@ -129,6 +129,8 @@ export const UserDetailsUpdateForm = ({
     getUserDetailsQuery.error?.message,
     getUserDetailsQuery.isError,
     getUserDetailsQuery.isSuccess,
+    getUserRolesQuery.data,
+    getUserRolesQuery.isSuccess,
     toast,
     updateUserForm,
   ]);
@@ -276,7 +278,7 @@ export const UserDetailsUpdateForm = ({
                                   role.id,
                                 ]);
                                 updateUserForm.setValue("roles", [
-                                  ...(updateUserForm.getValues("roles") ?? []),
+                                  ...updateUserForm.getValues("roles"),
                                   role,
                                 ]);
                               }

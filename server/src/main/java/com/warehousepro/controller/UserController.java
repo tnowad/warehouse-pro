@@ -1,13 +1,13 @@
 package com.warehousepro.controller;
 
 import com.warehousepro.dto.request.auth.CreateUserRequest;
+import com.warehousepro.dto.request.auth.UpdateUserRequest;
 import com.warehousepro.dto.request.user.ListUserRequest;
 import com.warehousepro.dto.response.ItemResponse;
 import com.warehousepro.dto.response.auth.UserResponse;
 import com.warehousepro.dto.response.role.GetUserRolesItemResponse;
 import com.warehousepro.entity.Permission;
 import com.warehousepro.entity.User;
-import com.warehousepro.repository.UserRepository;
 import com.warehousepro.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -29,7 +29,6 @@ import org.springframework.web.bind.annotation.*;
 public class UserController {
 
   UserService userService;
-  private final UserRepository userRepository;
 
   @PostMapping
   ResponseEntity<UserResponse> create(@RequestBody CreateUserRequest request) {
@@ -81,6 +80,12 @@ public class UserController {
   ResponseEntity<String> delete(@PathVariable("id") String id) {
     userService.delete(id);
     return ResponseEntity.ok("Xóa User thành công");
+  }
+
+  @PutMapping("/{id}")
+  ResponseEntity<UserResponse> update(
+      @PathVariable("id") String id, @RequestBody UpdateUserRequest request) {
+    return ResponseEntity.ok(userService.update(id, request));
   }
 
   @PutMapping("/assignRoleToUser/{user_id}/{role_id}")

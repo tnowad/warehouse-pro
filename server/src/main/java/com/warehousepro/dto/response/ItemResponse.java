@@ -16,4 +16,16 @@ public class ItemResponse<T> {
   Integer rowCount;
   Integer pageCount;
   Integer page;
+
+  public static class ItemResponseBuilder<T> {
+    public ItemResponseBuilder<T> rowCount(Integer rowCount) {
+      this.rowCount = rowCount;
+      return this;
+    }
+
+    public ItemResponseBuilder<T> rowCount(Long rowCount) {
+      this.rowCount = rowCount.intValue();
+      return this;
+    }
+  }
 }
