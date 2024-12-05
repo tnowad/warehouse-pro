@@ -58,7 +58,7 @@
     "react-dom": "19.0.0-rc-65a56d0e-20241020",
     "react-hook-form": "^7.53.1",
     "react-intersection-observer": "^9.13.1",
-    "recharts": "^2.13.0",
+    "recharts": "^2.14.1",
     "tailwind-merge": "^2.5.4",
     "tailwindcss-animate": "^1.0.7",
     "usehooks-ts": "^3.1.0",
@@ -81,6 +81,7 @@
   },
   "overrides": {
     "@types/react": "npm:types-react@19.0.0-rc.1",
-    "@types/react-dom": "npm:types-react-dom@19.0.0-rc.1"
+    "@types/react-dom": "npm:types-react-dom@19.0.0-rc.1",
+    "react-is": "^19.0.0-rc-69d4b800-20241021"
   }
 }

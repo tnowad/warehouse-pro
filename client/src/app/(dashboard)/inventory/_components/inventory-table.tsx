@@ -159,6 +159,7 @@ export function InventoryTable() {
     createListInventoriesQueryOptions({
       query: globalFilter,
       page: pagination.pageIndex + 1,
+      ...columnFilters,
       pageSize: pagination.pageSize,
       ...(listInventoriesQueryFilterSchema.safeParse(
         columnFilters.reduce(
@@ -171,6 +172,7 @@ export function InventoryTable() {
         .join(","),
     }),
   );
+
   const listProductsQuery = useQuery(
     createListProductsQueryOptions({
       ids: _.uniq(_.map(listInventoriesQuery.data?.items, "productId")),

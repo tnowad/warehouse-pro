@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { SalesReportLineChartCard } from "./_components/sales-report-line-chart-card";
 
 export default function DashboardPage() {
   const [selectedWarehouseIds, setSelectedWarehouseIds] = useState<string[]>(
@@ -14,5 +15,9 @@ export default function DashboardPage() {
     );
   }, [selectedWarehouseIds]);
 
-  return <div className="grid lg:grid-cols-2 gap-2 mx-4"></div>;
+  return (
+    <div className="">
+      <SalesReportLineChartCard />
+    </div>
+  );
 }

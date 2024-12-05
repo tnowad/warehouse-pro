@@ -4,6 +4,8 @@ import { apiClient } from "../api/client";
 
 export const listInventoriesQueryFilterSchema = z.object({
   ids: z.array(z.string().uuid()).optional(),
+  warehouse: z.string().optional(),
+  product: z.string().optional(),
   warehouseIds: z.string().uuid().array().optional(),
   productIds: z.string().uuid().array().optional(),
   status: z.string().optional(),
