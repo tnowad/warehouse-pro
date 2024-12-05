@@ -32,7 +32,6 @@ public class AuthenticationService {
   PermissionService permissionService;
   BCryptPasswordEncoder passwordEncoder;
 
-  @PreAuthorize("hasAuthority('PERMISSION_AUTH_LOGIN')")
   public LoginResponse login(LoginRequest request) {
     log.info("Login attempt initiated for email: {}", request.getEmail());
     try {
@@ -117,10 +116,9 @@ public class AuthenticationService {
       var roles = roleService.getRolesForUser(userId);
       log.debug("Roles fetched for user ID: {}: {}", userId, roles);
 
-      var permissionNames =
-          new ArrayList<>(
-              permissionService.getPermissionNamesByRoleIds(
-                  roles.stream().map(role -> role.getId()).toList()));
+      var permissionNames = new ArrayList<>(
+          permissionService.getPermissionNamesByRoleIds(
+              roles.stream().map(role -> role.getId()).toList()));
       permissionNames.add(PermissionName.AUTH_LOGIN);
       permissionNames.add(PermissionName.AUTH_LOGGED_IN);
 

@@ -30,32 +30,19 @@ public class AuthenticationController {
   AuthenticationService authenticationService;
 
   @Operation(summary = "Login")
-  @ApiResponses(
-      value = {
-        @ApiResponse(
-            responseCode = "200",
-            description = "Login success",
-            content = {
-              @Content(
-                  mediaType = "application/json",
-                  schema = @Schema(implementation = LoginResponse.class))
-            }),
-        @ApiResponse(
-            responseCode = "404",
-            description = "User not found",
-            content = {
-              @Content(
-                  mediaType = "application/json",
-                  schema =
-                      @Schema(
-                          implementation = ValidationErrorResponse.class,
-                          example = "User not found"))
-            })
+  @ApiResponses(value = {
+      @ApiResponse(responseCode = "200", description = "Login success", content = {
+          @Content(mediaType = "application/json", schema = @Schema(implementation = LoginResponse.class))
+      }),
+      @ApiResponse(responseCode = "404", description = "User not found", content = {
+          @Content(mediaType = "application/json", schema = @Schema(implementation = ValidationErrorResponse.class, example = "User not found"))
       })
+  })
   @PostMapping("/login")
+  // I removed the @PreAuthorize annotation to make the endpoint public
+  // @PreAuthorize("hasAuthority('PERMISSION_AUTH_LOGIN')")
   public ResponseEntity<LoginResponse> authenticate(
-      @RequestBody @Valid @Parameter(description = "Login request body", required = true)
-          LoginRequest request) {
+      @RequestBody @Valid @Parameter(description = "Login request body", required = true) LoginRequest request) {
     var response = authenticationService.login(request);
     return ResponseEntity.ok(response);
   }
@@ -63,8 +50,7 @@ public class AuthenticationController {
   @Operation(summary = "Refresh token")
   @PostMapping("/refresh")
   public ResponseEntity<RefreshTokenResponse> refreshToken(
-      @RequestBody @Valid @Parameter(description = "Refresh token request body", required = true)
-          RefreshTokenRequest request) {
+      @RequestBody @Valid @Parameter(description = "Refresh token request body", required = true) RefreshTokenRequest request) {
     var response = authenticationService.refreshToken(request.getRefreshToken());
     return ResponseEntity.ok(response);
   }
