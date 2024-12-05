@@ -23,6 +23,7 @@ import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 @Slf4j
@@ -37,6 +38,7 @@ public class OrderService {
   OrderItemService orderItemService;
 
   @Transactional
+  @PreAuthorize("hasAuthority('PERMISSION_ORDER_CREATE')")
   public OrderResponse create(CreateOrderRequest request) {
     if (request.getItems() == null || request.getItems().isEmpty()) {
       throw new IllegalArgumentException("orderItem must not be empty");
@@ -77,6 +79,7 @@ public class OrderService {
     return orderMapper.toOrderResponse(order);
   }
 
+  @PreAuthorize("hasAuthority('PERMISSION_ORDER_LIST')")
   public ItemResponse<OrderResponse> getAll(ListOrderRequest filterRequest) {
     var spec = orderSpecification.getFilterSpecification(filterRequest);
     var pageRequest = PageRequest.of(filterRequest.getPage() - 1, filterRequest.getPageSize());
@@ -97,6 +100,7 @@ public class OrderService {
     return orderRepository.findAll();
   }
 
+  @PreAuthorize("hasAuthority('PERMISSION_ORDER_SEARCH')")
   public OrderResponse getById(String id) {
     Order order =
         orderRepository
@@ -106,6 +110,7 @@ public class OrderService {
   }
 
   @Transactional
+  @PreAuthorize("hasAuthority('PERMISSION_ORDER_UPDATE')")
   public OrderResponse update(String id, UpdateOrderRequest request) {
     Order order =
         orderRepository
@@ -158,6 +163,7 @@ public class OrderService {
   }
 
   @Transactional
+  @PreAuthorize("hasAuthority('PERMISSION_ORDER_DELETE')")
   public void delete(String id) {
     orderRepository.deleteById(id);
   }

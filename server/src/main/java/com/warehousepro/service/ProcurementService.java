@@ -17,6 +17,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 @Slf4j
@@ -65,10 +66,12 @@ public class ProcurementService {
   }
 
   @Transactional
+  @PreAuthorize("hasAuthority('PERMISSION_PROCUREMENT_ORDER_DELETE')")
   public void delete(String id) {
     procurementRepository.deleteById(id);
   }
 
+  @PreAuthorize("hasAuthority('PERMISSION_INVENTORY_PRODUCT_LIST')")
   public ItemResponse<ProcurementResponse> getAll(ListProcurementsRequest filterRequest) {
     var spec = procurementSpecification.getFilterSpecification(filterRequest);
     var pageRequest = PageRequest.of(filterRequest.getPage() - 1, filterRequest.getPageSize());

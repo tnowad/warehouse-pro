@@ -21,6 +21,7 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -34,6 +35,7 @@ public class InventoryService {
   ProductRepository productRepository;
   WareHouseRepository wareHouseRepository;
 
+  @PreAuthorize("hasAuthority('PERMISSION_INVENTORY_PRODUCT_CREATE')")
   public Inventory createInventory(CreateInventoryRequest request) {
     Product product = productRepository.findById(request.getProduct().getId());
     Warehouse warehouse =
@@ -47,12 +49,14 @@ public class InventoryService {
     return inventory;
   }
 
+  @PreAuthorize("hasAuthority('PERMISSION_INVENTORY_PRODUCT_DELETE')")
   @Transactional
   public void deleteInventory(String id) {
     inventoryRepository.deleteById(id);
   }
 
   @Transactional
+  @PreAuthorize("hasAuthority('PERMISSION_INVENTORY_PRODUCT_UPDATE')")
   public InventoryResponse update(String id , UpdateInventoryRequest request){
     Inventory inventory = inventoryRepository.findById(id).orElseThrow();
 
@@ -105,6 +109,7 @@ public class InventoryService {
     return inventoryMapper.toInventoryResponse(inventory);
   }
 
+  @PreAuthorize("hasAuthority('PERMISSION_INVENTORY_PRODUCT_LIST')")
   public ItemResponse<InventoryResponse> getInventories(ListInventoryRequest filterRequest) {
     var spec = specification.getFilterSpecification(filterRequest);
     var pageRequest = PageRequest.of(filterRequest.getPage() - 1, filterRequest.getPageSize());

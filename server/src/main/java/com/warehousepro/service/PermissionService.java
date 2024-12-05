@@ -20,6 +20,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 @Slf4j
@@ -52,6 +53,7 @@ public class PermissionService {
     return permissionRepository.save(permission);
   }
 
+  @PreAuthorize("hasAuthority('PERMISSION_PERMISSION_ASSIGN')")
   public Permission assignRoleToPermission(String perId, String roleId) {
     Permission permission =
         permissionRepository

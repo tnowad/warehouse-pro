@@ -19,6 +19,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 @Slf4j
@@ -32,6 +33,7 @@ public class ShipmentService {
   OrderRepository orderRepository;
 
   @Transactional
+  @PreAuthorize("hasAuthority('PERMISSION_SHIPMENT_CREATE')")
   public Shipment create(CreateShipmentRequest request) {
     Shipment shipment = shipmentMapper.toShipment(request);
     Order order = orderRepository.findById(request.getOrderId()).orElseThrow(
@@ -41,10 +43,12 @@ public class ShipmentService {
     return shipment;
   }
 
+  @PreAuthorize("hasAuthority('PERMISSION_SHIPMENT_SEARCH')")
   public ShipmentResponse getById(String id){
     return shipmentMapper.toShipmentResponse(shipmentRepository.findById(id).orElseThrow(() -> new RuntimeException("Không tìm thấy id")));
   }
 
+  @PreAuthorize("hasAuthority('PERMISSION_SHIPMENT_LIST')")
   public ItemResponse<ShipmentResponse> getAll(ListShipmentRequest filterRequest) {
     var spec = specification.getFilterSpecification(filterRequest);
     var pageRequest = PageRequest.of(filterRequest.getPage() - 1, filterRequest.getPageSize());
@@ -63,6 +67,7 @@ public class ShipmentService {
   }
 
   @Transactional
+  @PreAuthorize("hasAuthority('PERMISSION_SHIPMENT_UPDATE')")
   public ShipmentResponse update(String id , UpdateShipmentRequest request){
       Shipment shipment = shipmentRepository.findById(id).orElseThrow(
         () -> new RuntimeException("Không tồn tại id này trong shipment"));
@@ -100,6 +105,7 @@ public class ShipmentService {
   }
 
   @Transactional
+  @PreAuthorize("hasAuthority('PERMISSION_SHIPMENT_DELETE')")
   public void delete(String id) {
     shipmentRepository.deleteById(id);
   }

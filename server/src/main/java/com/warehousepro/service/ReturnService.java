@@ -25,6 +25,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -41,6 +42,7 @@ public class ReturnService {
   OrderItemService orderItemService;
 
   @Transactional
+  @PreAuthorize("hasAuthority('PERMISSION_RETURN_CREATE')")
   public ReturnResponse create(CreateReturnRequest request) {
     log.info("Creating a return for order item ID: {}", request.getOrderItemId());
     Return returns = mapper.toReturn(request);
@@ -49,6 +51,7 @@ public class ReturnService {
     return mapper.toReturnResponse(returns);
   }
 
+  @PreAuthorize("hasAuthority('PERMISSION_RETURN_LIST')")
   public ItemResponse<ReturnResponse> getAll(ListReturnRequest filterRequest) {
     log.info("Fetching all returns with filters: {}", filterRequest);
     var spec = specification.getFilterSpecification(filterRequest);
@@ -67,6 +70,7 @@ public class ReturnService {
         .build();
   }
 
+  @PreAuthorize("hasAuthority('PERMISSION_RETURN_UPDATE')")
   public ReturnResponse update(String id , UpdateReturnRequest request){
     Return returns = repository.findById(id).orElseThrow(() -> new RuntimeException("Không tìm thấy return id"));
 
@@ -110,6 +114,7 @@ public class ReturnService {
   }
 
   @Transactional
+  @PreAuthorize("hasAuthority('PERMISSION_RETURN_DELETE')")
   public void delete(String id) {
     log.info("Deleting return with ID: {}", id);
     repository.deleteById(id);

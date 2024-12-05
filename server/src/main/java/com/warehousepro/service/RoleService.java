@@ -20,6 +20,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 @Slf4j
@@ -33,6 +34,7 @@ public class RoleService {
   PermissionRepository permissionRepository;
 
   @Transactional
+  @PreAuthorize("hasAuthority('PERMISSION_ROLE_CREATE')")
   public Role createRole(CreateRoleRequest request) {
     log.info("Creating role with name: {}", request.getName());
 
@@ -64,6 +66,7 @@ public class RoleService {
   }
 
   @Transactional
+  @PreAuthorize("hasAuthority('PERMISSION_ROLE_UPDATE')")
   public RoleResponse updateRole(String id, UpdateRoleRequest request) {
     log.info("Updating role with ID: {}", id);
 
@@ -109,6 +112,7 @@ public class RoleService {
   }
 
   @Transactional
+  @PreAuthorize("hasAuthority('PERMISSION_ROLE_DELETE')")
   public void deleteRole(String id) {
     log.info("Deleting role with ID: {}", id);
 

@@ -21,6 +21,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -36,6 +37,7 @@ public class WarehouseService {
   WareHouseMapper warehouseMapper;
 
   WareHouseSpecification wareHouseSpecification;
+
 
   public Page<Warehouse> filterWarehouses(
       int limit, int offset, Map<String, String> filterBy, String sortBy, String orderBy) {
@@ -84,10 +86,12 @@ public class WarehouseService {
     return warehouseRepository.findById(id).orElseThrow(); // not supported Exception
   }
 
+  @PreAuthorize("hasAuthority('PERMISSION_WAREHOUSE_CREATE')")
   public Warehouse createWareHouse(CreateWareHouseRequest warehouseRequest) {
     return warehouseRepository.save(warehouseMapper.toWarehouse(warehouseRequest));
   }
 
+  @PreAuthorize("hasAuthority('PERMISSION_WAREHOUSE_UPDATE')")
   public Warehouse updateWareHouse(String id, UpdateWarehouseRequestDto wareHouseUpdateRequestDto) {
     Warehouse wareHouse = getWareHouse(id);
 
@@ -100,6 +104,8 @@ public class WarehouseService {
     warehouseRepository.deleteById(id);
   }
 
+
+  @PreAuthorize("hasAuthority('PERMISSION_WAREHOUSE_LIST')")
   public ItemResponse<WareHouseResponse> getAllWarehouses(ListWarehouseRequest filterRequest) {
     var spec = wareHouseSpecification.getFilterSpecification(filterRequest);
     var pageRequest = PageRequest.of(filterRequest.getPage() - 1, filterRequest.getPageSize());

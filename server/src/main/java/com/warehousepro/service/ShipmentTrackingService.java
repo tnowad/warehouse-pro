@@ -19,6 +19,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 @Slf4j
@@ -50,6 +51,7 @@ public class ShipmentTrackingService {
     return mapper.toShipmentTrackingResponse(repository.findById(id).orElseThrow());
   }
 
+  @PreAuthorize("hasAuthority('PERMISSION_SHIPMENT_TRACKING_VIEW')")
   public ItemResponse<ShipmentTrackingResponse> getAll(ListShipmentTracking request) {
     var spec = shipmentTrackingSpecification.getFilterSpecification(request);
     var pageRequest = PageRequest.of(request.getPage() - 1, request.getPageSize());

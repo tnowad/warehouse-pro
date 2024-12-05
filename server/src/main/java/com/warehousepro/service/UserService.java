@@ -24,6 +24,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -42,6 +43,7 @@ public class UserService {
   UserSpecification userSpecification;
 
   @Transactional
+  @PreAuthorize("hasPermission('PERMISSION_USER_LIST')")
   public UserResponse registerUser(CreateUserRequest request) {
     log.info("Creating user with email: {}", request.getEmail());
     if (userRepository.findByEmail(request.getEmail()).isPresent()) {
@@ -74,6 +76,7 @@ public class UserService {
                 }));
   }
 
+  @PreAuthorize("hasAuthority('PERMISSION_USER_LIST')")
   public ItemResponse<UserResponse> findUsersByFilter(ListUserRequest filterRequest) {
     log.debug("Fetching users with filter request: {}", filterRequest);
     var spec = userSpecification.getFilterSpecification(filterRequest);
@@ -133,6 +136,8 @@ public class UserService {
   }
 
   @Transactional
+  @PreAuthorize("hasAuthority('PERMISSION_USER_DELETE')")
+
   public void removeUserById(String id) {
     log.info("Deleting user with ID: {}", id);
     userRepository.deleteById(id);
@@ -201,6 +206,7 @@ public class UserService {
     return permissions;
   }
 
+  @PreAuthorize("hasAuthority('PERMISSION_USER_UPDATE')")
   @Transactional
   public UserResponse updateUserDetails(String id, UpdateUserRequest request) {
     log.info("Updating user with ID: {}", id);

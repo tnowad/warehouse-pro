@@ -20,6 +20,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -41,6 +42,7 @@ public class ProductService {
   }
 
   @Transactional
+  @PreAuthorize("hasAuthority('PERMISSION_INVENTORY_PRODUCT_UPDATE')")
   public ProductResponse update(String id , UpdateProductRequest request){
     Product product = productRepository.findById(id);
     if (request.getDescription() != null){
@@ -73,6 +75,7 @@ public class ProductService {
     productRepository.deleteById(id);
   }
 
+  @PreAuthorize("hasAuthority('PERMISSION_INVENTORY_PRODUCT_LIST')")
   public ItemResponse<ProductResponse> getAll(ListProductRequest filterRequest) {
     var spec = specification.getFilterSpecification(filterRequest);
     var pageRequest = PageRequest.of(filterRequest.getPage() - 1, filterRequest.getPageSize());

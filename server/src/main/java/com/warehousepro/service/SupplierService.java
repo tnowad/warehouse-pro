@@ -16,6 +16,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 @Slf4j
@@ -60,6 +61,7 @@ public class SupplierService {
     return supplierMapper.toSupplierResponse(supplierRepository.findById(supplierId).get());
   }
 
+  @PreAuthorize("hasAuthority('PERMISSION_PROCUREMENT_SUPPLIER_UPDATE')")
   public SupplierResponse update(String supplierId, UpdateSupplierRequest request) {
     Supplier supplier = supplierRepository.findById(supplierId).get();
     supplier.setName(request.getName());
