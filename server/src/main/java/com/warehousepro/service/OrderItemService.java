@@ -40,7 +40,7 @@ public class OrderItemService {
   public OrderItem create(Order order, CreateOrderItemRequest request) {
     OrderItem orderItem = mapper.toOrderItem(request);
 
-    Product product = productRepository.findById(request.getProductId());
+    Product product = productRepository.findById(Integer.parseInt( request.getProductId())).orElseThrow();
     Warehouse warehouse = wareHouseRepository.findById(request.getWarehouseId()).orElseThrow();
 
     var total =

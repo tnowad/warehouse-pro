@@ -34,7 +34,8 @@ public class ProcurementItemService {
       throw new RuntimeException("The product not in supplier");
     }
 
-    Product product = productRepository.findById(request.getProductId());
+    Product product = productRepository.findById(Integer.parseInt(request.getProductId()))
+      .orElseThrow(() ->new RuntimeException("Không tìm thấy product"));
     Warehouse warehouse = wareHouseRepository.getById(request.getWarehouseId());
 
     inventoryService.checkAndUpdateInventory(

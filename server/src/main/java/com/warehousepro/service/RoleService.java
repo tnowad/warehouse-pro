@@ -38,6 +38,11 @@ public class RoleService {
   public Role createRole(CreateRoleRequest request) {
     log.info("Creating role with name: {}", request.getName());
 
+    if (request.getName() == null || request.getName().isEmpty()){
+      throw new RuntimeException("tên quyền không được để trống");
+    }
+
+
     Role role = roleMapper.toRole(request);
     roleRepository.save(role);
 

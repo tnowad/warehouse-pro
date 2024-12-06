@@ -37,11 +37,15 @@ public class InventoryService {
 
   @PreAuthorize("hasAuthority('PERMISSION_INVENTORY_PRODUCT_CREATE')")
   public Inventory createInventory(CreateInventoryRequest request) {
-    Product product = productRepository.findById(request.getProduct().getId());
+    Product product = productRepository.findById(
+      Integer.parseInt(request.getProduct().getId())).orElseThrow(() -> new RuntimeException("Product not found"));
     Warehouse warehouse =
         wareHouseRepository
             .findById(request.getWarehouse().getId())
             .orElseThrow(() -> new EntityNotFoundException("Warehouse not found"));
+
+
+
     Inventory inventory = inventoryMapper.toInventory(request);
     inventory.setProduct(product);
     inventory.setWarehouse(warehouse);
