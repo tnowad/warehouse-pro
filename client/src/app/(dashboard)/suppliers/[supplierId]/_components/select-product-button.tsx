@@ -30,10 +30,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { listProductsQueryFilterSchema } from "@/lib/apis/list-products.api";
 import { createListProductsQueryOptions } from "@/hooks/queries/list-products.query";
-import { createListWarehousesQueryOptions } from "@/hooks/queries/list-warehouses.query";
-import { WarehouseSchema } from "@/lib/schemas/warehouse.schema";
 import _ from "lodash";
 
 export type SelectProductButtonProps = {
@@ -41,9 +38,7 @@ export type SelectProductButtonProps = {
 };
 
 function SelectProductButton({ onSelect }: SelectProductButtonProps) {
-  const columns = useMemo<
-    ColumnDef<ProductSchema & { warehouse: WarehouseSchema | undefined }>[]
-  >(
+  const columns = useMemo<ColumnDef<ProductSchema>[]>(
     () => [
       {
         id: "select",
@@ -86,32 +81,6 @@ function SelectProductButton({ onSelect }: SelectProductButtonProps) {
         accessorKey: "sku",
         header: ({ column }) => (
           <DataTableColumnHeader column={column} title="SKU" />
-        ),
-      },
-      {
-        accessorKey: "price",
-        header: ({ column }) => (
-          <DataTableColumnHeader column={column} title="Price" />
-        ),
-      },
-      {
-        accessorKey: "warehouseId",
-        header: ({ column }) => (
-          <DataTableColumnHeader column={column} title="Warehouse ID" />
-        ),
-      },
-      {
-        accessorKey: "warehouse",
-        header: ({ column }) => (
-          <DataTableColumnHeader column={column} title="Warehouse" />
-        ),
-        cell: ({ row }) => (
-          <Link
-            href={`/warehouses/${row.original.warehouseId}`}
-            target="_blank"
-          >
-            {row.original.warehouse?.name ?? row.original.warehouseId}
-          </Link>
         ),
       },
       {
@@ -178,30 +147,16 @@ function SelectProductButton({ onSelect }: SelectProductButtonProps) {
     }),
   );
 
-  const listWarehouseQuery = useQuery(
-    createListWarehousesQueryOptions({
-      ids: _.uniq(_.map(listProductsQuery.data?.items, "warehouseId")),
-      pageSize: pagination.pageSize,
-    }),
-  );
-
   const products = useMemo(
     () => listProductsQuery.data?.items ?? [],
     [listProductsQuery.data?.items],
-  );
-  const warehouses = useMemo(
-    () => listWarehouseQuery.data?.items ?? [],
-    [listWarehouseQuery.data?.items],
   );
 
   const rowCount = listProductsQuery.data?.rowCount ?? 0;
 
   const data = useMemo(() => {
-    return products.map((product) => {
-      const warehouse = _.find(warehouses, { id: product.warehouseId });
-      return { ...product, warehouse };
-    });
-  }, [products, warehouses]);
+    return products;
+  }, [products]);
 
   const table = useReactTable({
     data,
@@ -233,7 +188,7 @@ function SelectProductButton({ onSelect }: SelectProductButtonProps) {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button lassName="mx-auto">Select Product</Button>
+        <Button className="mx-auto">Select Product</Button>
       </DialogTrigger>
       <DialogContent
         className="max-w-screen-lg w-full max-h-screen flex flex-col"
