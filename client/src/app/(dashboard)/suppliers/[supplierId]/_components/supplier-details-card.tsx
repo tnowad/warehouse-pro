@@ -230,6 +230,11 @@ export function SupplierDetailsCard({ supplierId }: SupplierDetailsCardProps) {
         </AlertDialog>
 
         <Button size="sm">
+          <Link href={`/suppliers/${supplierId}/procurements/new`}>
+            Create Procurement
+          </Link>
+        </Button>
+        <Button size="sm">
           <Link href={`/suppliers/${supplierId}/edit`}>Edit Supplier</Link>
         </Button>
       </CardFooter>

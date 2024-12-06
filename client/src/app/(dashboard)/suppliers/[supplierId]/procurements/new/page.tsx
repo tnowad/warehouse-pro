@@ -5,6 +5,6 @@ export default async function Page({
 }: {
   params: { supplierId: string };
 }) {
-  const { supplierId } = params;
+  const { supplierId } = await params;
   return <CreateProcurementForm supplierId={supplierId} />;
 }
