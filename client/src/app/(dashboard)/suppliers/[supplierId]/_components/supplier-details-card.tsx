@@ -163,10 +163,16 @@ export function SupplierDetailsCard({ supplierId }: SupplierDetailsCardProps) {
               <TableRow>
                 <TableHead>Product</TableHead>
                 <TableHead>Supplier</TableHead>
-                <TableHead>Quantity</TableHead>
-                <TableHead>Discount</TableHead>
+                <TableHead>Available Status</TableHead>
+                <TableHead>Lead Time days</TableHead>
                 <TableHead>Price</TableHead>
-                <TableHead>Total</TableHead>
+                <TableHead>
+                  <Button size="sm">
+                    <Link href={`/suppliers/${supplierId}/products/new`}>
+                      Add Product
+                    </Link>
+                  </Button>
+                </TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -184,10 +190,9 @@ export function SupplierDetailsCard({ supplierId }: SupplierDetailsCardProps) {
                   <TableRow key={item.id}>
                     <TableCell>{productName}</TableCell>
                     <TableCell>{supplierName}</TableCell>
-                    <TableCell>{item.quantity}</TableCell>
-                    <TableCell>{item.discount}</TableCell>
-                    <TableCell>${item.price}</TableCell>
-                    <TableCell>${item.totalPrice}</TableCell>
+                    <TableCell>{item.availabilityStatus}</TableCell>
+                    <TableCell>{item.leadTimeDays}</TableCell>
+                    <TableCell>{item.price}</TableCell>
                   </TableRow>
                 );
               })}

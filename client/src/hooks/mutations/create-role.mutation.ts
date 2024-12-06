@@ -22,5 +22,6 @@ export function useCreateRoleMutation() {
         queryKey: ["roles"],
       });
     },
+    throwOnError: isAxiosError,
   });
 }

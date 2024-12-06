@@ -8,3 +8,5 @@ export const supplierProductSchema = z.object({
   price: z.number().positive(),
   availabilityStatus: z.string(),
 });
+
+export type SupplierProductSchema = z.infer<typeof supplierProductSchema>;
