@@ -56,7 +56,6 @@ function CreateProcurementForm({ supplierId }: CreateProcurementFormProps) {
       orderDate: "",
       deliveryDate: "",
       status: "PENDING",
-      totalCost: 0,
       items: [],
     },
   });

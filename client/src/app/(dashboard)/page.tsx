@@ -8,6 +8,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 // import { RecentActivities } from "./recent-activities.tsx";
 // import { InventoryChart } from "./inventory-chart";
 import { DollarSign, Package, Truck, BarChart2 } from "lucide-react";
+import { Analytics } from "./_components/analytics";
+import { Reports } from "./_components/reports";
 
 export default function DashboardPage() {
   const [selectedWarehouseIds, setSelectedWarehouseIds] = useState<string[]>(
@@ -29,12 +31,8 @@ export default function DashboardPage() {
       <Tabs defaultValue="overview" className="space-y-4">
         <TabsList>
           <TabsTrigger value="overview">Overview</TabsTrigger>
-          <TabsTrigger value="analytics" disabled>
-            Analytics
-          </TabsTrigger>
-          <TabsTrigger value="reports" disabled>
-            Reports
-          </TabsTrigger>
+          <TabsTrigger value="analytics">Analytics</TabsTrigger>
+          <TabsTrigger value="reports">Reports</TabsTrigger>
         </TabsList>
         <TabsContent value="overview" className="space-y-4">
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
@@ -110,6 +108,13 @@ export default function DashboardPage() {
               <SalesReportLineChartCard />
             </div>
           </div>
+        </TabsContent>
+
+        <TabsContent value="analytics" className="space-y-4">
+          <Analytics selectedWarehouseIds={selectedWarehouseIds} />
+        </TabsContent>
+        <TabsContent value="reports" className="space-y-4">
+          <Reports selectedWarehouseIds={selectedWarehouseIds} />
         </TabsContent>
       </Tabs>
     </div>
