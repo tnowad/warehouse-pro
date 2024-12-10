@@ -208,9 +208,6 @@ export function OrderTable() {
 
   return (
     <div>
-      <Button asChild>
-        <Link href="/orders/create">Create Order</Link>
-      </Button>
       <div className="flex items-center py-4 gap-2">
         <Input
           value={globalFilter ?? ""}
@@ -232,6 +229,10 @@ export function OrderTable() {
           Clear Filter
         </Button>
         <DataTableViewOptions table={table} />
+
+        <Button asChild size={"sm"}>
+          <Link href="/orders/create">Create Order</Link>
+        </Button>
       </div>
       <div className="rounded-md border">
         <DataTable table={table} status={status} error={error} />
