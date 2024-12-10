@@ -162,7 +162,6 @@ export function SupplierDetailsCard({ supplierId }: SupplierDetailsCardProps) {
             <TableHeader>
               <TableRow>
                 <TableHead>Product</TableHead>
-                <TableHead>Supplier</TableHead>
                 <TableHead>Available Status</TableHead>
                 <TableHead>Lead Time days</TableHead>
                 <TableHead>Price</TableHead>
@@ -189,7 +188,6 @@ export function SupplierDetailsCard({ supplierId }: SupplierDetailsCardProps) {
                 return (
                   <TableRow key={item.id}>
                     <TableCell>{productName}</TableCell>
-                    <TableCell>{supplierName}</TableCell>
                     <TableCell>{item.availabilityStatus}</TableCell>
                     <TableCell>{item.leadTimeDays}</TableCell>
                     <TableCell>{item.price}</TableCell>
