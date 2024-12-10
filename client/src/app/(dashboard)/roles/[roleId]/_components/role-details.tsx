@@ -104,7 +104,7 @@ export function RoleDetails({ roleId }: RoleDetailProps) {
 
   if (roleDetailsQuery.isError) {
     return (
-      <Card className="w-full max-w-3xl mx-auto">
+      <Card className="w-full mx-auto">
         <CardHeader>
           <CardTitle>Error</CardTitle>
           <CardDescription>
@@ -124,7 +124,7 @@ export function RoleDetails({ roleId }: RoleDetailProps) {
 
   if (!role) {
     return (
-      <Card className="w-full max-w-3xl mx-auto">
+      <Card className="w-full mx-auto">
         <CardHeader>
           <CardTitle>Role not found</CardTitle>
           <CardDescription>
@@ -143,7 +143,7 @@ export function RoleDetails({ roleId }: RoleDetailProps) {
   }
 
   return (
-    <Card className="w-full max-w-3xl mx-auto">
+    <Card className="w-full mx-auto">
       <CardHeader>
         <div className="flex justify-between items-center">
           <CardTitle>{role.name}</CardTitle>
