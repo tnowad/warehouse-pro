@@ -199,7 +199,6 @@ export function RoleDetails({ roleId }: RoleDetailProps) {
             </Button>
             {showPermissions && (
               <Table>
-                <TableCaption>A list of your recent invoices.</TableCaption>
                 <TableHeader>
                   <TableRow>
                     <TableHead>Name</TableHead>
