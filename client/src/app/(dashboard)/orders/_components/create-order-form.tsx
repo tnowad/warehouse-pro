@@ -167,7 +167,7 @@ function CreateOrderForm() {
               <TableHead>Price</TableHead>
               <TableHead>Discount</TableHead>
               <TableHead>Subtotal</TableHead>
-              <TableHead>
+              <TableHead className="flex justify-center">
                 <SelectInventoryProductButton
                   onSelect={(inventory) => {
                     orderItemsFieldArray.append({

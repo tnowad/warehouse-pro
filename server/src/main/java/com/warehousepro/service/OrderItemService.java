@@ -40,11 +40,10 @@ public class OrderItemService {
   public OrderItem create(Order order, CreateOrderItemRequest request) {
     OrderItem orderItem = mapper.toOrderItem(request);
 
-    Product product = productRepository.findById(Integer.parseInt( request.getProductId())).orElseThrow();
+    Product product = productRepository.findById(request.getProductId()).orElseThrow();
     Warehouse warehouse = wareHouseRepository.findById(request.getWarehouseId()).orElseThrow();
 
-    var total =
-        request.getPrice() * request.getQuantity() - request.getDiscount() * request.getQuantity();
+    var total = request.getPrice() * request.getQuantity() - request.getDiscount() * request.getQuantity();
     if (total < 0) {
       total = 0.0;
     }
@@ -70,19 +69,17 @@ public class OrderItemService {
     var pageCount = (int) Math.ceil((double) totalItems / request.getPageSize());
 
     return ItemResponse.<OrderItemResponse>builder()
-      .items(orderItems.stream().map(mapper::toOrderItemReponse).toList())
-      .rowCount((int) totalItems)
-      .page(page)
-      .pageCount(pageCount)
-      .build();
+        .items(orderItems.stream().map(mapper::toOrderItemReponse).toList())
+        .rowCount((int) totalItems)
+        .page(page)
+        .pageCount(pageCount)
+        .build();
   }
 
-
   public OrderItemResponse getById(String id) {
-    OrderItem orderItem =
-        repository
-            .findById(id)
-            .orElseThrow(() -> new RuntimeException("order item id không tồn tại"));
+    OrderItem orderItem = repository
+        .findById(id)
+        .orElseThrow(() -> new RuntimeException("order item id không tồn tại"));
     return mapper.toOrderItemReponse(orderItem);
   }
 
@@ -94,8 +91,7 @@ public class OrderItemService {
   @Transactional
   public void update(UpdateOrderItemRequest updateOrderItemRequest) {
     var id = updateOrderItemRequest.getId();
-    OrderItem orderItem =
-        repository.findById(id).orElseThrow(() -> new RuntimeException("Order item not found"));
+    OrderItem orderItem = repository.findById(id).orElseThrow(() -> new RuntimeException("Order item not found"));
 
     Product product = orderItem.getProduct();
     Warehouse warehouse = orderItem.getWarehouse();
@@ -111,9 +107,8 @@ public class OrderItemService {
           product.getId(), warehouse.getId(), quantityDifference);
     }
 
-    double total =
-        updateOrderItemRequest.getPrice() * updateOrderItemRequest.getQuantity()
-            - updateOrderItemRequest.getDiscount() * updateOrderItemRequest.getQuantity();
+    double total = updateOrderItemRequest.getPrice() * updateOrderItemRequest.getQuantity()
+        - updateOrderItemRequest.getDiscount() * updateOrderItemRequest.getQuantity();
 
     if (total < 0) {
       total = 0.0;
@@ -128,8 +123,7 @@ public class OrderItemService {
   }
 
   public void updateStatus(String id, OrderItemStatus returned) {
-    var orderItem =
-        repository.findById(id).orElseThrow(() -> new RuntimeException("Order item not found"));
+    var orderItem = repository.findById(id).orElseThrow(() -> new RuntimeException("Order item not found"));
     orderItem.setStatus(returned);
     repository.save(orderItem);
   }
