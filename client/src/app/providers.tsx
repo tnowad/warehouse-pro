@@ -15,7 +15,6 @@ export function Providers({ children }: { children: React.ReactNode }) {
       <QueryErrorResetBoundary>
         {children}
         <Toaster />
-        <ReactQueryDevtools />
       </QueryErrorResetBoundary>
     </QueryClientProvider>
   );
