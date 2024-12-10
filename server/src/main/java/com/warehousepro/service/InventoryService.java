@@ -38,13 +38,17 @@ public class InventoryService {
   @PreAuthorize("hasAuthority('PERMISSION_INVENTORY_PRODUCT_CREATE')")
   public Inventory createInventory(CreateInventoryRequest request) {
     Product product = productRepository.findById(
-      Integer.parseInt(request.getProduct().getId())).orElseThrow(() -> new RuntimeException("Product not found"));
-    Warehouse warehouse =
-        wareHouseRepository
-            .findById(request.getWarehouse().getId())
-            .orElseThrow(() -> new EntityNotFoundException("Warehouse not found"));
+        (request.getProductId())).orElseThrow(() -> new RuntimeException("Product not found"));
+    Warehouse warehouse = wareHouseRepository
+        .findById(request.getWarehouseId())
+        .orElseThrow(() -> new EntityNotFoundException("Warehouse not found"));
 
-
+    inventoryRepository
+        .findByProductIdAndWarehouseId(product.getId(), warehouse.getId())
+        .ifPresent(
+            inventory -> {
+              throw new IllegalArgumentException("Inventory already exists for the product and warehouse combination");
+            });
 
     Inventory inventory = inventoryMapper.toInventory(request);
     inventory.setProduct(product);
@@ -61,7 +65,7 @@ public class InventoryService {
 
   @Transactional
   @PreAuthorize("hasAuthority('PERMISSION_INVENTORY_PRODUCT_UPDATE')")
-  public InventoryResponse update(String id , UpdateInventoryRequest request){
+  public InventoryResponse update(String id, UpdateInventoryRequest request) {
     Inventory inventory = inventoryRepository.findById(id).orElseThrow();
 
     if (request.getQuantity() != null) {
@@ -88,10 +92,9 @@ public class InventoryService {
 
   public InventoryResponse checkAndUpdateInventory(
       String productId, String warehouseId, int quantity) {
-    var inventory =
-        inventoryRepository
-            .findByProductIdAndWarehouseId(productId, warehouseId)
-            .orElseThrow(() -> new EntityNotFoundException("Inventory not found"));
+    var inventory = inventoryRepository
+        .findByProductIdAndWarehouseId(productId, warehouseId)
+        .orElseThrow(() -> new EntityNotFoundException("Inventory not found"));
 
     if (inventory.getStatus() == InventoryStatus.IN_ACTIVE) {
       throw new IllegalArgumentException("Inventory is inactive");
@@ -126,18 +129,17 @@ public class InventoryService {
         .items(
             inventories.stream()
                 .map(
-                    inventory ->
-                        InventoryResponse.builder()
-                            .id(inventory.getId())
-                            .createdAt(inventory.getCreatedAt())
-                            .updatedAt(inventory.getUpdatedAt())
-                            .status(inventory.getStatus())
-                            .price(inventory.getPrice())
-                            .minimumStockLevel(inventory.getMinimumStockLevel())
-                            .quantity(inventory.getQuantity())
-                            .warehouseId(inventory.getWarehouse().getId())
-                            .productId(inventory.getProduct().getId())
-                            .build())
+                    inventory -> InventoryResponse.builder()
+                        .id(inventory.getId())
+                        .createdAt(inventory.getCreatedAt())
+                        .updatedAt(inventory.getUpdatedAt())
+                        .status(inventory.getStatus())
+                        .price(inventory.getPrice())
+                        .minimumStockLevel(inventory.getMinimumStockLevel())
+                        .quantity(inventory.getQuantity())
+                        .warehouseId(inventory.getWarehouse().getId())
+                        .productId(inventory.getProduct().getId())
+                        .build())
                 .collect(Collectors.toList()))
         .rowCount(Integer.valueOf(totalItems + ""))
         .page(page)

@@ -7,8 +7,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface ProductRepository
-    extends JpaRepository<Product, Integer>, JpaSpecificationExecutor<Product> {
-
+    extends JpaRepository<Product, String>, JpaSpecificationExecutor<Product> {
 
   void deleteById(String id);
 }
