@@ -146,4 +146,9 @@ public class InventoryService {
         .pageCount(pageCount)
         .build();
   }
+
+  public InventoryResponse findById(String id) {
+    Inventory inventory = inventoryRepository.findById(id).orElseThrow();
+    return inventoryMapper.toInventoryResponse(inventory);
+  }
 }

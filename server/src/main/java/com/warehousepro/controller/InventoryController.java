@@ -34,6 +34,11 @@ public class InventoryController {
     return ResponseEntity.ok(inventoryService.getInventories(inventoryRequest));
   }
 
+  @GetMapping("/{id}")
+  public ResponseEntity<InventoryResponse> findById(@PathVariable("id") String id) {
+    return ResponseEntity.ok(inventoryService.findById(id));
+  }
+
   @DeleteMapping("/{id}")
   public ResponseEntity<String> delete(@PathVariable("id") String id) {
     inventoryService.deleteInventory(id);
@@ -41,9 +46,9 @@ public class InventoryController {
   }
 
   @PutMapping("/{id}")
-  public ResponseEntity<InventoryResponse> update(@PathVariable("id") String id , @RequestBody UpdateInventoryRequest request){
+  public ResponseEntity<InventoryResponse> update(@PathVariable("id") String id,
+      @RequestBody UpdateInventoryRequest request) {
     return ResponseEntity.ok(inventoryService.update(id, request));
   }
-
 
 }

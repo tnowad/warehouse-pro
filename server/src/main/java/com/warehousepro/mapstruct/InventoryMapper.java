@@ -11,6 +11,8 @@ public interface InventoryMapper {
   @Mapping(target = "product", ignore = true)
   Inventory toInventory(CreateInventoryRequest inventoryRequest);
 
+  @Mapping(target = "productId", source = "product.id")
+  @Mapping(target = "warehouseId", source = "warehouse.id")
   InventoryResponse toInventoryResponse(Inventory inventory);
 
   InventoryResponse toInventoryResponse(CreateInventoryRequest inventoryRequest);

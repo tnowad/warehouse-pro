@@ -1,7 +1,12 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { CreateInventoryForm } from "./_components/create-inventory-form";
+import { UpdateInventoryForm } from "./_components/update-inventory-form";
 
-export default function Page() {
+type Params = Promise<{
+  inventoryId: string;
+}>;
+
+export default async function Page({ params }: { params: Params }) {
+  const { inventoryId } = await params;
   return (
     <Card>
       <CardHeader>
@@ -10,7 +15,7 @@ export default function Page() {
         </CardTitle>
       </CardHeader>
       <CardContent>
-        <CreateInventoryForm />;
+        <UpdateInventoryForm inventoryId={inventoryId} />
       </CardContent>
     </Card>
   );
