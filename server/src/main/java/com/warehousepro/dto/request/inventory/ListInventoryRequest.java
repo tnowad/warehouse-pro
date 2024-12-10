@@ -24,4 +24,5 @@ public class ListInventoryRequest {
   String status;
   String createdAt;
   String updatedAt;
+  Boolean lowStock;
 }

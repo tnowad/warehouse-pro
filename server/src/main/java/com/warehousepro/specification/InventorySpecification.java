@@ -165,6 +165,10 @@ public class InventorySpecification {
                 .toPredicate(root, query, criteriaBuilder));
       }
 
+      if (filterRequest.getLowStock() != null && filterRequest.getLowStock()) {
+        predicates.add(criteriaBuilder.lessThan(root.get("quantity"), root.get("minimumStockLevel")));
+      }
+
       // Handle sorting if needed
       if (filterRequest.getSort() != null && !filterRequest.getSort().isEmpty()) {
         String[] sortParams = filterRequest.getSort().split(",");

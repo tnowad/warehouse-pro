@@ -9,6 +9,7 @@ export const listInventoriesQueryFilterSchema = z.object({
   warehouseIds: z.string().uuid().array().optional(),
   productIds: z.string().uuid().array().optional(),
   status: z.string().optional(),
+  lowStock: z.boolean().optional(),
 });
 export type ListInventoriesQueryFilterSchema = z.infer<
   typeof listInventoriesQueryFilterSchema
