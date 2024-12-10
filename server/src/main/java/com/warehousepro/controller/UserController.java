@@ -19,6 +19,7 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -30,39 +31,24 @@ public class UserController {
   UserService userService;
 
   @PostMapping
+  @PreAuthorize("hasAuthority('PERMISSION_USER_CREATE')")
   ResponseEntity<UserResponse> createUser(@RequestBody CreateUserRequest request) {
     var user = userService.registerUser(request);
     return ResponseEntity.ok(user);
   }
 
   @Operation(summary = "Get a user by its id")
-  @ApiResponses(
-      value = {
-        @ApiResponse(
-            responseCode = "200",
-            description = "Found the user",
-            content = {
-              @Content(
-                  mediaType = "application/json",
-                  schema = @Schema(implementation = UserResponse.class))
-            }),
-        @ApiResponse(
-            responseCode = "400",
-            description = "Invalid id supplied",
-            content = {
-              @Content(
-                  mediaType = "application/json",
-                  schema = @Schema(implementation = Error.class))
-            }),
-        @ApiResponse(
-            responseCode = "404",
-            description = "User not found",
-            content = {
-              @Content(
-                  mediaType = "application/json",
-                  schema = @Schema(implementation = Error.class))
-            })
+  @ApiResponses(value = {
+      @ApiResponse(responseCode = "200", description = "Found the user", content = {
+          @Content(mediaType = "application/json", schema = @Schema(implementation = UserResponse.class))
+      }),
+      @ApiResponse(responseCode = "400", description = "Invalid id supplied", content = {
+          @Content(mediaType = "application/json", schema = @Schema(implementation = Error.class))
+      }),
+      @ApiResponse(responseCode = "404", description = "User not found", content = {
+          @Content(mediaType = "application/json", schema = @Schema(implementation = Error.class))
       })
+  })
   @GetMapping("/{userId}")
   ResponseEntity<UserResponse> getUserById(
       @PathVariable @Parameter(description = "id of user to be searched") String userId) {

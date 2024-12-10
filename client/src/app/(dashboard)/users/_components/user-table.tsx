@@ -225,6 +225,10 @@ export function UserTable() {
             Clear Filter
           </Button>
           <DataTableViewOptions table={table} />
+
+          <Button size={"sm"} asChild>
+            <Link href="/users/new">New</Link>
+          </Button>
         </div>
         <div className="rounded-md border min-w-full max-w-full w-full">
           <DataTable table={table} status={status} error={error} />

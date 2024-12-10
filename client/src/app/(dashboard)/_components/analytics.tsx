@@ -26,9 +26,7 @@ import {
   ResponsiveContainer,
 } from "recharts";
 
-interface AnalyticsProps {
-  selectedWarehouseIds: string[];
-}
+interface AnalyticsProps {}
 
 const inventoryData = [
   { name: "In Stock", value: 65 },
@@ -52,7 +50,7 @@ const COLORS = [
   "hsl(var(--chart-5))",
 ];
 
-export function Analytics({ selectedWarehouseIds }: AnalyticsProps) {
+export function Analytics() {
   const [activeTab, setActiveTab] = useState("inventory");
 
   return (

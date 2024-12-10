@@ -43,7 +43,6 @@ public class UserService {
   UserSpecification userSpecification;
 
   @Transactional
-  @PreAuthorize("hasPermission('PERMISSION_USER_LIST')")
   public UserResponse registerUser(CreateUserRequest request) {
     log.info("Creating user with email: {}", request.getEmail());
     if (userRepository.findByEmail(request.getEmail()).isPresent()) {
@@ -52,12 +51,11 @@ public class UserService {
           Map.of("email", List.of("Email has been used")), "User already exists");
     }
 
-    User user =
-        User.builder()
-            .email(request.getEmail())
-            .name(request.getName())
-            .password(passwordEncoder.encode(request.getPassword()))
-            .build();
+    User user = User.builder()
+        .email(request.getEmail())
+        .name(request.getName())
+        .password(passwordEncoder.encode(request.getPassword()))
+        .build();
 
     User savedUser = userRepository.save(user);
     log.info("User created successfully with ID: {}", savedUser.getId());
@@ -147,23 +145,21 @@ public class UserService {
   @Transactional
   public User addRoleToUser(String userId, String roleId) {
     log.info("Assigning role {} to user {}", roleId, userId);
-    User user =
-        userRepository
-            .findById(userId)
-            .orElseThrow(
-                () -> {
-                  log.error("User with ID {} not found", userId);
-                  return new EntityNotFoundException("User not found");
-                });
+    User user = userRepository
+        .findById(userId)
+        .orElseThrow(
+            () -> {
+              log.error("User with ID {} not found", userId);
+              return new EntityNotFoundException("User not found");
+            });
 
-    Role role =
-        roleRepository
-            .findById(roleId)
-            .orElseThrow(
-                () -> {
-                  log.error("Role with ID {} not found", roleId);
-                  return new EntityNotFoundException("Role not found");
-                });
+    Role role = roleRepository
+        .findById(roleId)
+        .orElseThrow(
+            () -> {
+              log.error("Role with ID {} not found", roleId);
+              return new EntityNotFoundException("Role not found");
+            });
 
     if (user.getRoles().stream().anyMatch(r -> r.getId().equals(roleId))) {
       log.warn("Role with ID {} is already assigned to user ID {}", roleId, userId);
@@ -189,19 +185,17 @@ public class UserService {
 
   public Set<Permission> getUserPermissions(String userId) {
     log.info("Fetching permissions for user ID: {}", userId);
-    User user =
-        userRepository
-            .findById(userId)
-            .orElseThrow(
-                () -> {
-                  log.error("User with ID {} not found", userId);
-                  return new EntityNotFoundException("User not found");
-                });
+    User user = userRepository
+        .findById(userId)
+        .orElseThrow(
+            () -> {
+              log.error("User with ID {} not found", userId);
+              return new EntityNotFoundException("User not found");
+            });
 
-    Set<Permission> permissions =
-        user.getRoles().stream()
-            .flatMap(role -> role.getPermissions().stream())
-            .collect(Collectors.toSet());
+    Set<Permission> permissions = user.getRoles().stream()
+        .flatMap(role -> role.getPermissions().stream())
+        .collect(Collectors.toSet());
     log.info("Fetched {} permissions for user ID: {}", permissions.size(), userId);
     return permissions;
   }
@@ -210,27 +204,27 @@ public class UserService {
   @Transactional
   public UserResponse updateUserDetails(String id, UpdateUserRequest request) {
     log.info("Updating user with ID: {}", id);
-    User user =
-        userRepository
-            .findById(id)
-            .orElseThrow(
-                () -> {
-                  log.error("User with ID {} not found", id);
-                  return new EntityNotFoundException("User not found");
-                });
+    User user = userRepository
+        .findById(id)
+        .orElseThrow(
+            () -> {
+              log.error("User with ID {} not found", id);
+              return new EntityNotFoundException("User not found");
+            });
 
-    if (request.getName() != null) user.setName(request.getName());
-    if (request.getEmail() != null) user.setEmail(request.getEmail());
+    if (request.getName() != null)
+      user.setName(request.getName());
+    if (request.getEmail() != null)
+      user.setEmail(request.getEmail());
     if (request.getPassword() != null || !request.getPassword().isEmpty())
       user.setPassword(passwordEncoder.encode(request.getPassword()));
 
     if (request.getRoleIds() != null) {
       log.info("Processing role assignments for user ID: {}", id);
-      List<String> newRoles =
-          request.getRoleIds().stream()
-              .filter(
-                  roleId -> user.getRoles().stream().noneMatch(role -> role.getId().equals(roleId)))
-              .collect(Collectors.toList());
+      List<String> newRoles = request.getRoleIds().stream()
+          .filter(
+              roleId -> user.getRoles().stream().noneMatch(role -> role.getId().equals(roleId)))
+          .collect(Collectors.toList());
 
       newRoles.forEach(roleId -> this.addRoleToUser(id, roleId));
       log.info("Added roles to user ID {}: {}", id, newRoles);

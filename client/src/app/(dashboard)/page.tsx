@@ -1,28 +1,14 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import { SalesReportLineChartCard } from "./_components/sales-report-line-chart-card";
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-// import { RecentActivities } from "./recent-activities.tsx";
-// import { InventoryChart } from "./inventory-chart";
 import { DollarSign, Package, Truck, BarChart2 } from "lucide-react";
 import { Analytics } from "./_components/analytics";
 import { Reports } from "./_components/reports";
 
 export default function DashboardPage() {
-  const [selectedWarehouseIds, setSelectedWarehouseIds] = useState<string[]>(
-    [],
-  );
-
-  useEffect(() => {
-    localStorage.setItem(
-      "selectedWarehouseIds",
-      JSON.stringify(selectedWarehouseIds),
-    );
-  }, [selectedWarehouseIds]);
-
   return (
     <div className="flex-1 space-y-4">
       <div className="flex items-center justify-between space-y-2">
@@ -111,10 +97,10 @@ export default function DashboardPage() {
         </TabsContent>
 
         <TabsContent value="analytics" className="space-y-4">
-          <Analytics selectedWarehouseIds={selectedWarehouseIds} />
+          <Analytics />
         </TabsContent>
         <TabsContent value="reports" className="space-y-4">
-          <Reports selectedWarehouseIds={selectedWarehouseIds} />
+          <Reports />
         </TabsContent>
       </Tabs>
     </div>

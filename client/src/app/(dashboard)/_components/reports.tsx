@@ -41,9 +41,7 @@ import {
   ResponsiveContainer,
 } from "recharts";
 
-interface ReportsProps {
-  selectedWarehouseIds: string[];
-}
+interface ReportsProps {}
 
 const reportTypes = [
   { id: "inventory", name: "Inventory Report" },
@@ -176,15 +174,11 @@ const topSellingProducts = [
   { name: "Product E", sales: 600 },
 ];
 
-export function Reports({ selectedWarehouseIds }: ReportsProps) {
+export function Reports() {
   const [selectedReport, setSelectedReport] = useState(reportTypes[0].id);
 
   const handleGenerateReport = () => {
     // In a real application, this would trigger the report generation
-    console.log(
-      `Generating ${selectedReport} report for warehouses:`,
-      selectedWarehouseIds,
-    );
   };
 
   const renderReportTable = () => {
