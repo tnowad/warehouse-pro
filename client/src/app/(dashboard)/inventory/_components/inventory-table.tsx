@@ -37,6 +37,9 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { EllipsisIcon } from "lucide-react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+
+import { DataTableViewOptions } from "@/components/ui/data-table-view-options";
 
 type InventoryTableSchema = InventorySchema & {
   warehouse: WarehouseSchema;
@@ -240,33 +243,44 @@ export function InventoryTable() {
   });
 
   return (
-    <div>
-      <div className="flex items-center gap-4 mb-4">
-        <Input
-          value={globalFilter}
-          onChange={(e) => setGlobalFilter(e.target.value)}
-          placeholder="Search..."
-          className="max-w-xs"
-        />
-        <Button
-          variant="outline"
-          onClick={() => {
-            setGlobalFilter("");
-            setSorting([]);
-            setColumnFilters([]);
-          }}
-        >
-          Clear Filters
-        </Button>
-      </div>
-      <div className="border rounded-md">
-        <DataTable
-          table={table}
-          status={listInventoriesQuery.status}
-          error={listInventoriesQuery.error}
-        />
-      </div>
-      <DataTablePagination table={table} />
-    </div>
+    <Card className="min-w-full max-w-full w-full">
+      <CardHeader>
+        <CardTitle>Inventories</CardTitle>
+      </CardHeader>
+      <CardContent>
+        <div className="flex items-center py-4 gap-2">
+          <Input
+            value={globalFilter ?? ""}
+            onChange={(event) =>
+              table.setGlobalFilter(String(event.target.value))
+            }
+            placeholder="Search..."
+            className="max-w-sm"
+          />
+          <Button
+            variant="outline"
+            className="ml-auto"
+            size={"sm"}
+            onClick={() => {
+              table.resetGlobalFilter();
+              table.resetColumnFilters();
+            }}
+          >
+            Clear Filter
+          </Button>
+          <DataTableViewOptions table={table} />
+
+          <Button size={"sm"} asChild>
+            <Link href="/inventory/new">New</Link>
+          </Button>
+        </div>
+        <div className="rounded-md border min-w-full max-w-full w-full">
+          <DataTable table={table} status={status} />
+        </div>
+        <div className="mt-4">
+          <DataTablePagination table={table} />
+        </div>
+      </CardContent>
+    </Card>
   );
 }

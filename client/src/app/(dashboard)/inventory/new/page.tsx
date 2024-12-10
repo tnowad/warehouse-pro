@@ -1,19 +1,16 @@
-"use client";
-import { Button } from "@/components/ui/button";
-import Link from "next/link";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { WarehouseTable } from "@/app/_components/warehouse-table";
+import { CreateInventoryForm } from "./_components/create-inventory-form";
 
 export default function Page() {
   return (
     <Card>
       <CardHeader>
         <CardTitle className="flex justify-between items-center">
-          Warehouses
+          Inventory
         </CardTitle>
       </CardHeader>
       <CardContent>
-        <WarehouseTable />
+        <CreateInventoryForm />
       </CardContent>
     </Card>
   );
