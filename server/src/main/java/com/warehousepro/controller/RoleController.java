@@ -4,6 +4,7 @@ import com.warehousepro.dto.request.role.CreateRoleRequest;
 import com.warehousepro.dto.request.role.ListRoleRequest;
 import com.warehousepro.dto.request.role.UpdateRoleRequest;
 import com.warehousepro.dto.response.ItemResponse;
+import com.warehousepro.dto.response.permission.PermissionResponse;
 import com.warehousepro.dto.response.role.RoleResponse;
 import com.warehousepro.mapstruct.PermissionMapper;
 import com.warehousepro.mapstruct.RoleMapper;
@@ -54,6 +55,11 @@ public class RoleController {
     roleRespone.setPermissions(
         new HashSet<>(permissions.stream().map(permissionMapper::toPermissionResponse).toList()));
     return ResponseEntity.ok(roleRespone);
+  }
+
+  @GetMapping("/{id}/permissions")
+  public ResponseEntity<ItemResponse<PermissionResponse>> getPermissions(@PathVariable("id") String id) {
+    return ResponseEntity.ok(roleService.getPermissionsByRoleId(id));
   }
 
   @DeleteMapping("/{id}")

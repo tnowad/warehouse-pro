@@ -1,5 +1,8 @@
 import { z } from "zod";
-import { permissionNameSchema } from "../schemas/permission.schema";
+import {
+  permissionNameSchema,
+  permissionSchema,
+} from "../schemas/permission.schema";
 import { apiClient } from "../api/client";
 
 export const listRolePermissionsParamsSchema = z.object({
@@ -10,12 +13,7 @@ export type ListRolePermissionsParamsSchema = z.infer<
 >;
 
 export const listRolePermissionsResponseSchema = z.object({
-  items: z.array(
-    z.object({
-      name: permissionNameSchema,
-      enable: z.boolean(),
-    }),
-  ),
+  items: z.array(permissionSchema),
 });
 export type ListRolePermissionsResponseSchema = z.infer<
   typeof listRolePermissionsResponseSchema

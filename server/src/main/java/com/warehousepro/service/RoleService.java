@@ -4,9 +4,11 @@ import com.warehousepro.dto.request.role.CreateRoleRequest;
 import com.warehousepro.dto.request.role.ListRoleRequest;
 import com.warehousepro.dto.request.role.UpdateRoleRequest;
 import com.warehousepro.dto.response.ItemResponse;
+import com.warehousepro.dto.response.permission.PermissionResponse;
 import com.warehousepro.dto.response.role.RoleResponse;
 import com.warehousepro.entity.Permission;
 import com.warehousepro.entity.Role;
+import com.warehousepro.mapstruct.PermissionMapper;
 import com.warehousepro.mapstruct.RoleMapper;
 import com.warehousepro.repository.PermissionRepository;
 import com.warehousepro.repository.RoleRepository;
@@ -32,16 +34,16 @@ public class RoleService {
   RoleMapper roleMapper;
   RoleSpecification roleSpecification;
   PermissionRepository permissionRepository;
+  PermissionMapper permissionMapper;
 
   @Transactional
   @PreAuthorize("hasAuthority('PERMISSION_ROLE_CREATE')")
   public Role createRole(CreateRoleRequest request) {
     log.info("Creating role with name: {}", request.getName());
 
-    if (request.getName() == null || request.getName().isEmpty()){
+    if (request.getName() == null || request.getName().isEmpty()) {
       throw new RuntimeException("tên quyền không được để trống");
     }
-
 
     Role role = roleMapper.toRole(request);
     roleRepository.save(role);
@@ -75,14 +77,13 @@ public class RoleService {
   public RoleResponse updateRole(String id, UpdateRoleRequest request) {
     log.info("Updating role with ID: {}", id);
 
-    Role role =
-        roleRepository
-            .findById(id)
-            .orElseThrow(
-                () -> {
-                  log.error("Role with ID {} not found", id);
-                  return new RuntimeException("Role not found");
-                });
+    Role role = roleRepository
+        .findById(id)
+        .orElseThrow(
+            () -> {
+              log.error("Role with ID {} not found", id);
+              return new RuntimeException("Role not found");
+            });
 
     if (request.getDescription() != null) {
       role.setDescription(request.getDescription());
@@ -92,14 +93,13 @@ public class RoleService {
     if (request.getPermissionIds() != null) {
       Set<Permission> updatedPermissions = new HashSet<>();
       for (String permissionId : request.getPermissionIds()) {
-        Permission permission =
-            permissionRepository
-                .findById(permissionId)
-                .orElseThrow(
-                    () -> {
-                      log.error("Permission with ID {} not found", permissionId);
-                      return new RuntimeException("Permission not found");
-                    });
+        Permission permission = permissionRepository
+            .findById(permissionId)
+            .orElseThrow(
+                () -> {
+                  log.error("Permission with ID {} not found", permissionId);
+                  return new RuntimeException("Permission not found");
+                });
         updatedPermissions.add(permission);
       }
       role.setPermissions(updatedPermissions);
@@ -158,5 +158,23 @@ public class RoleService {
     Set<Role> roles = roleRepository.findAllById(roleIds).stream().collect(Collectors.toSet());
     log.info("Fetched {} roles by provided IDs", roles.size());
     return roles;
+  }
+
+  public ItemResponse<PermissionResponse> getPermissionsByRoleId(String id) {
+    log.info("Fetching permissions for role with ID: {}", id);
+    Role role = roleRepository
+        .findById(id)
+        .orElseThrow(
+            () -> {
+              log.error("Role with ID {} not found", id);
+              return new RuntimeException("Role not found");
+            });
+
+    return ItemResponse.<PermissionResponse>builder()
+        .items(
+            role.getPermissions().stream()
+                .map(permissionMapper::toPermissionResponse)
+                .toList())
+        .build();
   }
 }

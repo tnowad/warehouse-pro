@@ -216,8 +216,9 @@ public class UserService {
       user.setName(request.getName());
     if (request.getEmail() != null)
       user.setEmail(request.getEmail());
-    if (request.getPassword() != null || !request.getPassword().isEmpty())
+    if (request.getPassword() != null || !request.getPassword().isEmpty() || request.getPassword().length() > 8) {
       user.setPassword(passwordEncoder.encode(request.getPassword()));
+    }
 
     if (request.getRoleIds() != null) {
       log.info("Processing role assignments for user ID: {}", id);

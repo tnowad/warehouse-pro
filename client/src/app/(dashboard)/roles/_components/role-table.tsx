@@ -35,6 +35,7 @@ import { Input } from "@/components/ui/input";
 import { DataTableViewOptions } from "@/components/ui/data-table-view-options";
 import { listRolesQueryFilterSchema } from "@/lib/apis/list-roles.api";
 import { DataTable } from "@/components/ui/data-table";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 export function RoleTable() {
   const columns = useMemo<ColumnDef<RoleSchema>[]>(
@@ -191,35 +192,44 @@ export function RoleTable() {
   });
 
   return (
-    <div>
-      <div className="flex items-center py-4 gap-2">
-        <Input
-          value={globalFilter ?? ""}
-          onChange={(event) =>
-            table.setGlobalFilter(String(event.target.value))
-          }
-          placeholder="Search..."
-          className="max-w-sm"
-        />
-        <Button
-          variant="outline"
-          className="ml-auto"
-          size={"sm"}
-          onClick={() => {
-            table.resetGlobalFilter();
-            table.resetColumnFilters();
-          }}
-        >
-          Clear Filter
-        </Button>
-        <DataTableViewOptions table={table} />
-      </div>
-      <div className="rounded-md border">
-        <DataTable table={table} status={status} error={error} />
-      </div>
-      <div className="mt-4">
-        <DataTablePagination table={table} />
-      </div>
-    </div>
+    <Card className="min-w-full max-w-full w-full">
+      <CardHeader>
+        <CardTitle>Roles</CardTitle>
+      </CardHeader>
+      <CardContent>
+        <div className="flex items-center py-4 gap-2">
+          <Input
+            value={globalFilter ?? ""}
+            onChange={(event) =>
+              table.setGlobalFilter(String(event.target.value))
+            }
+            placeholder="Search..."
+            className="max-w-sm"
+          />
+          <Button
+            variant="outline"
+            className="ml-auto"
+            size={"sm"}
+            onClick={() => {
+              table.resetGlobalFilter();
+              table.resetColumnFilters();
+            }}
+          >
+            Clear Filter
+          </Button>
+          <DataTableViewOptions table={table} />
+
+          <Button size={"sm"} asChild>
+            <Link href="/roles/new">New</Link>
+          </Button>
+        </div>
+        <div className="rounded-md border min-w-full max-w-full w-full">
+          <DataTable table={table} status={status} error={error} />
+        </div>
+        <div className="mt-4">
+          <DataTablePagination table={table} />
+        </div>
+      </CardContent>
+    </Card>
   );
 }
