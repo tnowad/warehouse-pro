@@ -26,25 +26,41 @@ public class ProcurementItemService {
 
   @Transactional
   public ProcurementItem create(
-      Supplier supplier, Procurement procurement, CreateProcurementItemRequest request) {
-    ProcurementItem procurementItem = mapper.toProcurementItem(request);
+      String supplierId, Procurement procurement, CreateProcurementItemRequest request) {
+    log.info("Creating procurement item with productId: {}", request.getProductId());
 
     if (!supplierProductRepository.existsBySupplierIdAndProductId(
-        supplier.getId(), request.getProductId())) {
+        supplierId, request.getProductId())) {
+      log.error("Supplier does not provide productId: {}", request.getProductId());
       throw new RuntimeException("The product not in supplier");
     }
 
-    Product product = productRepository.findById(Integer.parseInt(request.getProductId()))
-      .orElseThrow(() ->new RuntimeException("Không tìm thấy product"));
+    Product product = productRepository.findById((request.getProductId()))
+        .orElseThrow(() -> new RuntimeException("Không tìm thấy product"));
     Warehouse warehouse = wareHouseRepository.getById(request.getWarehouseId());
 
+    log.debug("Checking and updating inventory for productId: {} and warehouseId: {}",
+        request.getProductId(), request.getWarehouseId());
     inventoryService.checkAndUpdateInventory(
         request.getProductId(), request.getWarehouseId(), request.getQuantity());
+
+    log.debug("Saving procurement item entity");
+    ProcurementItem procurementItem = ProcurementItem.builder()
+        .quantity(request.getQuantity())
+        .price(request.getPrice())
+        .build();
 
     procurementItem.setProduct(product);
     procurementItem.setWarehouse(warehouse);
     procurementItem.setProcurement(procurement);
+
+    log.debug("Persisting procurement item with quantity: {} and price: {}",
+        procurementItem.getQuantity(), procurementItem.getPrice());
+
     repository.save(procurementItem);
+
+    log.info("Procurement item created successfully with ID: {}", procurementItem.getId());
+
     return procurementItem;
   }
 

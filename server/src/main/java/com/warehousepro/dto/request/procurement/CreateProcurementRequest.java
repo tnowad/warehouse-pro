@@ -1,6 +1,7 @@
 package com.warehousepro.dto.request.procurement;
 
 import com.warehousepro.dto.request.procurement.item.CreateProcurementItemRequest;
+import com.warehousepro.entity.ProcurementStatus;
 import com.warehousepro.entity.Supplier;
 import jakarta.validation.constraints.Future;
 import jakarta.validation.constraints.NotEmpty;
@@ -26,10 +27,12 @@ public class CreateProcurementRequest {
   @Future(message = "Delivery date must be in the future")
   Date deliveryDate;
 
-  String status;
+  ProcurementStatus status;
   Double totalCost;
-  @NotNull Supplier supplier;
+
+  @NotNull
+  String supplierId;
 
   @NotEmpty(message = "Procurement items cannot be empty")
-  List<CreateProcurementItemRequest> procurementItemRequests;
+  List<CreateProcurementItemRequest> items;
 }

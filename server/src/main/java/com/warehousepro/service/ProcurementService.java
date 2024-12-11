@@ -32,56 +32,74 @@ public class ProcurementService {
 
   @Transactional
   public Procurement create(CreateProcurementRequest request) {
-    if (request.getProcurementItemRequests() == null
-        || request.getProcurementItemRequests().isEmpty()) {
+    log.info("Creating procurement with supplierId: {}", request.getSupplierId());
+
+    if (request.getItems() == null || request.getItems().isEmpty()) {
+      log.error("Procurement creation failed: procurement items are empty");
       throw new IllegalArgumentException("procurementItem must not be empty");
     }
+    Procurement procurement = Procurement.builder().orderDate(request.getOrderDate())
+        .deliveryDate(request.getDeliveryDate())
+        .status(request.getStatus())
+        .build();
 
-    final Procurement procurement =
-        procurementRepository.save(procurementMapper.toProcurement(request));
+    log.debug("Saving procurement entity");
+    procurementRepository.save(procurement);
 
-    var procurementItem =
-        request.getProcurementItemRequests().stream()
-            .map(
-                itemRequest ->
-                    procurementItemService.create(
-                        request.getSupplier(),
-                        procurement,
-                        new CreateProcurementItemRequest(
-                            itemRequest.getQuantity(),
-                            itemRequest.getPrice(),
-                            itemRequest.getWarehouseId(),
-                            itemRequest.getProductId())))
-            .collect(Collectors.toSet());
+    log.debug("Creating procurement items");
+    var procurementItems = request.getItems().stream()
+        .map(
+            itemRequest -> procurementItemService.create(
+                request.getSupplierId(),
+                procurement,
+                new CreateProcurementItemRequest(
+                    itemRequest.getQuantity(),
+                    itemRequest.getPrice(),
+                    itemRequest.getWarehouseId(),
+                    itemRequest.getProductId())))
+        .collect(Collectors.toSet());
 
     double totalCost = 0;
 
-    for (ProcurementItem procurementItem1 : procurementItem)
-      totalCost += procurementItem1.getPrice() * procurementItem1.getQuantity();
+    for (ProcurementItem procurementItem : procurementItems) {
+      totalCost += procurementItem.getPrice() * procurementItem.getQuantity();
+    }
 
-    procurement.setProcurementItems(procurementItem);
+    procurement.setProcurementItems(procurementItems);
     procurement.setTotalCost(totalCost);
 
+    log.info("Procurement created successfully with ID: {} and total cost: {}", procurement.getId(), totalCost);
     return procurement;
   }
 
   @Transactional
   @PreAuthorize("hasAuthority('PERMISSION_PROCUREMENT_ORDER_DELETE')")
   public void delete(String id) {
+    log.info("Deleting procurement with ID: {}", id);
     procurementRepository.deleteById(id);
+    log.info("Procurement with ID: {} deleted successfully", id);
   }
 
   @PreAuthorize("hasAuthority('PERMISSION_INVENTORY_PRODUCT_LIST')")
   public ItemResponse<ProcurementResponse> getAll(ListProcurementsRequest filterRequest) {
+    log.info("Fetching procurements with filters: {}", filterRequest);
+
     var spec = procurementSpecification.getFilterSpecification(filterRequest);
     var pageRequest = PageRequest.of(filterRequest.getPage() - 1, filterRequest.getPageSize());
+    log.debug("Applying pagination with page: {} and pageSize: {}", filterRequest.getPage(),
+        filterRequest.getPageSize());
+
     var totalItems = procurementRepository.count(spec);
-    var items =
-        procurementRepository.findAll(spec, pageRequest).stream()
-            .map(procurementMapper::toProcurementResponse)
-            .collect(Collectors.toList());
+    log.debug("Total procurements found: {}", totalItems);
+
+    var items = procurementRepository.findAll(spec, pageRequest).stream()
+        .map(procurementMapper::toProcurementResponse)
+        .collect(Collectors.toList());
+
     var page = filterRequest.getPage();
     var pageCount = (int) Math.ceil((double) totalItems / filterRequest.getPageSize());
+
+    log.info("Returning procurement list with page: {} of {} and total items: {}", page, pageCount, totalItems);
 
     return ItemResponse.<ProcurementResponse>builder()
         .items(items)
