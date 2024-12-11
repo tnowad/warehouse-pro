@@ -1,8 +1,12 @@
 package com.warehousepro.mapstruct;
 
 import com.warehousepro.dto.request.procurement.CreateProcurementRequest;
+import com.warehousepro.dto.request.procurement.item.CreateProcurementItemRequest;
 import com.warehousepro.dto.response.procurement.ProcurementResponse;
+import com.warehousepro.dto.response.procurement.item.ProcurementItemResponse;
 import com.warehousepro.entity.Procurement;
+import com.warehousepro.entity.ProcurementItem;
+
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
@@ -14,4 +18,11 @@ public interface ProcurementMapper {
 
   @Mapping(target = "supplierId", source = "supplier.id")
   ProcurementResponse toProcurementResponse(Procurement procurement);
+}
+
+@Mapper(componentModel = "spring")
+public interface ProcurementItemMapper {
+  ProcurementItem toProcurementItem(CreateProcurementItemRequest request);
+
+  ProcurementItemResponse toProcurementItemResponse(ProcurementItem procurementItem);
 }

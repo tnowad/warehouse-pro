@@ -2,7 +2,9 @@ package com.warehousepro.controller;
 
 import com.warehousepro.dto.request.procurement.CreateProcurementRequest;
 import com.warehousepro.dto.request.procurement.ListProcurementsRequest;
+import com.warehousepro.dto.response.ItemResponse;
 import com.warehousepro.dto.response.procurement.ProcurementResponse;
+import com.warehousepro.dto.response.procurement.item.ProcurementItemResponse;
 import com.warehousepro.mapstruct.ProcurementMapper;
 import com.warehousepro.service.ProcurementService;
 import lombok.AccessLevel;
@@ -36,5 +38,15 @@ public class ProcurementController {
   @GetMapping
   public ResponseEntity<Object> getAll(@ModelAttribute ListProcurementsRequest request) {
     return ResponseEntity.ok(procurementService.getAll(request));
+  }
+
+  @GetMapping("/{id}")
+  public ResponseEntity<ProcurementResponse> getById(@PathVariable("id") String id) {
+    return ResponseEntity.ok((procurementService.getById(id)));
+  }
+
+  @GetMapping("/{id}/items")
+  public ResponseEntity<ItemResponse<ProcurementItemResponse>> getItems(@PathVariable("id") String id) {
+    return ResponseEntity.ok(procurementService.getItems(id));
   }
 }

@@ -5,8 +5,10 @@ import com.warehousepro.dto.request.procurement.ListProcurementsRequest;
 import com.warehousepro.dto.request.procurement.item.CreateProcurementItemRequest;
 import com.warehousepro.dto.response.ItemResponse;
 import com.warehousepro.dto.response.procurement.ProcurementResponse;
+import com.warehousepro.dto.response.procurement.item.ProcurementItemResponse;
 import com.warehousepro.entity.Procurement;
 import com.warehousepro.entity.ProcurementItem;
+import com.warehousepro.mapstruct.ProcurementItemMapper;
 import com.warehousepro.mapstruct.ProcurementMapper;
 import com.warehousepro.repository.ProcurementRepository;
 import com.warehousepro.specification.ProcurementSpecification;
@@ -29,6 +31,7 @@ public class ProcurementService {
   ProcurementMapper procurementMapper;
   ProcurementItemService procurementItemService;
   ProcurementSpecification procurementSpecification;
+  ProcurementItemMapper procurementItemMapper;
 
   @Transactional
   public Procurement create(CreateProcurementRequest request) {
@@ -108,4 +111,26 @@ public class ProcurementService {
         .rowCount(totalItems)
         .build();
   }
+
+  public ProcurementResponse getById(String id) {
+    log.info("Fetching procurement with ID: {}", id);
+    var procurement = procurementRepository.findById(id)
+        .orElseThrow(() -> new IllegalArgumentException("Procurement not found with ID: " + id));
+    log.info("Procurement found with ID: {}", id);
+    return procurementMapper.toProcurementResponse(procurement);
+  }
+
+  public ItemResponse<ProcurementItemResponse> getItems(String id) {
+    log.info("Fetching procurement items with procurement ID: {}", id);
+    Procurement procurement = procurementRepository.findById(id)
+        .orElseThrow(() -> new IllegalArgumentException("Procurement not found with ID: " + id));
+    log.info("Procurement found with ID: {}", id);
+    log.debug("{} procurement items found", procurement.getProcurementItems().size());
+    var items = procurement.getProcurementItems().stream()
+        .map(procurementItemMapper::toProcurementItemResponse)
+        .collect(Collectors.toList());
+
+    return ItemResponse.<ProcurementItemResponse>builder().items(items).build();
+  }
+
 }
