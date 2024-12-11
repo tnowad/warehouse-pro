@@ -157,6 +157,11 @@ const mainNav: {
         permission: "PROCUREMENT_SUPPLIER_LIST",
       },
       {
+        title: "Procurement Orders",
+        url: "/procurements",
+        permission: "PROCUREMENT_ORDER_LIST",
+      },
+      {
         title: "Create Supplier",
         url: "/suppliers/new",
         permission: "PROCUREMENT_SUPPLIER_CREATE",
