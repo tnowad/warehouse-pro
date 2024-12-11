@@ -43,10 +43,10 @@ public class ProductService {
 
   @Transactional
   @PreAuthorize("hasAuthority('PERMISSION_INVENTORY_PRODUCT_UPDATE')")
-  public ProductResponse update(String id , UpdateProductRequest request){
-    Product product = productRepository.findById(Integer.parseInt(id)).orElseThrow(
-      () -> new RuntimeException("Không tìm thấy product"));
-    if (request.getDescription() != null){
+  public ProductResponse update(String id, UpdateProductRequest request) {
+    Product product = productRepository.findById((id)).orElseThrow(
+        () -> new RuntimeException("Không tìm thấy product"));
+    if (request.getDescription() != null) {
       product.setDescription(request.getDescription());
     }
 
@@ -66,11 +66,10 @@ public class ProductService {
     return productMapper.toProductResponse(product);
   }
 
-  public ProductResponse getById(String id){
-    return productMapper.toProductResponse(productRepository.findById(Integer.parseInt(id))
-      .orElseThrow(() -> new RuntimeException("Không tìm thấy product")));
+  public ProductResponse getById(String id) {
+    return productMapper.toProductResponse(productRepository.findById((id))
+        .orElseThrow(() -> new RuntimeException("Không tìm thấy product")));
   }
-
 
   @Transactional
   public void delete(String id) {
