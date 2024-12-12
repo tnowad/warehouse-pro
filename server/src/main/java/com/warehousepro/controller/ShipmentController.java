@@ -4,8 +4,10 @@ import com.warehousepro.dto.request.shipment.CreateShipmentRequest;
 import com.warehousepro.dto.request.shipment.ListShipmentRequest;
 import com.warehousepro.dto.request.shipment.UpdateShipmentRequest;
 import com.warehousepro.dto.response.ItemResponse;
+import com.warehousepro.dto.response.shipment.ShipmentItemResponse;
 import com.warehousepro.dto.response.shipment.ShipmentResponse;
 import com.warehousepro.mapstruct.ShipmentMapper;
+import com.warehousepro.service.ShipmentItemService;
 import com.warehousepro.service.ShipmentService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -19,6 +21,7 @@ import org.springframework.web.bind.annotation.*;
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class ShipmentController {
   ShipmentService shipmentService;
+  ShipmentItemService shipmentItemService;
   ShipmentMapper shipmentMapper;
 
   @PostMapping
@@ -33,15 +36,20 @@ public class ShipmentController {
   }
 
   @PutMapping("/{id}")
-  public ResponseEntity<ShipmentResponse> update(@PathVariable("id") String id , @RequestBody UpdateShipmentRequest request){
+  public ResponseEntity<ShipmentResponse> update(@PathVariable("id") String id,
+      @RequestBody UpdateShipmentRequest request) {
     return ResponseEntity.ok(shipmentService.update(id, request));
   }
 
   @GetMapping("/{id}")
-  public ResponseEntity<ShipmentResponse> getById(@PathVariable("id") String id){
+  public ResponseEntity<ShipmentResponse> getById(@PathVariable("id") String id) {
     return ResponseEntity.ok(shipmentService.getById(id));
   }
 
+  @GetMapping("/{id}/items")
+  public ResponseEntity<ItemResponse<ShipmentItemResponse>> getItems(@PathVariable("id") String id) {
+    return ResponseEntity.ok(shipmentItemService.getItems(id));
+  }
 
   @DeleteMapping("/{id}")
   public ResponseEntity<String> delete(@PathVariable("id") String id) {

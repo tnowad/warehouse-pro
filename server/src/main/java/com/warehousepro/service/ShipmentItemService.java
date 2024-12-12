@@ -47,16 +47,25 @@ public class ShipmentItemService {
     var pageCount = (int) Math.ceil((double) totalItems / request.getPageSize());
 
     return ItemResponse.<ShipmentItemResponse>builder()
-      .items(shipmentItems.stream().map(mapper::toShipmentItemResponse).toList())
-      .rowCount((int) totalItems)
-      .page(page)
-      .pageCount(pageCount)
-      .build();
+        .items(shipmentItems.stream().map(mapper::toShipmentItemResponse).toList())
+        .rowCount((int) totalItems)
+        .page(page)
+        .pageCount(pageCount)
+        .build();
   }
 
-  public ShipmentItemResponse getById(String id){
+  public ShipmentItemResponse getById(String id) {
     return mapper.toShipmentItemResponse(repository.findById(id).orElseThrow());
   }
 
+  public ItemResponse<ShipmentItemResponse> getItems(String shipmentId) {
+    List<ShipmentItem> shipmentItems = repository.findAllByShipmentId(shipmentId);
+    return ItemResponse.<ShipmentItemResponse>builder()
+        .items(shipmentItems.stream().map(mapper::toShipmentItemResponse).toList())
+        .rowCount(shipmentItems.size())
+        .page(1)
+        .pageCount(1)
+        .build();
+  }
 
 }

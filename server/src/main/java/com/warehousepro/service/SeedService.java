@@ -401,60 +401,56 @@ public class SeedService {
         });
 
     log.info("permissions: {}", permissions);
-    Role adminRole =
-        roleRepository
-            .findById("ADMIN")
-            .orElse(
-                Role.builder()
-                    .name("ADMIN")
-                    .description("Admin role")
-                    .permissions(new HashSet<>(permissions.values()))
-                    .build());
+    Role adminRole = roleRepository
+        .findById("ADMIN")
+        .orElse(
+            Role.builder()
+                .name("ADMIN")
+                .description("Admin role")
+                .permissions(new HashSet<>(permissions.values()))
+                .build());
 
     roleRepository.save(adminRole);
-    Role managerRole =
-        roleRepository
-            .findById("MANAGER")
-            .orElse(
-                Role.builder()
-                    .name("MANAGER")
-                    .description("Manager role")
-                    .permissions(new HashSet<>(permissions.values()))
-                    .build());
+    Role managerRole = roleRepository
+        .findById("MANAGER")
+        .orElse(
+            Role.builder()
+                .name("MANAGER")
+                .description("Manager role")
+                .permissions(new HashSet<>(permissions.values()))
+                .build());
 
     roleRepository.save(managerRole);
 
-    Role employeeRole =
-        roleRepository
-            .findById("EMPLOYEE")
-            .orElse(
-                Role.builder()
-                    .name("EMPLOYEE")
-                    .description("Employee role")
-                    .permissions(new HashSet<>(permissions.values()))
-                    .build());
+    Role employeeRole = roleRepository
+        .findById("EMPLOYEE")
+        .orElse(
+            Role.builder()
+                .name("EMPLOYEE")
+                .description("Employee role")
+                .permissions(new HashSet<>(permissions.values()))
+                .build());
 
     roleRepository.save(employeeRole);
-    List<User> users =
-        List.of(
-            User.builder()
-                .email("admin@warehouse-pro.com")
-                .name("Admin")
-                .password(passwordEncoder.encode("Password@123"))
-                .roles(new HashSet<>(Set.of(adminRole)))
-                .build(),
-            User.builder()
-                .email("manager@warehouse-pro.com")
-                .name("Manager")
-                .password(passwordEncoder.encode("Password@123"))
-                .roles(new HashSet<>(Set.of(managerRole)))
-                .build(),
-            User.builder()
-                .email("employee@warehouse-pro.com")
-                .name("Employee")
-                .password(passwordEncoder.encode("Password@123"))
-                .roles(new HashSet<>(Set.of(employeeRole)))
-                .build());
+    List<User> users = List.of(
+        User.builder()
+            .email("admin@warehouse-pro.com")
+            .name("Admin")
+            .password(passwordEncoder.encode("Password@123"))
+            .roles(new HashSet<>(Set.of(adminRole)))
+            .build(),
+        User.builder()
+            .email("manager@warehouse-pro.com")
+            .name("Manager")
+            .password(passwordEncoder.encode("Password@123"))
+            .roles(new HashSet<>(Set.of(managerRole)))
+            .build(),
+        User.builder()
+            .email("employee@warehouse-pro.com")
+            .name("Employee")
+            .password(passwordEncoder.encode("Password@123"))
+            .roles(new HashSet<>(Set.of(employeeRole)))
+            .build());
 
     userRepository.saveAll(users);
   }
@@ -532,14 +528,13 @@ public class SeedService {
     List<Order> orders = new ArrayList<>();
 
     for (int i = 0; i < 63; i++) {
-      var order =
-          Order.builder()
-              .status(OrderStatus.values()[faker.number().numberBetween(0, 3)])
-              .totalAmount(faker.number().randomDouble(2, 100000, 5000000))
-              .paymentStatus(PaymentStatus.values()[faker.number().numberBetween(0, 3)])
-              .shippingAddress(faker.address().fullAddress())
-              .orderItems(new HashSet<>())
-              .build();
+      var order = Order.builder()
+          .status(OrderStatus.values()[faker.number().numberBetween(0, 3)])
+          .totalAmount(faker.number().randomDouble(2, 100000, 5000000))
+          .paymentStatus(PaymentStatus.values()[faker.number().numberBetween(0, 3)])
+          .shippingAddress(faker.address().fullAddress())
+          .orderItems(new HashSet<>())
+          .build();
       orders.add(order);
     }
 
@@ -570,24 +565,27 @@ public class SeedService {
     for (int i = 0; i < 63; i++) {
       var order = orders.get(faker.number().numberBetween(0, 63));
 
-      Shipment shipment =
-          Shipment.builder()
-              .status(faker.options().option(ShipmentStatus.class))
-              .trackingNumber(faker.number().digits(10).toString())
-              .shippingMethod(faker.options().option("AIR", "SEA", "LAND"))
-              .deliveryEstimate(new Date(faker.date().future(30, TimeUnit.DAYS).getTime()))
-              .carrier(faker.company().name())
-              .order(order)
-              .shipmentItems(new HashSet<>())
-              .build();
+      Shipment shipment = Shipment.builder()
+          .status(faker.options().option(ShipmentStatus.class))
+          .trackingNumber(faker.number().digits(10).toString())
+          .shippingMethod(faker.options().option("AIR", "SEA", "LAND"))
+          .deliveryEstimate(new Date(faker.date().future(30, TimeUnit.DAYS).getTime()))
+          .carrier(faker.company().name())
+          .order(order)
+          .shipmentItems(new HashSet<>())
+          .build();
 
       shipments.add(shipment);
 
-      for (var orderItem : order.getOrderItems()) {
-        var shipmentItem = ShipmentItem.builder().shipment(shipment).orderItem(orderItem).build();
+      orderItems.stream().filter(orderItem -> orderItem.getOrder().equals(order)).forEach(
+          orderItem -> {
+            var shipmentItem = ShipmentItem.builder()
+                .shipment(shipment)
+                .orderItem(orderItem)
+                .build();
 
-        shipmentItems.add(shipmentItem);
-      }
+            shipmentItems.add(shipmentItem);
+          });
     }
 
     shipmentRepository.saveAll(shipments);
@@ -602,29 +600,26 @@ public class SeedService {
       var supplier = suppliers.get(faker.number().numberBetween(0, 63));
       var warehouse = warehouses.get(faker.number().numberBetween(0, 63));
 
-      var procurement =
-          Procurement.builder()
-              .orderDate(new Date(faker.date().past(30, TimeUnit.DAYS).getTime()))
-              .deliveryDate(new Date(faker.date().future(30, TimeUnit.DAYS).getTime()))
-              .status(faker.options().option(ProcurementStatus.class))
-              .totalCost(faker.number().randomDouble(2, 100000, 5000000))
-              .supplier(supplier)
-              .procurementItems(new HashSet<>())
-              .build();
+      var procurement = Procurement.builder()
+          .orderDate(new Date(faker.date().past(30, TimeUnit.DAYS).getTime()))
+          .deliveryDate(new Date(faker.date().future(30, TimeUnit.DAYS).getTime()))
+          .status(faker.options().option(ProcurementStatus.class))
+          .totalCost(faker.number().randomDouble(2, 100000, 5000000))
+          .supplier(supplier)
+          .procurementItems(new HashSet<>())
+          .build();
 
       procurements.add(procurement);
 
-      for (var product :
-          supplier.getSupplierProducts().stream().map(SupplierProduct::getProduct).toList()) {
-        var procurementItem =
-            ProcurementItem.builder()
-                .procurement(procurement)
-                .warehouse(warehouse)
-                .product(product)
-                .quantity(faker.number().numberBetween(1, 10))
-                .price(faker.number().randomDouble(2, 100000, 5000000))
-                .warehouse(warehouses.get(faker.number().numberBetween(0, 63)))
-                .build();
+      for (var product : supplier.getSupplierProducts().stream().map(SupplierProduct::getProduct).toList()) {
+        var procurementItem = ProcurementItem.builder()
+            .procurement(procurement)
+            .warehouse(warehouse)
+            .product(product)
+            .quantity(faker.number().numberBetween(1, 10))
+            .price(faker.number().randomDouble(2, 100000, 5000000))
+            .warehouse(warehouses.get(faker.number().numberBetween(0, 63)))
+            .build();
 
         procurementItems.add(procurementItem);
       }

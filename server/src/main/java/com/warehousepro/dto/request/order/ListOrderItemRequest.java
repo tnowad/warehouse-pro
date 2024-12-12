@@ -10,7 +10,7 @@ import java.util.List;
 @Data
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class ListOrderItemRequest {
-  int page = 0;
+  int page = 1;
   int pageSize = 10;
   String sort;
   String query;
@@ -22,4 +22,3 @@ public class ListOrderItemRequest {
   Double discount;
   OrderItemStatus status;
 }
-

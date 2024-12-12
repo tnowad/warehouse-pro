@@ -21,6 +21,8 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
+
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
@@ -62,9 +64,16 @@ public class OrderItemService {
 
   public ItemResponse<OrderItemResponse> getAll(ListOrderItemRequest request) {
     var spec = orderItemSpecification.getFilterSpecification(request);
+    // if have ids then ignore other filter
     var pageRequest = PageRequest.of(request.getPage() - 1, request.getPageSize());
     var totalItems = repository.count(spec);
-    var orderItems = repository.findAll(spec, pageRequest);
+
+    Page<OrderItem> orderItems;
+    if (request.getIds() != null && !request.getIds().isEmpty()) {
+      orderItems = repository.findAll(pageRequest);
+    } else {
+      orderItems = repository.findAll(spec, pageRequest);
+    }
     var page = request.getPage();
     var pageCount = (int) Math.ceil((double) totalItems / request.getPageSize());
 
