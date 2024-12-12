@@ -36,6 +36,12 @@ const mainNav: {
     icon: "dashboard",
   },
   {
+    title: "Reports",
+    url: "/reports",
+    icon: "reports",
+    permission: "REPORT_VIEW",
+  },
+  {
     title: "Users",
     url: "/users",
     permission: "USER_LIST",

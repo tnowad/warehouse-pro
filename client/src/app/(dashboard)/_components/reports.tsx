@@ -40,13 +40,83 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from "recharts";
+import { DateRangePicker } from "@/components/ui/date-range-picker";
+
+interface SummaryReport {
+  report_date: string;
+  total_inventory: number;
+  total_orders: number;
+  total_shipped: number;
+  total_sales: number;
+  total_customers: number;
+  total_products: number;
+}
+
+interface InventoryReport {
+  report_date: string;
+  warehouse_id: string;
+  warehouse_name: string;
+  product_id: string;
+  product_name: string;
+  quantity: number;
+  last_updated: string;
+  status: string;
+}
+
+interface OrderReport {
+  report_date: string;
+  order_id: string;
+  order_status: string;
+  total_amount: number;
+  payment_status: string;
+  created_at: string;
+  shipment_id: string;
+  shipment_status: string;
+  tracking_number: string;
+}
+
+interface SalesReport {
+  report_date: string;
+  order_id: string;
+  product_id: string;
+  product_name: string;
+  quantity_sold: number;
+  price_per_unit: number;
+  total_price: number;
+  discount: number;
+}
+
+interface InventoryCreationReport {
+  report_date: string;
+  warehouse_id: string;
+  warehouse_name: string;
+  product_id: string;
+  product_name: string;
+  quantity: number;
+  status: string;
+}
+
+interface SalesCreationReport {
+  report_date: string;
+  order_id: string;
+  total_amount: number;
+  product_id: string;
+  product_name: string;
+  quantity_sold: number;
+  price_per_unit: number;
+  total_price: number;
+  discount: number;
+}
 
 interface ReportsProps {}
 
 const reportTypes = [
+  { id: "summary", name: "Summary Report" },
   { id: "inventory", name: "Inventory Report" },
+  { id: "order", name: "Order Report" },
   { id: "sales", name: "Sales Report" },
-  { id: "orders", name: "Order Report" },
+  { id: "inventoryCreation", name: "Inventory Creation Report" },
+  { id: "salesCreation", name: "Sales Creation Report" },
 ];
 
 const inventoryData = [
@@ -176,34 +246,65 @@ const topSellingProducts = [
 
 export function Reports() {
   const [selectedReport, setSelectedReport] = useState(reportTypes[0].id);
+  const [dateRange, setDateRange] = useState({
+    from: new Date(),
+    to: new Date(),
+  });
 
   const handleGenerateReport = () => {
-    // In a real application, this would trigger the report generation
+    console.log("Generating report...");
   };
-
   const renderReportTable = () => {
     switch (selectedReport) {
+      case "summary":
+        return (
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Report Date</TableHead>
+                <TableHead>Total Inventory</TableHead>
+                <TableHead>Total Orders</TableHead>
+                <TableHead>Total Shipped</TableHead>
+                <TableHead>Total Sales</TableHead>
+                <TableHead>Total Customers</TableHead>
+                <TableHead>Total Products</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>{/* Add sample data for summary report */}</TableBody>
+          </Table>
+        );
       case "inventory":
         return (
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>Product Name</TableHead>
+                <TableHead>Report Date</TableHead>
+                <TableHead>Warehouse</TableHead>
+                <TableHead>Product</TableHead>
                 <TableHead>Quantity</TableHead>
-                <TableHead>Reorder Point</TableHead>
-                <TableHead>Last Restocked</TableHead>
+                <TableHead>Last Updated</TableHead>
+                <TableHead>Status</TableHead>
               </TableRow>
             </TableHeader>
-            <TableBody>
-              {inventoryData.map((item) => (
-                <TableRow key={item.id}>
-                  <TableCell>{item.name}</TableCell>
-                  <TableCell>{item.quantity}</TableCell>
-                  <TableCell>{item.reorderPoint}</TableCell>
-                  <TableCell>{item.lastRestocked}</TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
+            <TableBody>{/* Add sample data for inventory report */}</TableBody>
+          </Table>
+        );
+      case "order":
+        return (
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Report Date</TableHead>
+                <TableHead>Order ID</TableHead>
+                <TableHead>Order Status</TableHead>
+                <TableHead>Total Amount</TableHead>
+                <TableHead>Payment Status</TableHead>
+                <TableHead>Created At</TableHead>
+                <TableHead>Shipment Status</TableHead>
+                <TableHead>Tracking Number</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>{/* Add sample data for order report */}</TableBody>
           </Table>
         );
       case "sales":
@@ -211,44 +312,52 @@ export function Reports() {
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>Product Name</TableHead>
-                <TableHead>Units Sold</TableHead>
-                <TableHead>Revenue</TableHead>
-                <TableHead>Date</TableHead>
+                <TableHead>Report Date</TableHead>
+                <TableHead>Order ID</TableHead>
+                <TableHead>Product</TableHead>
+                <TableHead>Quantity Sold</TableHead>
+                <TableHead>Price Per Unit</TableHead>
+                <TableHead>Total Price</TableHead>
+                <TableHead>Discount</TableHead>
               </TableRow>
             </TableHeader>
-            <TableBody>
-              {salesData.map((item) => (
-                <TableRow key={item.id}>
-                  <TableCell>{item.name}</TableCell>
-                  <TableCell>{item.unitsSold}</TableCell>
-                  <TableCell>${item.revenue.toFixed(2)}</TableCell>
-                  <TableCell>{item.date}</TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
+            <TableBody>{/* Add sample data for sales report */}</TableBody>
           </Table>
         );
-      case "orders":
+      case "inventoryCreation":
         return (
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>Order Number</TableHead>
-                <TableHead>Customer</TableHead>
-                <TableHead>Total</TableHead>
+                <TableHead>Report Date</TableHead>
+                <TableHead>Warehouse</TableHead>
+                <TableHead>Product</TableHead>
+                <TableHead>Quantity</TableHead>
                 <TableHead>Status</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
-              {orderData.map((item) => (
-                <TableRow key={item.id}>
-                  <TableCell>{item.orderNumber}</TableCell>
-                  <TableCell>{item.customer}</TableCell>
-                  <TableCell>${item.total.toFixed(2)}</TableCell>
-                  <TableCell>{item.status}</TableCell>
-                </TableRow>
-              ))}
+              {/* Add sample data for inventory creation report */}
+            </TableBody>
+          </Table>
+        );
+      case "salesCreation":
+        return (
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Report Date</TableHead>
+                <TableHead>Order ID</TableHead>
+                <TableHead>Total Amount</TableHead>
+                <TableHead>Product</TableHead>
+                <TableHead>Quantity Sold</TableHead>
+                <TableHead>Price Per Unit</TableHead>
+                <TableHead>Total Price</TableHead>
+                <TableHead>Discount</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {/* Add sample data for sales creation report */}
             </TableBody>
           </Table>
         );
@@ -263,7 +372,7 @@ export function Reports() {
         <CardHeader>
           <CardTitle>Generate Report</CardTitle>
           <CardDescription>
-            Select a report type and click generate
+            Select a report type, date range, and click generate
           </CardDescription>
         </CardHeader>
         <CardContent className="flex items-center space-x-4">
@@ -279,6 +388,7 @@ export function Reports() {
               ))}
             </SelectContent>
           </Select>
+          <DateRangePicker value={dateRange} onValueChange={setDateRange} />
           <Button onClick={handleGenerateReport}>Generate Report</Button>
         </CardContent>
       </Card>
@@ -288,56 +398,6 @@ export function Reports() {
           <CardDescription>Sample data for the selected report</CardDescription>
         </CardHeader>
         <CardContent>{renderReportTable()}</CardContent>
-      </Card>
-      <Card>
-        <CardHeader>
-          <CardTitle>Sales Trend</CardTitle>
-          <CardDescription>Monthly sales overview</CardDescription>
-        </CardHeader>
-        <CardContent className="h-[300px]">
-          <ChartContainer
-            config={{
-              sales: { label: "Sales", color: "hsl(var(--chart-1))" },
-            }}
-          >
-            <ResponsiveContainer width="100%" height="100%">
-              <LineChart data={salesTrendData}>
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="month" />
-                <YAxis />
-                <ChartTooltip content={<ChartTooltipContent />} />
-                <Line
-                  type="monotone"
-                  dataKey="sales"
-                  stroke="var(--color-sales)"
-                />
-              </LineChart>
-            </ResponsiveContainer>
-          </ChartContainer>
-        </CardContent>
-      </Card>
-      <Card>
-        <CardHeader>
-          <CardTitle>Top Selling Products</CardTitle>
-          <CardDescription>Products with highest sales</CardDescription>
-        </CardHeader>
-        <CardContent className="h-[300px]">
-          <ChartContainer
-            config={{
-              sales: { label: "Sales", color: "hsl(var(--chart-2))" },
-            }}
-          >
-            <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={topSellingProducts}>
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="name" />
-                <YAxis />
-                <ChartTooltip content={<ChartTooltipContent />} />
-                <Bar dataKey="sales" fill="var(--color-sales)" />
-              </BarChart>
-            </ResponsiveContainer>
-          </ChartContainer>
-        </CardContent>
       </Card>
     </div>
   );

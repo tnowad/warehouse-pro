@@ -66,6 +66,8 @@ export const permissionNameSchema = z.enum([
   "RETURN_SEARCH",
   "RETURN_LIST",
 
+  "REPORT_VIEW",
+
   "AUDIT_LOG_VIEW",
   "AUDIT_LOG_EXPORT",
 ]);

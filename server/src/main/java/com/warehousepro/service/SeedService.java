@@ -387,6 +387,12 @@ public class SeedService {
             .description("Search for return requests")
             .build());
     permissions.put(
+        PermissionName.REPORT_VIEW,
+        Permission.builder()
+            .name(PermissionName.REPORT_VIEW)
+            .description("View reports")
+            .build());
+    permissions.put(
         PermissionName.RETURN_LIST,
         Permission.builder()
             .name(PermissionName.RETURN_LIST)
@@ -455,6 +461,7 @@ public class SeedService {
         add(PermissionName.RETURN_DELETE);
         add(PermissionName.RETURN_SEARCH);
         add(PermissionName.RETURN_LIST);
+        add(PermissionName.REPORT_VIEW);
 
         // missing report
       }
@@ -503,6 +510,7 @@ public class SeedService {
         add(PermissionName.RETURN_DELETE);
         add(PermissionName.RETURN_SEARCH);
         add(PermissionName.RETURN_LIST);
+        add(PermissionName.REPORT_VIEW);
       }
     };
 
@@ -549,6 +557,7 @@ public class SeedService {
         add(PermissionName.RETURN_DELETE);
         add(PermissionName.RETURN_SEARCH);
         add(PermissionName.RETURN_LIST);
+        add(PermissionName.REPORT_VIEW);
       }
     };
 

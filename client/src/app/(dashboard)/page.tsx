@@ -74,18 +74,6 @@ export default function DashboardPage() {
         </Card>
       </div>
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7">
-        <Card className="col-span-4">
-          <CardHeader>
-            <CardTitle>Inventory Trends</CardTitle>
-          </CardHeader>
-          <CardContent className="pl-2"></CardContent>
-        </Card>
-        <Card className="col-span-3">
-          <CardHeader>
-            <CardTitle>Recent Activities</CardTitle>
-          </CardHeader>
-          <CardContent></CardContent>
-        </Card>
         <div className="col-span-full">
           <SalesReportLineChartCard />
         </div>

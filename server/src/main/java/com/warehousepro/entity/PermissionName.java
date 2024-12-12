@@ -66,6 +66,8 @@ public enum PermissionName {
   RETURN_SEARCH,
   RETURN_LIST,
 
+  REPORT_VIEW,
+
   AUDIT_LOG_VIEW,
   AUDIT_LOG_EXPORT,
 }
