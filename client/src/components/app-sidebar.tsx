@@ -72,18 +72,6 @@ const mainNav: {
     icon: "orders",
   },
   {
-    title: "Track Orders",
-    url: "/orders/status",
-    permission: "ORDER_STATUS_TRACK",
-    icon: "orders",
-  },
-  {
-    title: "Assign Shipment",
-    url: "/orders/assign-shipment",
-    permission: "ORDER_ASSIGN_SHIPMENT",
-    icon: "orders",
-  },
-  {
     title: "Suppliers",
     url: "/suppliers",
     permission: "PROCUREMENT_SUPPLIER_LIST",
@@ -99,12 +87,6 @@ const mainNav: {
     title: "Shipments",
     url: "/shipments",
     permission: "SHIPMENT_LIST",
-    icon: "shipments",
-  },
-  {
-    title: "Track Shipment",
-    url: "/shipments/tracking",
-    permission: "SHIPMENT_TRACKING_VIEW",
     icon: "shipments",
   },
   {

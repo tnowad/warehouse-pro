@@ -400,6 +400,158 @@ public class SeedService {
           }
         });
 
+    List<PermissionName> adminPermissions = new ArrayList<PermissionName>() {
+      {
+        add(PermissionName.AUTH_LOGIN);
+        add(PermissionName.USER_CREATE);
+        add(PermissionName.USER_UPDATE);
+        add(PermissionName.USER_DELETE);
+        add(PermissionName.USER_LIST);
+        add(PermissionName.ROLE_CREATE);
+        add(PermissionName.ROLE_UPDATE);
+        add(PermissionName.ROLE_DELETE);
+        add(PermissionName.ROLE_LIST);
+        add(PermissionName.PERMISSION_ASSIGN);
+        add(PermissionName.PERMISSION_REVOKE);
+        add(PermissionName.INVENTORY_TRACK);
+        add(PermissionName.INVENTORY_PRODUCT_CREATE);
+        add(PermissionName.INVENTORY_PRODUCT_UPDATE);
+        add(PermissionName.INVENTORY_PRODUCT_DELETE);
+        add(PermissionName.INVENTORY_PRODUCT_LIST);
+        add(PermissionName.INVENTORY_LOW_STOCK_ALERT);
+        add(PermissionName.ORDER_CREATE);
+        add(PermissionName.ORDER_UPDATE);
+        add(PermissionName.ORDER_DELETE);
+        add(PermissionName.ORDER_SEARCH);
+        add(PermissionName.ORDER_LIST);
+        add(PermissionName.ORDER_STATUS_TRACK);
+        add(PermissionName.ORDER_ASSIGN_SHIPMENT);
+        add(PermissionName.WAREHOUSE_CREATE);
+        add(PermissionName.WAREHOUSE_UPDATE);
+        add(PermissionName.WAREHOUSE_DELETE);
+        add(PermissionName.WAREHOUSE_SEARCH);
+        add(PermissionName.WAREHOUSE_LIST);
+        add(PermissionName.WAREHOUSE_INVENTORY_DISTRIBUTE);
+        add(PermissionName.WAREHOUSE_SPACE_OPTIMIZE);
+        add(PermissionName.PROCUREMENT_SUPPLIER_CREATE);
+        add(PermissionName.PROCUREMENT_SUPPLIER_UPDATE);
+        add(PermissionName.PROCUREMENT_SUPPLIER_DELETE);
+        add(PermissionName.PROCUREMENT_SUPPLIER_SEARCH);
+        add(PermissionName.PROCUREMENT_SUPPLIER_LIST);
+        add(PermissionName.PROCUREMENT_ORDER_CREATE);
+        add(PermissionName.PROCUREMENT_ORDER_UPDATE);
+        add(PermissionName.PROCUREMENT_ORDER_DELETE);
+        add(PermissionName.PROCUREMENT_ORDER_SEARCH);
+        add(PermissionName.PROCUREMENT_ORDER_LIST);
+        add(PermissionName.PROCUREMENT_ORDER_STATUS_TRACK);
+        add(PermissionName.SHIPMENT_CREATE);
+        add(PermissionName.SHIPMENT_UPDATE);
+        add(PermissionName.SHIPMENT_DELETE);
+        add(PermissionName.SHIPMENT_SEARCH);
+        add(PermissionName.SHIPMENT_LIST);
+        add(PermissionName.SHIPMENT_TRACKING_VIEW);
+        add(PermissionName.RETURN_CREATE);
+        add(PermissionName.RETURN_UPDATE);
+        add(PermissionName.RETURN_DELETE);
+        add(PermissionName.RETURN_SEARCH);
+        add(PermissionName.RETURN_LIST);
+
+        // missing report
+      }
+    };
+
+    List<PermissionName> managerPermissions = new ArrayList<PermissionName>() {
+      {
+        add(PermissionName.AUTH_LOGIN);
+        add(PermissionName.INVENTORY_TRACK);
+        add(PermissionName.INVENTORY_PRODUCT_CREATE);
+        add(PermissionName.INVENTORY_PRODUCT_UPDATE);
+        add(PermissionName.INVENTORY_PRODUCT_DELETE);
+        add(PermissionName.INVENTORY_PRODUCT_LIST);
+        add(PermissionName.INVENTORY_LOW_STOCK_ALERT);
+        add(PermissionName.ORDER_CREATE);
+        add(PermissionName.ORDER_UPDATE);
+        add(PermissionName.ORDER_DELETE);
+        add(PermissionName.ORDER_SEARCH);
+        add(PermissionName.ORDER_LIST);
+        add(PermissionName.ORDER_STATUS_TRACK);
+        add(PermissionName.ORDER_ASSIGN_SHIPMENT);
+        add(PermissionName.WAREHOUSE_DELETE);
+        add(PermissionName.WAREHOUSE_SEARCH);
+        add(PermissionName.WAREHOUSE_LIST);
+        add(PermissionName.WAREHOUSE_INVENTORY_DISTRIBUTE);
+        add(PermissionName.WAREHOUSE_SPACE_OPTIMIZE);
+        add(PermissionName.PROCUREMENT_SUPPLIER_CREATE);
+        add(PermissionName.PROCUREMENT_SUPPLIER_UPDATE);
+        add(PermissionName.PROCUREMENT_SUPPLIER_DELETE);
+        add(PermissionName.PROCUREMENT_SUPPLIER_SEARCH);
+        add(PermissionName.PROCUREMENT_SUPPLIER_LIST);
+        add(PermissionName.PROCUREMENT_ORDER_CREATE);
+        add(PermissionName.PROCUREMENT_ORDER_UPDATE);
+        add(PermissionName.PROCUREMENT_ORDER_DELETE);
+        add(PermissionName.PROCUREMENT_ORDER_SEARCH);
+        add(PermissionName.PROCUREMENT_ORDER_LIST);
+        add(PermissionName.PROCUREMENT_ORDER_STATUS_TRACK);
+        add(PermissionName.SHIPMENT_CREATE);
+        add(PermissionName.SHIPMENT_UPDATE);
+        add(PermissionName.SHIPMENT_DELETE);
+        add(PermissionName.SHIPMENT_SEARCH);
+        add(PermissionName.SHIPMENT_LIST);
+        add(PermissionName.SHIPMENT_TRACKING_VIEW);
+        add(PermissionName.RETURN_CREATE);
+        add(PermissionName.RETURN_UPDATE);
+        add(PermissionName.RETURN_DELETE);
+        add(PermissionName.RETURN_SEARCH);
+        add(PermissionName.RETURN_LIST);
+      }
+    };
+
+    List<PermissionName> employeePermissions = new ArrayList<PermissionName>() {
+      {
+        add(PermissionName.AUTH_LOGIN);
+        add(PermissionName.INVENTORY_TRACK);
+        add(PermissionName.INVENTORY_PRODUCT_CREATE);
+        add(PermissionName.INVENTORY_PRODUCT_UPDATE);
+        add(PermissionName.INVENTORY_PRODUCT_DELETE);
+        add(PermissionName.INVENTORY_PRODUCT_LIST);
+        add(PermissionName.INVENTORY_LOW_STOCK_ALERT);
+        add(PermissionName.ORDER_CREATE);
+        add(PermissionName.ORDER_UPDATE);
+        add(PermissionName.ORDER_DELETE);
+        add(PermissionName.ORDER_SEARCH);
+        add(PermissionName.ORDER_LIST);
+        add(PermissionName.ORDER_STATUS_TRACK);
+        add(PermissionName.ORDER_ASSIGN_SHIPMENT);
+        add(PermissionName.WAREHOUSE_DELETE);
+        add(PermissionName.WAREHOUSE_SEARCH);
+        add(PermissionName.WAREHOUSE_LIST);
+        add(PermissionName.WAREHOUSE_INVENTORY_DISTRIBUTE);
+        add(PermissionName.WAREHOUSE_SPACE_OPTIMIZE);
+        add(PermissionName.PROCUREMENT_SUPPLIER_CREATE);
+        add(PermissionName.PROCUREMENT_SUPPLIER_UPDATE);
+        add(PermissionName.PROCUREMENT_SUPPLIER_DELETE);
+        add(PermissionName.PROCUREMENT_SUPPLIER_SEARCH);
+        add(PermissionName.PROCUREMENT_SUPPLIER_LIST);
+        add(PermissionName.PROCUREMENT_ORDER_CREATE);
+        add(PermissionName.PROCUREMENT_ORDER_UPDATE);
+        add(PermissionName.PROCUREMENT_ORDER_DELETE);
+        add(PermissionName.PROCUREMENT_ORDER_SEARCH);
+        add(PermissionName.PROCUREMENT_ORDER_LIST);
+        add(PermissionName.PROCUREMENT_ORDER_STATUS_TRACK);
+        add(PermissionName.SHIPMENT_CREATE);
+        add(PermissionName.SHIPMENT_UPDATE);
+        add(PermissionName.SHIPMENT_DELETE);
+        add(PermissionName.SHIPMENT_SEARCH);
+        add(PermissionName.SHIPMENT_LIST);
+        add(PermissionName.SHIPMENT_TRACKING_VIEW);
+        add(PermissionName.RETURN_CREATE);
+        add(PermissionName.RETURN_UPDATE);
+        add(PermissionName.RETURN_DELETE);
+        add(PermissionName.RETURN_SEARCH);
+        add(PermissionName.RETURN_LIST);
+      }
+    };
+
     log.info("permissions: {}", permissions);
     Role adminRole = roleRepository
         .findById("ADMIN")
@@ -407,7 +559,8 @@ public class SeedService {
             Role.builder()
                 .name("ADMIN")
                 .description("Admin role")
-                .permissions(new HashSet<>(permissions.values()))
+                .permissions(
+                    new HashSet<>(adminPermissions.stream().map(permissions::get).toList()))
                 .build());
 
     roleRepository.save(adminRole);
@@ -417,7 +570,8 @@ public class SeedService {
             Role.builder()
                 .name("MANAGER")
                 .description("Manager role")
-                .permissions(new HashSet<>(permissions.values()))
+                .permissions(
+                    new HashSet<>(managerPermissions.stream().map(permissions::get).toList()))
                 .build());
 
     roleRepository.save(managerRole);
@@ -428,7 +582,8 @@ public class SeedService {
             Role.builder()
                 .name("EMPLOYEE")
                 .description("Employee role")
-                .permissions(new HashSet<>(permissions.values()))
+                .permissions(
+                    new HashSet<>(employeePermissions.stream().map(permissions::get).toList()))
                 .build());
 
     roleRepository.save(employeeRole);
