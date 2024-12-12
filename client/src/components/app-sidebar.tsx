@@ -28,11 +28,6 @@ const mainNav: {
   url: string;
   permission: PermissionName;
   icon: string;
-  items?: {
-    title: string;
-    url: string;
-    permission: PermissionName;
-  }[];
 }[] = [
   {
     title: "Dashboard",
@@ -45,177 +40,96 @@ const mainNav: {
     url: "/users",
     permission: "USER_LIST",
     icon: "users",
-    items: [
-      {
-        title: "Users",
-        url: "/users",
-        permission: "USER_LIST",
-      },
-      {
-        title: "Create User",
-        url: "/users/new",
-        permission: "USER_CREATE",
-      },
-    ],
   },
   {
-    title: "Roles & Permissions",
+    title: "Roles",
     url: "/roles",
     permission: "ROLE_LIST",
     icon: "roles",
-    items: [
-      {
-        title: "Roles",
-        url: "/roles",
-        permission: "ROLE_LIST",
-      },
-      {
-        title: "Create Role",
-        url: "/roles/new",
-        permission: "ROLE_CREATE",
-      },
-    ],
   },
   {
     title: "Warehouses",
     url: "/warehouses",
     permission: "WAREHOUSE_LIST",
     icon: "warehouse",
-    items: [
-      {
-        title: "Warehouses",
-        url: "/warehouses",
-        permission: "WAREHOUSE_LIST",
-      },
-      {
-        title: "Create Warehouse",
-        url: "/warehouses/new",
-        permission: "WAREHOUSE_CREATE",
-      },
-    ],
   },
   {
-    title: "Inventory",
+    title: "Inventory Overview",
     url: "/inventory",
     permission: "INVENTORY_PRODUCT_LIST",
     icon: "inventory",
-    items: [
-      {
-        title: "Inventory Overview",
-        url: "/inventory",
-        permission: "INVENTORY_PRODUCT_LIST",
-      },
-      {
-        title: "Create Product",
-        url: "/inventory/new",
-        permission: "INVENTORY_PRODUCT_CREATE",
-      },
-      {
-        title: "Low Stock Alerts",
-        url: "/inventory/alerts",
-        permission: "INVENTORY_LOW_STOCK_ALERT",
-      },
-    ],
+  },
+  {
+    title: "Low Stock Alerts",
+    url: "/inventory/alerts",
+    permission: "INVENTORY_LOW_STOCK_ALERT",
+    icon: "inventory",
   },
   {
     title: "Orders",
     url: "/orders",
     permission: "ORDER_LIST",
     icon: "orders",
-    items: [
-      {
-        title: "Orders",
-        url: "/orders",
-        permission: "ORDER_LIST",
-      },
-      {
-        title: "Create Order",
-        url: "/orders/new",
-        permission: "ORDER_CREATE",
-      },
-      {
-        title: "Track Orders",
-        url: "/orders/status",
-        permission: "ORDER_STATUS_TRACK",
-      },
-      {
-        title: "Assign Shipment",
-        url: "/orders/assign-shipment",
-        permission: "ORDER_ASSIGN_SHIPMENT",
-      },
-    ],
   },
   {
-    title: "Procurement",
-    url: "/procurement",
+    title: "Track Orders",
+    url: "/orders/status",
+    permission: "ORDER_STATUS_TRACK",
+    icon: "orders",
+  },
+  {
+    title: "Assign Shipment",
+    url: "/orders/assign-shipment",
+    permission: "ORDER_ASSIGN_SHIPMENT",
+    icon: "orders",
+  },
+  {
+    title: "Suppliers",
+    url: "/suppliers",
+    permission: "PROCUREMENT_SUPPLIER_LIST",
+    icon: "procurement",
+  },
+  {
+    title: "Procurement Orders",
+    url: "/procurements",
     permission: "PROCUREMENT_ORDER_LIST",
     icon: "procurement",
-    items: [
-      {
-        title: "Suppliers",
-        url: "/suppliers",
-        permission: "PROCUREMENT_SUPPLIER_LIST",
-      },
-      {
-        title: "Procurement Orders",
-        url: "/procurements",
-        permission: "PROCUREMENT_ORDER_LIST",
-      },
-      {
-        title: "Create Supplier",
-        url: "/suppliers/new",
-        permission: "PROCUREMENT_SUPPLIER_CREATE",
-      },
-    ],
   },
   {
     title: "Shipments",
     url: "/shipments",
     permission: "SHIPMENT_LIST",
     icon: "shipments",
-    items: [
-      {
-        title: "Shipments",
-        url: "/shipments",
-        permission: "SHIPMENT_LIST",
-      },
-      {
-        title: "Track Shipment",
-        url: "/shipments/tracking",
-        permission: "SHIPMENT_TRACKING_VIEW",
-      },
-    ],
+  },
+  {
+    title: "Track Shipment",
+    url: "/shipments/tracking",
+    permission: "SHIPMENT_TRACKING_VIEW",
+    icon: "shipments",
   },
   {
     title: "Returns",
     url: "/returns",
     permission: "RETURN_LIST",
     icon: "returns",
-    items: [
-      {
-        title: "Returns",
-        url: "/returns",
-        permission: "RETURN_LIST",
-      },
-    ],
   },
   {
-    title: "Audit Logs",
+    title: "View Logs",
     url: "/audit-logs",
     permission: "AUDIT_LOG_VIEW",
     icon: "logs",
-    items: [
-      {
-        title: "View Logs",
-        url: "/audit-logs",
-        permission: "AUDIT_LOG_VIEW",
-      },
-      {
-        title: "Export Logs",
-        url: "/audit-logs/export",
-        permission: "AUDIT_LOG_EXPORT",
-      },
-    ],
+  },
+  {
+    title: "Export Logs",
+    url: "/audit-logs/export",
+    permission: "AUDIT_LOG_EXPORT",
+    icon: "logs",
+  },
+  {
+    title: "Logout",
+    url: "/logout",
+    icon: "logout",
+    permission: "AUTH_LOGGED_IN",
   },
 ];
 
@@ -242,49 +156,19 @@ export function AppSidebar() {
       <SidebarContent>
         <SidebarGroup>
           <SidebarMenu>
-            {mainNav.map((item, index) => (
-              <Fragment key={item.title}>
-                {item.items?.length ? (
-                  <PermissionGuard
-                    required={item.items.map((item) => item.permission)}
-                    operator="OR"
-                  >
-                    <Collapsible
-                      defaultOpen={index === 1}
-                      className="group/collapsible"
-                    >
-                      <SidebarMenuItem>
-                        <CollapsibleTrigger asChild>
-                          <SidebarMenuButton>
-                            {item.title}{" "}
-                            <Plus className="ml-auto group-data-[state=open]/collapsible:hidden" />
-                            <Minus className="ml-auto group-data-[state=closed]/collapsible:hidden" />
-                          </SidebarMenuButton>
-                        </CollapsibleTrigger>
-                        <CollapsibleContent>
-                          <SidebarMenuSub>
-                            {item.items.map((item) => (
-                              <PermissionGuard
-                                required={[item.permission]}
-                                key={item.title}
-                              >
-                                <SidebarMenuSubItem>
-                                  <SidebarMenuSubButton
-                                    asChild
-                                    isActive={false}
-                                  >
-                                    <Link href={item.url}>{item.title}</Link>
-                                  </SidebarMenuSubButton>
-                                </SidebarMenuSubItem>
-                              </PermissionGuard>
-                            ))}
-                          </SidebarMenuSub>
-                        </CollapsibleContent>
-                      </SidebarMenuItem>
-                    </Collapsible>
-                  </PermissionGuard>
-                ) : null}
-              </Fragment>
+            {mainNav.map((item) => (
+              <PermissionGuard required={[item.permission]} key={item.title}>
+                <SidebarMenuItem>
+                  <SidebarMenuButton asChild>
+                    <Link href={item.url}>
+                      <div className="flex items-center gap-2">
+                        <div className="flex items-center justify-center"></div>
+                        <span>{item.title}</span>
+                      </div>
+                    </Link>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              </PermissionGuard>
             ))}
           </SidebarMenu>
         </SidebarGroup>

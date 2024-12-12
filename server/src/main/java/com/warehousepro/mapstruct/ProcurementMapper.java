@@ -19,10 +19,3 @@ public interface ProcurementMapper {
   @Mapping(target = "supplierId", source = "supplier.id")
   ProcurementResponse toProcurementResponse(Procurement procurement);
 }
-
-@Mapper(componentModel = "spring")
-public interface ProcurementItemMapper {
-  ProcurementItem toProcurementItem(CreateProcurementItemRequest request);
-
-  ProcurementItemResponse toProcurementItemResponse(ProcurementItem procurementItem);
-}
