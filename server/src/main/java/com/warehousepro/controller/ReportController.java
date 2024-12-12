@@ -7,9 +7,11 @@ import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.warehousepro.dto.request.report.GetSalesReportRequest;
 import com.warehousepro.dto.response.report.*;
 import com.warehousepro.service.ReportService;
 
@@ -24,5 +26,11 @@ public class ReportController {
   @GetMapping("/summary")
   public ResponseEntity<GetSummaryReportResponse> getSummary() {
     return ResponseEntity.ok(reportService.getSummaryReport());
+  }
+
+  @GetMapping("/sales")
+  public ResponseEntity<GetSalesReportResponse> getSalesReport(
+      @ModelAttribute GetSalesReportRequest request) {
+    return ResponseEntity.ok(reportService.getSalesReport(request));
   }
 }

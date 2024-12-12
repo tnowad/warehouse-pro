@@ -16,44 +16,24 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart";
-
-const chartData = [
-  { date: "2024-04-01", totalSales: 372 },
-  { date: "2024-04-02", totalSales: 277 },
-  { date: "2024-04-03", totalSales: 287 },
-  { date: "2024-04-04", totalSales: 502 },
-  { date: "2024-04-05", totalSales: 663 },
-  { date: "2024-04-06", totalSales: 641 },
-  { date: "2024-04-07", totalSales: 425 },
-  { date: "2024-04-08", totalSales: 729 },
-  { date: "2024-04-09", totalSales: 169 },
-  { date: "2024-04-10", totalSales: 451 },
-  { date: "2024-04-11", totalSales: 677 },
-  { date: "2024-04-12", totalSales: 502 },
-  { date: "2024-04-13", totalSales: 722 },
-  { date: "2024-04-14", totalSales: 357 },
-  { date: "2024-04-15", totalSales: 290 },
-  { date: "2024-04-16", totalSales: 328 },
-  { date: "2024-04-17", totalSales: 806 },
-  { date: "2024-04-18", totalSales: 774 },
-  { date: "2024-04-19", totalSales: 423 },
-  { date: "2024-04-20", totalSales: 239 },
-  { date: "2024-04-21", totalSales: 337 },
-  { date: "2024-04-22", totalSales: 394 },
-  { date: "2024-04-23", totalSales: 368 },
-  { date: "2024-04-24", totalSales: 677 },
-  { date: "2024-04-25", totalSales: 465 },
-  { date: "2024-04-26", totalSales: 205 },
-  { date: "2024-04-27", totalSales: 803 },
-  { date: "2024-04-28", totalSales: 302 },
-  { date: "2024-04-29", totalSales: 555 },
-  { date: "2024-04-30", totalSales: 834 },
-];
+import { useQuery } from "@tanstack/react-query";
+import { createGetSalesReportQueryOptions } from "@/hooks/queries/get-sales-report.query";
 
 export function SalesReportLineChartCard() {
+  const getSalesReportQuery = useQuery(createGetSalesReportQueryOptions({}));
+
   const totalSales = React.useMemo(
-    () => chartData.reduce((acc, curr) => acc + curr.totalSales, 0),
-    [],
+    () =>
+      getSalesReportQuery.data?.items.reduce(
+        (acc, { totalSales }) => acc + totalSales,
+        0,
+      ) ?? 0,
+    [getSalesReportQuery.data?.items],
+  );
+
+  const chartData = React.useMemo(
+    () => getSalesReportQuery.data?.items ?? [],
+    [getSalesReportQuery.data?.items],
   );
 
   return (
